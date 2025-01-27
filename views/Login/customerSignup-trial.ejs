@@ -1,0 +1,65 @@
+<%- include('../utils/Starter.ejs') %>
+<link rel="stylesheet" href="/styles/customerSellerSignUpForm.css">
+<%- include('../utils/AfterLinkStyles.ejs') %>
+<body>
+    <div class="messageBox">
+        <% if (message.length>0) { %>
+            <div class="message"><%=message %></div>
+        <% } %>
+    </div>
+    <div class="body-wrapper">
+        <div class="form-wrapper">
+            <div class="form-header"><h2>Please Fill up the form to signup</h2></div>
+            <form action="/signup/customer" method="post">
+                <div class="fieldHolder">
+                    <div class="nameHolder">Your Name </div>
+                    <div class="inputHolder"><input type="text" name="customer-name" id="customer-name" placeholder="Enter your name"></div>
+                </div>
+                <div class="fieldHolder">
+                    <div class="nameHolder">Mobile Number</div>
+                    <form action="/signup/generate-email-otp">
+                        <div class="inputHolder"><input type="number" name="mobile-number" id="mobile-number" placeholder="Enter your mobile number"></div>
+                        <div class="button">
+                            <button class="verify-mobile-otp" type="submit" disabled>Verify</button>
+                        </div>
+                        <script>
+                            const verifyButton = document.querySelector('verify-mobile-otp');
+                            const input = document.querySelector('#mobile-number');
+                            input.addEventListener('keyup',()=>{
+                                const val = Number(input.value);
+                                const regex = /[1-9][0-9]{9}/;
+                                if(regex.test(value)){
+                                    // remove disability from button;
+                                    verifyButton.removeAttribute('disabled');
+                                }else{
+                                    verifyButton.setAttribute('disabled',true);
+                                }
+                            })
+
+                        </script>
+                    </form>
+                    <div class="verify-mobile-otp">
+                        
+                        <div>Enter OTP here</div>
+                        <div><input type="number" class="mobile-otp"></div>
+                        <button class="verifyOTP">verify</button>
+                        <div class="tick hidden"><img src="" alt="tick sign"></div>
+                    </div>
+                </div>
+                <div class="fieldHolder">
+                    <div class="nameHolder">Email Id </div>
+                    <div class="inputHolder"><input type="email" name="emailId" id="emailId" placeholder="Enter mailId or mobile number"></div>
+                </div>
+                <div class="fieldHolder">
+                    <div class="nameHolder">Email or Mobile Number</div>
+                    <div class="inputHolder"><input type="password" name="password" id="password" placeholder="Enter mailId or mobile number"></div>
+                </div>
+                <div class="fieldHolder buttons">
+                    <div class="submitBtn"><button type="reset">Reset</button></div>
+                    <div class="resetBtn"><button type="Submit">Submit</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+<%- include('../utils/Footer.ejs') %>

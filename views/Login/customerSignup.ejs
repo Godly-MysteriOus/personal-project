@@ -1,0 +1,225 @@
+<%- include('../utils/Starter.ejs') %>
+<link rel="stylesheet" href="/styles/customerSignup.css">
+<%- include('../utils/AfterLinkStyles.ejs') %>
+
+<body>
+    <div class="messageBox">
+        <div class="message hidden">Hi</div>
+    </div>
+    <div class="page-heading">
+        <h5>Customer Signup form</h5>
+    </div>
+    <div class="form-wrapper">
+        <form>
+            <div class="fieldHolder">
+                <div class="fieldName">Customer Name</div>
+                <div class="inputHolder"><input type="text" name="customer-name"></div>
+            </div>
+            <div class="email-validation">
+                <div class="sections">
+                    <div class="fieldHolder">
+                        <div class="fieldName">EmailId</div>
+                        <div>
+                            <div class="inputHolder"><input type="email" name="emailId" class="email" autocomplete="false"></div>
+                            <div class="buttonHolder"><button type="submit" disabled name="sentEmailOTP" class="sentEmailOTP">Send OTP</button></div>
+                            <span class="greenTick hidden">✅ Verified</span>
+                        </div>
+                    </div>
+                    <div class="emailOTPVerification-space hidden">
+                        <div class="email-otp-wrapper">
+                            <div class="fieldName">Enter Email OTP</div>
+                            <div>
+                                <div class="inputHolder"><input type="number" name="emailOtp" class="emailOtp" autocomplete="false"></div>
+                                <div class="buttonHolder"><button type="submit" name="verifyEmailOTP" class="verifyEmailOTP">Verify</button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="mobile-validation">
+                <div class="sections">
+                    <div class="fieldHolder">
+                        <div class="fieldName">MobileNumber</div>
+                        <div>
+                            <div class="inputHolder"><input type="text" name="mobileNo" class="mobileNo" autocomplete="false"></div>
+                            <div class="buttonHolder"><button type="submit" disabled name="sentMobileOTP" class="sentMobileOTP">Send OTP</button></div>
+                            <span class="greenTick-mobile hidden">✅ Verified</span>
+                        </div>
+                    </div>
+                    <div class="mobileOTPVerification-space hidden">
+                        <div class="mobile-otp-wrapper">
+                            <div class="fieldName">Enter Mobile OTP</div>
+                            <div>
+                                <div class="inputHolder"><input type="number" name="mobileOtp" class="mobileOtp" autocomplete="false"></div>
+                                <div class="buttonHolder"><button type="submit" name="verifyMobileOTP" class="verifyMobileOTP">Verify</button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        const message = document.querySelector('.message');
+        const sendEmailOTPBtn = document.querySelector('.sentEmailOTP');
+        const emailIdField = document.querySelector('.email');
+        const emailOTPValidationView = document.querySelector('.emailOTPVerification-space');
+        const emailOtp = document.querySelector('.emailOtp');
+        const verifyEmailOTP = document.querySelector('.verifyEmailOTP');
+        const regex = /^[a-z0-9]+([\.\-\_][a-z0-9]+)*@[a-z0-9]+(\.[a-z]{2,})+$/;
+        const mobileNoField = document.querySelector('.mobileNo');
+        const sendMobileOtpButton = document.querySelector('.sentMobileOTP');
+        const greenTickMobile = document.querySelector('.greenTick-mobile');
+        const mobileOTPValidationView = document.querySelector('.mobileOTPVerification-space');
+        const mobileOtp = document.querySelector('.mobileOtp');
+        const mobileRegex = /^[1-9][0-9]{9}$/;
+        const verifyMobileOTP = document.querySelector('.verifyMobileOTP');
+        emailIdField.addEventListener('input',(e)=>{
+            sendEmailOTPBtn.textContent = 'Send OTP';
+            if(regex.test(emailIdField.value)){
+                sendEmailOTPBtn.removeAttribute('disabled');
+            }else{
+                sendEmailOTPBtn.setAttribute('disabled',true);
+            }
+        });
+        mobileNoField.addEventListener('input',(e)=>{
+            console.log(mobileNoField.value);
+            if(mobileRegex.test(mobileNoField.value)){
+                sendMobileOtpButton.removeAttribute('disabled');
+            }else{
+                sendMobileOtpButton.setAttribute('disabled',true);
+            }
+        });
+        sendMobileOtpButton.addEventListener('click',async(e)=>{
+            e.preventDefault();
+            const response  = await fetch('/signup/generate-mobile-otp',{
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mobileNo: mobileNoField.value}),
+            });
+            const result = await response.json();
+            if(result.success){
+                mobileOTPValidationView.classList.remove('hidden');
+                message.classList.remove('hidden');
+                message.textContent = result.message;
+                message.style.color = 'green';
+                message.style.border = '2px solid green';
+            }else{
+                mobileOTPValidationView.classList.add('hidden');
+                message.classList.remove('hidden');
+                message.style.color = 'red';
+                message.style.color = '2px solid red';
+            }
+            sendEmailOTPBtn.setAttribute('disabled',true);
+            setTimeout(() => {
+                message.classList.add('hidden');
+            }, 5000);
+            let sec = 10;
+            const time = setInterval(()=>{
+                console.log(sec);
+                sendMobileOtpButton.textContent =`Resend OTP in ${sec--}s`;
+                if(sec==-1){
+                    sendMobileOtpButton.textContent = 'Resend OTP';
+                    sendMobileOtpButton.removeAttribute('disabled');
+                    clearInterval(time);
+                }
+            },1000);
+        });
+        verifyMobileOTP.addEventListener('click',async(e)=>{
+            e.preventDefault();
+            const response = await fetch('/signup/mobile-otp-validation',{
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mobileNo: mobileNoField.value,smsOtp: mobileOtp.value}),
+            });
+            emailOtp.textContent = '';
+            const result = await response.json();
+            if(result.success){
+                mobileOTPValidationView.classList.remove('hidden');
+                message.classList.remove('hidden');
+                message.textContent = result.message;
+                message.style.color = 'green';
+                message.style.border = '2px solid green';
+                sendMobileOtpButton.classList.add('hidden');
+                greenTickMobile.classList.remove('hidden');
+            }else{
+                message.classList.remove('hidden');
+                message.textContent =  result.message;
+                message.style.color = 'red';
+                message.style.color = '2px solid red';
+            }
+            setTimeout(() => {
+                message.classList.add('hidden');
+            }, 5000);
+        })
+        sendEmailOTPBtn.addEventListener('click',async(e)=>{
+    e.preventDefault();
+    //make a call
+    const response = await fetch('/signup/generate-email-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emailId: emailIdField.value })
+    });
+    const result = await response.json();
+    // how will a message look
+    message.classList.remove('hidden');
+    if(result.success){
+        emailOTPValidationView.classList.remove('hidden');
+        message.textContent = result.message;
+        message.style.color = 'green';
+        message.style.border = '2px solid green';
+    }else{
+        emailOTPValidationView.classList.add('hidden');
+        message.style.color = 'red';
+        message.style.color = '2px solid red';
+    }
+    sendEmailOTPBtn.setAttribute('disabled',true);
+    setTimeout(() => {
+        message.classList.add('hidden');
+    }, 5000);
+    let sec = 10;
+    const time = setInterval(()=>{
+        console.log(sec);
+        sendEmailOTPBtn.textContent =`Resend OTP in ${sec--}s`;
+        if(sec==-1){
+            sendEmailOTPBtn.textContent = 'Resend OTP';
+            sendEmailOTPBtn.removeAttribute('disabled');
+            clearInterval(time);
+        }
+    },1000);
+});
+verifyEmailOTP.addEventListener('click',async(e)=>{
+    e.preventDefault();
+    const response = await fetch('/signup/email-otp-validation',{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emailId: emailIdField.value,emailOtp: emailOtp.value})
+    });
+    emailOtp.textContent = '';
+    const result = await response.json();
+    if(result.success){
+        emailOTPValidationView.classList.remove('hidden');
+        message.classList.remove('hidden');
+        message.textContent = result.message;
+        message.style.color = 'green';
+        message.style.border = '2px solid green';
+        const sendOTPButton = document.querySelector('.buttonHolder').classList.add('hidden');
+        const greenTick = document.querySelector('.greenTick').classList.remove('hidden');
+        emailOTPValidationView.classList.add('hidden');
+    }else{
+        message.classList.remove('hidden');
+        message.textContent =  result.message;
+        message.style.color = 'red';
+        message.style.color = '2px solid red';
+
+    }
+    setTimeout(() => {
+        message.classList.add('hidden');
+    }, 5000);
+})
+    </script>
+</body>
+
+<%- include('../utils/Footer.ejs') %>

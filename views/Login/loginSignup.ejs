@@ -1,0 +1,100 @@
+<%- include('../utils/Starter.ejs') %>
+<%# link your css files here %>
+<link rel="stylesheet" href="/styles/loginPage.css">
+<%- include('../utils/AfterLinkStyles.ejs') %>
+
+<body>
+    <div class="messageBox">
+        <div class="message"></div>
+    </div>
+    <div class="body-wrapper">
+        <div class="content-container">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Login Here</h2>
+                </div>
+                <div class="form">
+                    <form id="loginForm">
+                        <div class="fieldHolder">
+                            <div class="nameHolder">Email or Mobile Number</div>
+                            <div class="inputHolder">
+                                <input type="text" name="loginCredential" id="loginCredential" placeholder="Enter mailId or mobile number" required>
+                            </div>
+                        </div>
+                        <div class="fieldHolder">
+                            <div class="nameHolder">Password</div>
+                            <div class="inputHolder">
+                                <input type="password" name="password" id="password" placeholder="Enter password" required>
+                            </div>
+                        </div>
+                        <div class="fieldHolder buttons">
+                            <div>
+                                <button type="reset" class="resetBtn">Reset</button>
+                            </div>
+                            <div>
+                                <button class="submitBtn" type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="signupContainer">
+                <p>
+                    <pre><a id="customerSignupLink" class="link" href="signup/customer">SignUp</a>         <a id="sellerSignupLink" class="link" href="/signup/seller">SignUp as Seller</a></pre>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const loginForm = document.querySelector('#loginForm');
+        const messageBox = document.querySelector('.messageBox');
+        const message = document.querySelector('.message');
+        const customerSignupLink = document.querySelector('#customerSignupLink');
+        const sellerSignupLink = document.querySelector('#sellerSignupLink');
+
+        // Submit login form
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent the default form submission
+
+            const formData = {
+                loginCredential: document.querySelector('#loginCredential').value,
+                password: document.querySelector('#password').value,
+            };
+
+            try {
+                console.log('fetching started');
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+                const result = await response.json();
+                console.log(result);
+                if (result.success) {
+                    // Show success message and redirect
+                    messageBox.style.color = 'green';
+                    message.textContent = result.message;
+                    setTimeout(() => {
+                        window.location.href = result.redirectUrl;
+                    }, 2000);
+                } else {
+                    // Show error message
+                    messageBox.style.color = 'red';
+                    message.textContent = result.message;
+                }
+            } catch (error) {
+                messageBox.style.color = 'red';
+                message.textContent = 'An error occurred. Please try again.';
+                console.error('Error:', error);
+            }
+        });
+
+        // Handle customer signup link click
+       
+    </script>
+</body>
+
+<%- include('../utils/Footer.ejs') %>
