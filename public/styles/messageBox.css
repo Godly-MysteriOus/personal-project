@@ -1,0 +1,11 @@
+.messageBox{
+    width: 100%;
+}
+.message{
+    background-color: white;
+    text-align: center;
+    z-index: 8;
+}
+.message-hidden{
+    display: none;
+}

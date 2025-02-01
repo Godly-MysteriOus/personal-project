@@ -1,0 +1,127 @@
+<%- include('../utils/Starter.ejs') %>
+<link rel="stylesheet" href="/styles/header.css">
+<link rel="stylesheet" href="/styles/home.css">
+
+<%- include('../utils/AfterLinkStyles.ejs') %>
+<%- include('../utils/Header.ejs') %>
+<body>
+    <!--add navigation script here-->
+    <%- include('../utils/MessageBox.ejs',{message:''}) %>
+    <div id="HomeSection"></div>
+    <!--add home section script here-->
+    <div id="AboutUsSection">
+        <div class="sectionHeader">
+            <h1>Medisure</h1>
+        </div>
+        <div class="aboutMedisure">
+            <p class="abel-regular ">
+                Medisure is a smart platform that provides real-time information on medicine availability at the nearest stores. <br><br>
+                We aim to make medicine search fast, reliable, and hassle-free for everyone. <br><br>
+                Whether you need urgent medication or just want to check stock before visiting a pharmacy, Medisure has got you covered. 
+            </p>
+            <br><br><br>
+            <h2>Why Choose Medisure ?</h2>
+            <div class="whyChooseMedisure">
+                <div class="pointerLogo"><img src="/images/right-arrow.png" alt="arrow image" srcset=""></div>
+                <div class="text abel-regular "><b>Real-time Updates</b>&nbsp;&nbsp; – &nbsp;&nbsp;Get accurate stock availability instantly</div>
+            </div>
+            <div class="whyChooseMedisure">
+                <div class="pointerLogo"><img src="/images/right-arrow.png" alt="arrow image" srcset=""></div>
+                <div class="text abel-regular "><b>Fast & Reliable</b>&nbsp;&nbsp; – &nbsp;&nbsp;Saves time and effort, especially in emergencies.</div>
+            </div>
+            <div class="whyChooseMedisure">
+                <div class="pointerLogo"><img src="/images/right-arrow.png" alt="arrow image" srcset=""></div>
+                <div class="text abel-regular "><b>Nearby Pharmacies</b>&nbsp;&nbsp; – &nbsp;&nbsp;No need to visit multiple stores. Find the nearest option.</div>
+            </div>
+            <div class="whyChooseMedisure">
+                <div class="pointerLogo"><img src="/images/right-arrow.png" alt="arrow icon"></div>
+                <div class="text abel-regular "><b>Store Friendly</b>&nbsp;&nbsp;-&nbsp;&nbsp;Provide real time information to the store about there Drug Inventory and sales analytics for stores</div>
+            </div>
+            <div class="moreSubcomponentWrapper">
+                <div class="tabButtonContainer">
+                    <div class="tabButton tabBtn--1 activeTabButton" data-pressed-button="1">Our Mission</div>
+                    <div class="tabButton tabBtn--2" data-pressed-button="2">Our Vision</div>
+                    <div class="tabButton tabBtn--3" data-pressed-button="3">Our Commitment</div>
+                </div>
+                <div class="tabContentWrapper">
+                    <div class="tabbedContent tabContent--1"></div>
+                    <div class="tabbedContent tabContent--2 hidden-general"></div>
+                    <div class="tabbedContent tabContent--3 hidden-general"></div>
+                </div>
+                <script>
+                    const bulletFormat = (content)=>`<div class="bulletPoints">
+                            <div class="bulletIcon"><img src="/images/next.png" alt="Bullet icon"></div>
+                            <div class="bulletPoint abel-regular "> ${content}</div>
+                        </div>`
+                    const dataArr = [['To provide only the licenced drug, authorized by Drugs Controller General of India','To ensure that no one has to struggle to find the right medicine when they need it most','To bridge the gap between pharmacies and customers by providing accurate, up-to-date stock information','Medisure analyzes sales data to generate detailed consumption trends, helping store owners, admins, and the government make informed decisions. This ensures timely restocking, prevents shortages, and improves emergency preparedness'],['To create a seamless, technology-driven ecosystem where finding medicines is effortless, shortages are prevented, and healthcare decisions are data-driven',' Gain insights into sales data, consumption trends, and stock levels, helping pharmacies and store owners manage inventory efficiently','Access detailed consumption data to help make informed decisions and take preventive measures for public health'],['We ensure that every medicine listed on MediSure is licensed and approved by the relevant regulatory authorities, such as the Drugs Controller General of India (DCGI), for your safety and peace of mind','We are dedicated to making medicine procurement easier by offering a seamless, user-friendly platform that connects you to the nearest pharmacies in real-time','All medicines available on MediSure are offered at their Maximum Retail Price (MRP), ensuring transparency and fairness in pricing without any hidden charges or markups']];
+                    const tabButton = document.querySelectorAll('.tabButton');
+                    const tabButtonContainer = document.querySelector('.tabButtonContainer');
+                    if(document.querySelector('.tabBtn--1').classList.contains('activeTabButton')){
+                        dataArr[0].forEach(content=>{
+                            document.querySelector(`.tabContent--1`).insertAdjacentHTML('afterbegin',bulletFormat(content));
+                        })
+                    }
+
+                    const contentTabs = document.querySelectorAll('.tabbedContent');
+                    tabButtonContainer.addEventListener('click',(e)=>{
+                        const clicked = e.target.closest('.tabButton');
+                        if(clicked==null){
+                            return;
+                        }
+                        else{
+                            const val = clicked.dataset.pressedButton;
+                            tabButton.forEach(item=>item.classList.remove('activeTabButton'));
+                            document.querySelector(`.tabBtn--${val}`).classList.add('activeTabButton');
+                            contentTabs.forEach(item=>item.classList.add('hidden-general'));
+                            document.querySelector(`.tabContent--${val}`).innerHTML = '';
+                            document.querySelector(`.tabContent--${val}`).classList.remove('hidden-general');
+                            dataArr[Number(val-1)].forEach(content=>{
+                                document.querySelector(`.tabContent--${val}`).insertAdjacentHTML('afterbegin',bulletFormat(content));
+                            });
+                        }
+                        
+                    })
+                </script>
+            </div>
+        </div>
+    </div>
+    <div id="ContactUsSection">
+        <div style="color: white;">
+            <h1 class="bona-nova-sc-bold ">Get in touch with us</h1><br>
+            <p style="text-align: center;" class="roboto">Drop your details here</p>
+        </div>
+        <div class="formHolder">
+            <form action="" method="post">
+                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'formClass', textName:'Email Id',isTextArea:false,nameAttribute:"emailNo", inputType: 'email',inputClassName:'',placeHolder:'ex. abcd@gmail.com'}) %>
+
+                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'formClass',textName:'Mobile Number',isTextArea:false ,nameAttribute:"mobileNo" ,inputType:'number',inputClassName:'', placeHolder:'ex. XXXX XXXXXX'}) %>
+
+                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'formClass',textName:'Message', isTextArea:true, nameAttribute:'userMessage', inputClassName:''}) %>
+
+                <div class="buttonHolder">
+                    <div><button class="resetBtn button">Reset</button></div>
+                    <div><button  class="submitBtn button">Submit</button></div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!--add general home page script here-->
+    <script>
+        // smooth scrolling
+        const navItems = document.querySelectorAll('.nav-items');
+        const navBar = document.querySelector('.navbar');
+
+        navBar.addEventListener('click',(e)=>{
+            if(e.target.classList.contains('nav-items')){
+                const scrollTo = e.target.getAttribute('href');
+                console.log(scrollTo);
+                document.querySelector(scrollTo).scrollIntoView({behavior: "smooth"});
+            }
+        })
+    </script>
+
+
+    <!--add API CALL script here-->
+</body>
+<%- include('../utils/Footer.ejs') %>

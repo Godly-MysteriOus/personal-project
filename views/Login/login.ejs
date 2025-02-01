@@ -1,0 +1,58 @@
+<%- include('../utils/Starter.ejs') %>
+<!-- link css files here -->
+<link rel="stylesheet" href="/styles/header.css">
+<%- include('../utils/AfterLinkStyles.ejs') %>
+<%- include('../utils/Header.ejs') %>
+<style>
+    .body-wrapper{
+        width: 100%;
+        min-height: 80vh;
+        display: grid;
+        place-items: center;
+        background-color: black;
+    }
+    .formContainer{
+        width: 95vw;
+        box-shadow: 1px 1px 5px 2px inset rgb(162, 161, 161);
+        padding: 0.5rem 0.25rem;
+        border-radius: 0.5rem;
+    }
+    .textHolder,.pageHeader{
+        color: white;
+        text-align: center;
+    }
+    .buttonHolder{
+        display: flex;
+        justify-content: space-evenly;
+        padding: 1rem;
+    }
+    @media screen and (min-width:701px) {
+        .formContainer{
+            width:27rem;
+        }
+    }
+    @media screen and (min-width:375px) and (max-width:700px) {
+        .formContainer{
+            width: max(21rem,60vw);
+        }
+    }
+</style>
+
+<body>
+    <%- include('../utils/MessageBox.ejs') %>  
+    <div class="body-wrapper">
+        <div>
+            <div class="pageHeader"><h2>Login Here <br><br></h2></div>
+            <div class="formContainer">
+                <form action="" class="form">
+                    <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'textHolder',textName:'UserName',isTextArea:false, inputType:'email',nameAttribute:'userCredential',inputClassName:'',placeHolder:'Enter Email Id'}) %>
+                    <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'textHolder',textName:'Password',isTextArea:false, inputType:'password',nameAttribute:'password',inputClassName:'',placeHolder:'Enter password'}) %>
+                    <div class="buttonHolder">
+                        <button class="button" type="reset">Reset</button>
+                        <button class="button" type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>  
+</body>

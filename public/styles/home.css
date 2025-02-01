@@ -1,0 +1,156 @@
+
+/* Contact US css */
+#ContactUsSection{
+    width: 100vw;
+    background: rgba(0, 0, 0);
+    display: grid;
+    place-items: center;
+    min-height: 80vh;
+}
+.formClass{
+    color: white;
+}
+.formHolder{
+    width: 40%;
+    padding: 0.5rem;
+    box-shadow:  1px 1px 10px 1px inset rgb(147, 146, 146);
+    border-radius: 0.3rem;
+}
+.buttonHolder{
+    display:flex;
+    justify-content: space-evenly;
+    padding: 0.5rem 1rem;
+}
+
+/* About Us css */
+#AboutUsSection{
+    min-height: 80vh;
+    width: 100vw;
+    background-color: rgb(17, 4, 29);
+    padding: 1rem 0.75rem;
+}
+
+.sectionHeader h1{
+    background-image: linear-gradient(120deg, #fccb90 0%, #d57eeb 100%);
+    -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  width: fit-content;
+}
+.sectionHeader h1{
+    font-size: 4rem;
+}
+.aboutMedisure{
+    color: white;
+}
+.whyChooseMedisure{
+    padding: 1rem 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+}
+.pointerLogo img{
+    width: 1rem;
+}
+/* tabbed content section */
+.moreSubcomponentWrapper{
+    display: grid;
+    place-items: center;
+}
+.tabButtonContainer,.tabContentWrapper{
+    width: 70%;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.tabButton{
+    position: relative;
+    padding: 1rem 2rem;
+    cursor: pointer;
+}
+.activeTabButton, .tabButton:hover{
+    border-bottom: 3px solid rgb(255, 0, 149);
+    transition: all ease-out 0.15s;
+    transform: translate(0%,-0.5rem);
+}
+.tabContentWrapper{
+    border: none;
+    border-top: 3px solid rgb(101, 101, 101);
+    overflow-y: scroll;
+    justify-content: start;
+    padding: 1rem 2rem;
+    height: 14rem;
+}.bulletPoints{
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0.5rem;
+}
+.bulletIcon img{
+    width: 1.25rem;
+}   
+@media screen and (min-width:1025px){
+
+}
+@media screen and (min-width:431px) and (max-width:1024px){
+    .tabButtonContainer,.tabContentWrapper{
+        min-width: 25rem;
+        max-width: 70vw;
+        width: 90%;
+    }
+    .tabButton{
+        padding: 1rem;
+    }
+    .formHolder{
+        min-width: 22rem;
+        max-width: 27rem;
+        width: 80%;
+    }
+}
+@media screen and (min-width:375px) and (max-width:430px){
+    .tabButtonContainer,.tabContentWrapper{
+        width:100%;
+        padding: 0.5rem 0rem;
+    }
+    .tabButton{
+        font-size: 1rem;
+        padding: 1rem 0.25rem;
+    }
+    .formHolder{
+        width: 22rem;
+    }
+}
+@media screen and (max-width:375px) {
+    .tabButtonContainer,.tabContentWrapper{
+        width:100%;
+        padding: 0.5rem 0rem;
+    }
+    .tabButton{
+        font-size: 14px;
+        padding: 1rem 0.25rem;
+    }
+    .whyChooseMedisure{
+        padding: 1rem 0.25rem;
+        gap: 1rem;
+    }
+    .sectionHeader h1{
+        font-size: 2rem;
+    }
+    .aboutMedisure{
+        font-size: 12px;
+    }
+    .bulletIcon img{
+        width:14px;
+    }
+    .formHolder{
+        width: 95vw;
+    }
+    .bona-nova-sc-bold{
+        font-size: 1.5rem;
+    }
+    .roboto{
+        font-size: 0.8rem;
+    }
+    textarea{
+        height: 4rem;
+    }
+}

@@ -61,9 +61,9 @@ app.use(express.static(path.join(__dirname,'public')));
 app.use('/signup',signupRoutes);
 app.use(loginLogoutDeleteRoutes);
 app.use('/',(req,res,next)=>{
-//    const errorMessage = req.flash('error');
-//     res.render('Login/loginSignup',{message:errorMessage});
-    return res.redirect('/login');
+   return res.render('Home/home',{
+        path: '/homePage',
+   });
 });
 
 
