@@ -8,7 +8,7 @@ const validations = require('../../utils/input validations/checks');
 router.get('/login',loginAuthController.getLogin);
 
 // redirects to home page
-router.post('/login',[validations.credentialCheck('loginCredential')],loginAuthController.postLogin);
+router.post('/login',[validations.emailValidation('emailId')],loginAuthController.postLogin);
 
 //redirects to login page
 router.post('/logout',loginAuthController.postLogout);

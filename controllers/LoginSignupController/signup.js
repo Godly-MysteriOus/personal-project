@@ -40,15 +40,6 @@ let saveSession=(session)=> {
     });
 }
 
-function deleteSessionItems(session){
-    delete session.emailOTP;
-    delete session.isEmailOtpVerified;
-    delete session.expiryofEmailOtp;
-    delete session.mobileNoOTP;
-    delete session.expiryofMobileOtp;
-    delete session.isMobileOtpVerified;
-}
-
 function OTPGenerator(){
     return Math.floor(Math.random()*100000);
 }
@@ -256,7 +247,6 @@ exports.emailOtpValidation =async(req,res)=>{
 
 exports.postCustomerSignup = async (req,res,next)=>{
     const {customerName,emailId,mobileNo,password} = req.body;
-    console.log(customerName,emailId,mobileNo,password);
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json({

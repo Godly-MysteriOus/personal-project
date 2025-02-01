@@ -9,6 +9,7 @@ const DB_Constants = {
     RECIEVE_TYPE_DB : 'recieve_type_db',
     LOGIN_INFO_DB : 'login_info_db',
     LOCATION_MAPPING_DB : 'state_city_district_db',
+    USER_QUERIES_DB : 'user_queries_db',
 };
 
 module.exports = DB_Constants;

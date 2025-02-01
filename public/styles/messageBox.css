@@ -5,6 +5,9 @@
     background-color: white;
     text-align: center;
     z-index: 8;
+    position: fixed;
+    width: 100%;
+    top: 0;
 }
 .message-hidden{
     display: none;

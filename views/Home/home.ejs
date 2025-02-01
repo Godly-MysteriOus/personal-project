@@ -6,7 +6,7 @@
 <%- include('../utils/Header.ejs') %>
 <body>
     <!--add navigation script here-->
-    <%- include('../utils/MessageBox.ejs',{message:''}) %>
+    <%- include('../utils/MessageBox.ejs') %>
     <div id="HomeSection"></div>
     <!--add home section script here-->
     <div id="AboutUsSection">
@@ -91,12 +91,12 @@
             <p style="text-align: center;" class="roboto">Drop your details here</p>
         </div>
         <div class="formHolder">
-            <form action="" method="post">
-                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'formClass', textName:'Email Id',isTextArea:false,nameAttribute:"emailNo", inputType: 'email',inputClassName:'',placeHolder:'ex. abcd@gmail.com'}) %>
+            <form>
+                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'formClass', textName:'Email Id',isTextArea:false,nameAttribute:"emailNo", inputType: 'email',inputClassName:'emailId',placeHolder:'ex. abcd@gmail.com'}) %>
 
-                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'formClass',textName:'Mobile Number',isTextArea:false ,nameAttribute:"mobileNo" ,inputType:'number',inputClassName:'', placeHolder:'ex. XXXX XXXXXX'}) %>
+                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'formClass',textName:'Mobile Number',isTextArea:false ,nameAttribute:"mobileNo" ,inputType:'number',inputClassName:'mobileNo', placeHolder:'ex. XXXX XXXXXX'}) %>
 
-                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'formClass',textName:'Message', isTextArea:true, nameAttribute:'userMessage', inputClassName:''}) %>
+                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'formClass',textName:'Message', isTextArea:true, nameAttribute:'userMessage', inputClassName:'userMessage'}) %>
 
                 <div class="buttonHolder">
                     <div><button class="resetBtn button">Reset</button></div>
@@ -121,7 +121,35 @@
         })
     </script>
 
+    <script>
+        const submitBtn = document.querySelector('.submitBtn');
+        const emailId = document.querySelector('.emailId');
+        const mobileNo = document.querySelector('.mobileNo');
+        const userMessage = document.querySelector('.userMessage');
+        const message = document.querySelector('.message');
 
+        submitBtn.addEventListener('click',async(e)=>{
+            e.preventDefault();
+            const response = await fetch('<%=url%>userQuery',{
+                method:'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:JSON.stringify({
+                    emailId:emailId.value,
+                    mobileNo:mobileNo.value,
+                    userMessage:userMessage.value,
+                })
+            });
+            emailId.value = '';
+            mobileNo.value='';
+            userMessage.value='';
+            const result = await response.json();
+            message.textContent = result.message? result.message:'ABCDEF';
+            message.classList.remove('message-hidden');
+            setTimeout(()=>{
+                message.classList.add('message-hidden');
+            },3000);
+        })
+    </script>
     <!--add API CALL script here-->
 </body>
 <%- include('../utils/Footer.ejs') %>

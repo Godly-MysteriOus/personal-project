@@ -26,9 +26,33 @@
         justify-content: space-evenly;
         padding: 1rem;
     }
+    .noButton{
+        background: transparent;
+        color: white;
+        border: none;
+        border: 1px solid white;
+        padding: 0.5rem 0.25rem;
+        border-radius: 0.25rem;
+        font-size: 11px;
+        cursor: pointer;
+    }
+    .signup-section{
+        padding-top: 1rem;
+        display: grid;
+        place-items: center;
+    }
+    .feature-buttons{
+        display:flex;
+        width: 80%;
+        padding: 0.5rem;
+        justify-content: space-evenly;
+    }
     @media screen and (min-width:701px) {
         .formContainer{
             width:27rem;
+        }
+        .noButton{
+            font-size: 14px;
         }
     }
     @media screen and (min-width:375px) and (max-width:700px) {
@@ -44,15 +68,57 @@
         <div>
             <div class="pageHeader"><h2>Login Here <br><br></h2></div>
             <div class="formContainer">
-                <form action="" class="form">
-                    <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'textHolder',textName:'UserName',isTextArea:false, inputType:'email',nameAttribute:'userCredential',inputClassName:'',placeHolder:'Enter Email Id'}) %>
-                    <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'textHolder',textName:'Password',isTextArea:false, inputType:'password',nameAttribute:'password',inputClassName:'',placeHolder:'Enter password'}) %>
+                <form  class="form">
+                    <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'textHolder',textName:'EmailId',isTextArea:false, inputType:'email',nameAttribute:'userCredential',inputClassName:'emailId',placeHolder:'Enter Email Id'}) %>
+                    <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'textHolder',textName:'Password',isTextArea:false, inputType:'password',nameAttribute:'password',inputClassName:'password',placeHolder:'Enter password'}) %>
                     <div class="buttonHolder">
                         <button class="button" type="reset">Reset</button>
-                        <button class="button" type="submit">Submit</button>
+                        <button class="submitBtn button" type="submit">Submit</button>
                     </div>
                 </form>
             </div>
+            <div class="signup-section" style="color: white;">
+                <div>
+                    Don't have an account ?
+                </div>
+                <div class="feature-buttons">
+                    <form action="/signup/customer" method="get"><button class="noButton" type="submit">Signup as Customer</button></form>
+                    <form action="/signup/seller" method="get"><button type="submit" class="noButton">Signup as Seller</button></form>
+                </div>
+            </div>
         </div>
-    </div>  
+    </div> 
+    <script>
+        const submitBtn = document.querySelector('.submitBtn');
+        const emailId = document.querySelector('.emailId');
+        const password = document.querySelector('.password');
+        const message = document.querySelector('.message');
+        submitBtn.addEventListener('click',async(e)=>{
+            e.preventDefault();
+            const response = await fetch('<%=url%>signup/seller',{
+                method:'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    credentialField:emailId.value,
+                    password: password.value,
+                })
+            });
+            const result = await response.json();
+            if(result.success){
+                let str = '';
+                if(result.roleId==1){
+                    str = 'customer';
+                }else if(result.roleId==2){
+                    str = 'seller';
+                }
+                window.location.href = `<%=url%>${str}`;
+            }else{
+                message.textContent = result.message,
+                message.classList.remove('message-hidden');
+                setTimeout(() => {
+                    message.classList.add('.message-hidden');
+                }, 3000);
+            }
+        })
+    </script> 
 </body>

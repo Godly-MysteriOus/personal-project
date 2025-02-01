@@ -121,7 +121,7 @@
             console.log('entered');
            
 
-            const response = await fetch('http://localhost:3100/signup/generate-email-otp',{
+            const response = await fetch('<%=url%>signup/generate-email-otp',{
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -141,7 +141,7 @@
     <script>
         verifyOTP.addEventListener('click',async(e)=>{
             e.preventDefault();
-            const response = await fetch('http://localhost:3100/signup/email-otp-validation',{
+            const response = await fetch('<%=url%>signup/email-otp-validation',{
                 method:'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body:JSON.stringify({
@@ -170,7 +170,7 @@
         regenerateOTPBtn.addEventListener('click',async(e)=>{
             regenerateOTPBtn.setAttribute('disabled',true);
             regenerateOTPBtn.classList.remove('button');
-            const response = await fetch('http://localhost:3100/signup/generate-email-otp',{
+            const response = await fetch('<%=url%>signup/generate-email-otp',{
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -204,7 +204,7 @@
     <!-- register customer -->
     <script>
         document.querySelector('.registerCustomer').addEventListener('click',async()=>{
-            const response = await fetch('http://localhost:3100/signup/customer',{
+            const response = await fetch('<%=url%>signup/customer',{
                 method:'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body:JSON.stringify({
@@ -219,7 +219,9 @@
             message.classList.remove('message-hidden');
             setTimeout(async()=>{
                 message.classList.add('message-hidden');
-                window.location.href = 'http://localhost:3100/login';
+                if(result.success){
+                    window.location.href = '<%=url%>login';
+                }
             },3000)
         })
     </script>
