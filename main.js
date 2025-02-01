@@ -52,14 +52,19 @@ app.use((req,res,next)=>{
     }
     next();
 })
+app.use((req,res,next)=>{
+    res.locals.url = 'http://localhost:3100/';
+    next();
+})
 app.use(flash());
 app.use(express.json());
 const signupRoutes = require('./routes/authRoutes/signup');
 const loginLogoutDeleteRoutes = require('./routes/authRoutes/login&logout');
-
+const featureRoutes = require('./routes/additionalRoutes/featureRoutes');
 app.use(express.static(path.join(__dirname,'public')));
 app.use('/signup',signupRoutes);
 app.use(loginLogoutDeleteRoutes);
+app.use(featureRoutes);
 app.use('/',(req,res,next)=>{
    return res.render('Home/home',{
         path: '/homePage',
