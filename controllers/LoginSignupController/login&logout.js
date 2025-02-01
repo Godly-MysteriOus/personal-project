@@ -9,7 +9,9 @@ const mongoose = require('mongoose');
 
 
 exports.getLogin = (req,res,next)=>{
-    return res.render('Login/loginSignup',{});
+    return res.render('Login/login',{
+        path:'/login',
+    });
     // res.status(200).json({
     //     redirectUrl:'/login',
     //     success:false,

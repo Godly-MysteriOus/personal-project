@@ -1,28 +1,72 @@
-
-
 <header class="header">
-    <!-- Place to store Logo and Logout Button -->
-    <div class="headerWrapper">
-        <div class="logo"><img src="/images/logo.png" alt="Logo image"></div>
-        <div class="navbar-wrapper">
-            <div class="cart-wrapper nav-items">
-                <div class="shop-icon nav-icon"><img src="/images/shopping-cart.png" alt="Shop icon"></div>
-                <div class="feature-name">Cart</div>
-            </div>
-            <div class="order-wrapper nav-items">
-                <div class="order-icon nav-icon"><img src="/images/order-delivery.png" alt="Shop icon"></div>
-                <div class="feature-name">Orders</div>
-            </div>
-            <div class="profile-wrapper nav-items">
-                <div class="profile-icon nav-icon"><img src="/images/user.png" alt="User icon"></div>
-                <div class="feature-name">Profile</div>
-            </div>
+  <div class="logo"><img src="/images/logo.png" alt="Logo"></div> 
+  <div class="navigation-wrapper hidden">
+        <div class="navbar">
+            <% if (path=='/homePage') { %>
+                <div class="nav-items" href="#HomeSection" data-navigation="#HomeSection"> Home </div>
+                <div class="nav-items" href="#AboutUsSection" data-navigation="#AboutUsSection"> About Us </div>
+                <div class="nav-items" href="#ContactUsSection" data-navigation="#ContactUsSection">Contact Us</div>
+                <div class="nav-item only-mobile-view">
+                    <form action="/login" method="get"><button  class="button">Login</button></form>
+                </div>
+                <div class="nav-item only-mobile-view">
+                    <form action="/signup/customer" method="get"><button class="button">Signup as Customer</button></form>
+                </div>
+                <div class="nav-item only-mobile-view">
+                    <form action="/signup/seller" method="get"><button class="button">Signup as Seller</button></form>
+                </div>
+            <% }else if(path=='/login'){ %>
+                <div class="nav-items"><form action="/" method="get"><button class="no-button" type="submit">Home</button></form></div>
+                <div class="nav-item only-mobile-view">
+                    <form action="/signup/seller" method="get"><button class="button">SignUp as Seller</button></form>
+                </div>
+                <div class="nav-item only-mobile-view">
+                    <form action="/signup/customer"><button class="button">SignUp as Customer</button></form>
+                </div>
+            <%} else if(path=='/customer-signup'){%>
+                <div class="nav-items"><form action="/" method="get"><button class="no-button" type="submit">Home</button></form></div>
+                <div class="nav-items only-mobile-view">
+                    <form action="/login" method="get"><button class="button">Login</button></form>
+                </div>
+                <div class="nav-item only-mobile-view">
+                    <form action="/signup/seller" method="get"><button class="button">Signup as Seller</button></form>
+                </div>
+            <%}else if(path=='/seller-signup'){%>
+                <div class="nav-items"><form action="/" method="get"><button class="no-button" type="submit">Home</button></form></div>
+                <div class="nav-items only-mobile-view">
+                    <form action="/login" method="get"><button class="button">Login</button></form>
+                </div>
+                <div class="nav-item only-mobile-view">
+                    <form action="/signup/customer"><button class="button">SignUp as Customer</button></form>
+                </div>
+            <%}%>
         </div>
-        <div class="mobile-view-icon nav-icon nav-items">
-            <div class="hamburger-menu nav-icon"><img src="/images/menu.png" alt=""></div>
-            <div class="cancel-icon nav-icon"><img src="/images/close.png" alt=""></div>
-        </div>
-        <script src="/scripts/responsive-navbar.js"></script>
-
     </div>
+    <div class="displayMobileOnly-featureBtn hidden-general">
+        <div class="menuBtn"><img src="/images/menu.png" alt=""></div>
+        <div class="closeBtn hidden"><img src="/images/close.png" alt=""></div>
+    </div>  
+  <script> 
+    const menuBtn = document.querySelector('.menuBtn');
+    const closeBtn = document.querySelector('.closeBtn');
+    const featureBtn = document.querySelector('.displayMobileOnly-featureBtn');
+    const NavContainer = document.querySelector('.navigation-wrapper');
+    featureBtn.addEventListener('click',()=>{
+        menuBtn.classList.toggle('hidden');
+        if(menuBtn.classList.contains('hidden')){
+            NavContainer.style.animation = 'displayMobileNav 0.4s ease-in-out 1';
+            // setTimeout(()=>{
+                 NavContainer.classList.remove('hidden');
+            // },1000);
+        }
+        closeBtn.classList.toggle('hidden');
+        if(closeBtn.classList.contains('hidden')){
+            NavContainer.style.animation = 'hideMobileNav 0.4s ease-in-out 1';
+            setTimeout(()=>{
+                NavContainer.classList.add('hidden');
+            },385)
+        }
+    });
+    document.querySelectorAll('btns').forEach
+  </script>
 </header>

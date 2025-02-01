@@ -13,7 +13,9 @@ const {MongoClient} = require('mongodb');
 
 // varibales used
 exports.getSignUpPage = (req,res,next)=>{
-    return res.render('Login/customerSignup',{});
+    return res.render('Login/customerSignup',{
+        path:'/customer-signup',
+    });
 }
 exports.destroySession=(session)=> {
     return new Promise((resolve, reject) => {
@@ -53,6 +55,7 @@ function OTPGenerator(){
 
 //fixed
 exports.emailOtpSession = async(req,res)=>{
+
     const {emailId} = req.body;
     const client =await MongoClient.connect(devDBURI.DB_Connections.DEV_URI);
     const db = client.db('devDB');
@@ -134,7 +137,7 @@ exports.emailOtpValidation =async(req,res)=>{
                 }
             });
         }else{
-            return  res.status(402).json({
+            return  res.status(400).json({
                 success:false,
                 message:'Incorrect email OTP',
             })
@@ -253,6 +256,7 @@ exports.emailOtpValidation =async(req,res)=>{
 
 exports.postCustomerSignup = async (req,res,next)=>{
     const {customerName,emailId,mobileNo,password} = req.body;
+    console.log(customerName,emailId,mobileNo,password);
     const errors = validationResult(req);
     if(!errors.isEmpty()){
         return res.status(400).json({
@@ -347,15 +351,26 @@ exports.postSellerSignup = async (req,res,next)=>{
             throw new Error('User already registered with provided Drug License Number or FSSAI Number');
         }
         // user is not registered, validate otps
-        if(req.session && req.session.emailId==emailId && req.session.mobileNo==mobileNo){
-            if(!req.session.isEmailOtpVerified || !req.session.isMobileOtpVerified){
-                throw new Error('OTP verification pending');
-            }else{
-                deleteSessionItems(req.session);
+        const client =await MongoClient.connect(devDBURI.DB_Connections.DEV_URI);
+        const db = client.db('devDB');
+        const sessions = db.collection('sessions');
+        const doesSessionExists = await sessions.findOne({'session.emailId':emailId});
+        if(doesSessionExists){
+            if(!doesSessionExists.session.isEmailOtpVerified){
+                throw new Error('OTP Verification pending');
             }
         }else{
-            throw new Error('OTP expired. Please Re-validate OTP');
+            throw new Error('Please validate Email Address');
         }
+        // if(req.session && req.session.emailId==emailId && req.session.mobileNo==mobileNo){
+        //     if(!req.session.isEmailOtpVerified || !req.session.isMobileOtpVerified){
+        //         throw new Error('OTP verification pending');
+        //     }else{
+        //         deleteSessionItems(req.session);
+        //     }
+        // }else{
+        //     throw new Error('OTP expired. Please Re-validate OTP');
+        // }
         //otps are verified
 
         transactionSession = await mongoose.startSession();
@@ -400,6 +415,10 @@ exports.postSellerSignup = async (req,res,next)=>{
         }
         loginObj.entityObject = ObjectId(userObj._id);
         loginObj.entityModel = DB_Constants.MEDICAL_STORE_DB;
+        const isLoginDBupdated = await loginObj.save();
+        if(!isLoginDBupdated){
+            throw new Error('Failed to update Login DB');
+        }
         await transactionSession.commitTransaction();
         transactionSession.endSession();
         return res.status(200).json({
@@ -411,10 +430,9 @@ exports.postSellerSignup = async (req,res,next)=>{
         await transactionSession.abortTransaction();
         transactionSession.endSession();
         return res.status(400).json({
-            errorMessage: err.message,
             success:false,
-        })
+            message: err.message,
+        });
     }
-   
 }
 

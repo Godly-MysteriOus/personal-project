@@ -1,0 +1,8 @@
+<div class="field-wrapper <%= style %>">
+    <div class="textHolder <%= textClass %>"><%= textName %></div>
+    <% if (isTextArea) { %>
+        <div class="inputHolder"><textarea name="<%= nameAttribute %>" id="" class=" textarea <%= inputClassName %>" placeholder="drop text here..." autocomplete="off"></textarea></div>
+    <% }else{ %>
+        <div class="inputHolder"><input type="<%= inputType %>"  name="<%= nameAttribute %>"class=" default <%= inputClassName %>" placeholder="<%= placeHolder %>" required></div>
+    <%}%>
+</div>

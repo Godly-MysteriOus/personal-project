@@ -1,34 +1,146 @@
-.messageBox{
+.body-wrapper{
+    width: 100%;
+    height: 90vh;
+    overflow-y: hidden;
     display: grid;
     place-items: center;
-    padding: 2rem;
-    height: 4rem;
+    padding: 0.5rem 0.25rem;
+    background-color: black;
 }
-.hidden{
-    display: none;
+.textHolder,.pageHeading{
+    color: white;
 }
-.page-heading{
-    padding: 1rem;
-    font-size: 2rem;
+.pageHeading{
+    text-align: center;
 }
-.form-wrapper{
-    display: grid;
-    place-items: center;
-    width: 100vw;
-    height: fit-content;
-    border: 2px solid magenta;
-    padding: 3rem 2rem;
+.formHolder{
+    box-shadow: 1px 1px 5px 2px inset rgb(174, 174, 174);
+    border-radius: 0.5rem;
+    width: 95%;
+    padding: 1rem 0.5rem;
+    margin-left: 5px;
 }
-.fieldHolder,.email-otp-wrapper{
+.buttonHolder{
+    display: flex;
+    justify-content: space-evenly;
+    padding: 0.75rem 1rem; 
+}
+.field-wrapper-email{
     display: flex;
     justify-content: space-between;
-    padding: 1rem;
+    padding: 0.5rem 0.5rem;
 }
-form{
-    width: 50vw;
-    border: 1px solid black;
-    padding: 2rem 4rem;
+.textHolder-email{
+    width: 25%;
+    color: white;
 }
-.email-validation{
-    border: 1px solid blue;
+.email-holder{
+    width: 67%;
+}
+.email-input{
+    color: white;
+}
+.inputHolder-email{
+   
+    padding-right: 0.25rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.inputHolder-email input{
+    box-shadow: 1px 1px 10px 1px inset rgba(123, 123, 123, 0.997);
+    background: #000;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+.validateEmail{
+    padding: 0.25rem 0rem;
+    display: flex;
+    justify-content: space-between;
+}
+.changeEmailBtn,.verifyEmail{
+    font-size: 12px;
+    padding: 0.25rem 0.2rem;
+    border-radius: 0.25rem;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.687);
+    box-shadow: 1px -1px 1px 1px inset rgb(183, 183, 183);
+    color: white;
+    cursor: pointer;
+}
+
+.popUpWrapper{
+    width: 100%;
+    height: 90vh;
+    position: absolute;
+    backdrop-filter: blur(10px);
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    color: white;
+}
+.popUpContainer{
+    box-shadow: 1px 1px 10px 2px inset rgb(134, 134, 134);
+}
+.popUpHeader{
+    text-align: center;
+}
+.regenerateOTPForm{
+    display: grid;
+    place-items: center;
+    padding: 1rem 0.5rem;
+}
+.regenerateOTPForm p{
+    margin-bottom: 1rem;
+}
+@keyframes popUp {
+    0%{
+        transform: translateY(90%);
+    }
+    100%{
+        transform: translateY(0%);
+    }
+}
+@keyframes popUpDown {
+    0%{
+        transform: translateY(0%);
+    }
+    100%{
+        transform: translateY(90%);
+    }
+}
+.overlay-hidden{
+    display: none;
+}
+#closeBtn img{
+    width: 1.25rem;
+}
+.closeBtnHolder{
+    padding: 0.1rem 0.5rem;
+    margin-top: -1rem;
+    display: flex;
+    justify-content: end;
+}
+@media screen and (min-width:901px) {
+    .formHolder{
+        width: 30rem;
+    }
+    .popUpContainer form{
+        padding: 0rem 1rem;
+    }
+}
+@media screen and (min-width:375px) and (max-width:900px) {
+    .popUpContainer{
+        padding: 0rem 0rem 1rem 1rem;
+    }
+    .body-wrapper{
+        width: 100vw;
+    }
+    .pageHeading{
+        width: 100%;
+    }
+    .formHolder{
+        width: max(20rem,48vw);
+    }
 }
