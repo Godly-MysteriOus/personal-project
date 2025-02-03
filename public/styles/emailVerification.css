@@ -1,0 +1,66 @@
+.field-wrapper-email{
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0.5rem;
+}
+.textHolder-email{
+    width: 25%;
+    color: white;
+}
+.email-holder{
+   width: 67%;
+}
+.inputHolder-email{
+    padding-right: 0.25rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+.inputHolder-email input{
+    box-shadow: 1px 1px 10px 1px inset rgba(123, 123, 123, 0.997);
+    background: #000;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+.validateEmail{
+    padding: 0.25rem 0rem;
+    display: flex;
+    justify-content: space-between;
+}
+.changeEmailBtn,.verifyEmail{
+    font-size: 12px;
+    padding: 0.25rem 0.2rem;
+    border-radius: 0.25rem;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.687);
+    box-shadow: 1px -1px 1px 1px inset rgb(183, 183, 183);
+    color: white;
+    cursor: pointer;
+}
+.email-input{
+    color: white;
+}
+
+@keyframes popUp {
+    0%{
+        transform: translateY(90%);
+    }
+    100%{
+        transform: translateY(0%);
+    }
+}
+@keyframes popUpDown {
+    0%{
+        transform: translateY(0%);
+    }
+    100%{
+        transform: translateY(90%);
+    }
+}
+
+@media screen and (max-width:375px){
+    .email-holder{
+       width: 62%;
+    }
+}

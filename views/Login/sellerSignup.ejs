@@ -8,5 +8,16 @@
 
 <body>
     <%- include('../utils/MessageBox.ejs') %>
+    <div class="body-wrapper">
+        <div><h2 class=".bona-nova-sc-bold pageHeading">Lets get started with us</h2></div>
+        <div class="formWrapper">
+            <form>
+                <fieldset>
+                    <legend>Basic Details</legend>
+                    <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'',isTextArea:'',inputType:'',nameAttribute:'',inputClassName:'',placeHolder:''}) %>
+                </fieldset>
+            </form>
+        </div>
+    </div>
 </body>
 <%- include('../utils/Footer.ejs') %>
