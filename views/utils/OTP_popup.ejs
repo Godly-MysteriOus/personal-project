@@ -1,0 +1,93 @@
+<style>
+    .popUpWrapper{
+        width: 100%;
+        height: 90vh;
+        position: absolute;
+        backdrop-filter: blur(10px);
+        z-index: 2;
+        display: grid;
+        place-items: center;
+        color: white;
+    }
+    .overlay-hidden{
+        display: none;
+    }
+    .closeBtnHolder{
+        padding: 0.1rem 0.5rem;
+        margin-top: -1rem;
+        display: flex;
+        justify-content: end;
+    }
+    #closeBtn img{
+        width: 1.25rem;
+    }
+    .popUpHeader{
+        text-align: center;
+    }
+    .buttonHolder{
+        display: flex;
+        justify-content: space-evenly;
+        padding: 0.75rem 1rem; 
+    }
+    .regenerateOTPForm{
+        display: grid;
+        place-items: center;
+        padding: 1rem 0.5rem;
+        margin-bottom: 1rem;
+    }
+    .popUpContainer{
+        box-shadow: 1px 1px 10px 2px inset rgb(134, 134, 134);
+        width: 30rem;
+    }
+    @media screen and (min-width:901px){
+        .popUpContainer form{
+            padding: 0rem 1rem;
+        }
+    }
+    @media screen and (min-width:375px) and (max-width:900px) {
+        .popUpContainer{
+            width: 22.5rem;
+            padding: 0rem 0rem 1rem 1rem;
+        }
+    }
+    @media screen and (max-width:375px) {
+        .popUpContainer{
+            width: 95%;
+        }
+    }
+</style>
+
+<div class="popUpWrapper overlay-hidden">
+    <div class="popUpContainer">
+        <br>
+        <div class="closeBtnHolder" >
+            <div id="closeBtn">
+                <img src="/images/close.png" alt="cross button" >
+            </div>
+        </div>
+        <div class="popUpHeader"><h3>Lets Verify Email Id</h3></div>
+        <br>
+        <form>
+            <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Enter OTP',isTextArea:false,inputType:'number',nameAttribute:'emailOTP', inputClassName:'emailOtp',placeHolder:'Enter OTP here',isRequired:true}) %>
+            <div class="buttonHolder"><button class="button verifyEmailOTP" type="submit">Verify OTP</button></div>
+            <div>
+                <form>
+                    <div class="regenerateOTPForm">
+                        <p>Didn't Recieved OTP ?</p>
+                        <button class="button regenerateOTP">Regenerate OTP</button>
+                    </div>
+                </form>
+            </div>
+        </form>
+    </div>
+    <script>
+        const popUp = document.querySelector('.popUpWrapper');
+        const closeBtnPopUp = document.querySelector('#closeBtn');
+        closeBtnPopUp.addEventListener('click',(e)=>{
+            popUp.style.animation='popUpDown 1s ease-in-out';
+            setTimeout(()=>{
+                popUp.classList.add('overlay-hidden');
+            },900);
+        })
+    </script>
+</div>

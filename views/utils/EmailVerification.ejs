@@ -1,0 +1,141 @@
+<div class="field-wrapper-email">
+    <div class="textHolder-email">EmailId <span class="required">*</span> </div>
+    <div class="email-holder">
+        <div class="inputHolder-email">
+            <input type="email" autocomplete="off" required placeholder="Email Id" class="email-input" name="emailId">
+        </div>
+        <div class="validateEmail">
+            <div><button class="changeEmailBtn">Change Email</button></div>
+            <div>
+                <!-- <form > -->
+                    <button id="generateEmailOTP" class="verifyEmail" style="color: red;" type="button" disabled>Verify Email</button>
+                <!-- </form> -->
+            </div>
+            <div class="verifiedStatus <%= verifiedStatusFor %>" style="color: Green; font-weight: 600;">✅ Verified</div>
+        </div>
+    </div>
+</div>
+    <script>
+        const emailField = document.querySelector('.email-input');
+        const verifyEmailBtn = document.querySelector('.verifyEmail');
+        const changeEmailBtn = document.querySelector('.changeEmailBtn');
+        const message = document.querySelector('.message');
+        const verifyOTP = document.querySelector('.verifyEmailOTP');
+        const emailOtpField = document.querySelector('.emailOtp')
+        const verifiedStatus = document.querySelector('.verifiedStatus');
+        const regenerateOTPBtn = document.querySelector('.regenerateOTP');
+        const generateEmailOTP = document.querySelector('.verifyEmail');
+        emailField.addEventListener('input',(e)=>{
+            e.preventDefault();
+            const regex = /^[a-z0-9]+([\.\-\_][a-z0-9]+)*@[a-z0-9]+(\.[a-z]{2,})+$/;
+            if(regex.test(emailField.value)){
+                verifyEmailBtn.removeAttribute('disabled');
+                verifyEmailBtn.style.color='white';
+            }else{
+                verifyEmailBtn.setAttribute('disabled',true);
+                verifyEmailBtn.style.color='red';
+            }
+        });
+        verifyEmailBtn.addEventListener('click',(e)=>{
+            e.preventDefault();
+            emailField.setAttribute('disabled',true);
+            popUp.style.animation = 'popUp 1s ease-in-out';
+            popUp.classList.remove('overlay-hidden');
+        });
+        changeEmailBtn.addEventListener('click',(e)=>{
+            e.preventDefault();
+            emailField.removeAttribute("disabled");
+            verifyEmailBtn.setAttribute('disabled',true);
+            verifyEmailBtn.style.color='red';
+            emailField.value='';
+            verifiedStatus.classList.add('hidden-customerSignup');
+            generateEmailOTP.classList.remove('hidden-customerSignup');
+        });
+    </script>
+        <!-- generate otp script -->
+    <script>
+        generateEmailOTP.addEventListener('click',async(e)=>{
+            e.preventDefault();
+            emailOtpField.value='';
+            const response = await fetch('<%=url%>signup/generate-email-otp',{
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    emailId: emailField.value,
+                }),
+            });
+            const result = await response.json();
+            message.textContent = result.message;
+            message.classList.remove('message-hidden');
+
+            setTimeout(()=>{
+                message.classList.add('message-hidden');
+            },4000);
+        });
+    </script>
+        <!-- verify otp button -->
+    <script>
+        verifyOTP.addEventListener('click',async(e)=>{
+            e.preventDefault();
+            const response = await fetch('<%=url%>signup/email-otp-validation',{
+                method:'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:JSON.stringify({
+                    emailId:emailField.value,
+                    emailOtp:emailOtpField.value,
+                }),
+            });
+            emailOtpField.value='';
+            const result = await response.json();
+            message.textContent = result.message;
+            message.classList.remove('message-hidden');
+            if(result.success){
+                popUp.style.animation='popUpDown 1s ease-in-out';
+                setTimeout(()=>{
+                    popUp.classList.add('overlay-hidden');
+                },900);
+            }
+            generateEmailOTP.classList.add('hidden-customerSignup');
+            verifiedStatus.classList.remove('hidden-customerSignup');
+            setTimeout(()=>{
+                message.classList.add('message-hidden');
+            },4000);
+        })
+    </script>
+            <!-- regenerate otp button -->
+    <script>
+        regenerateOTPBtn.addEventListener('click',async(e)=>{
+            emailOtpField.value='';
+            regenerateOTPBtn.setAttribute('disabled',true);
+            regenerateOTPBtn.classList.remove('button');
+            const response = await fetch('<%=url%>signup/generate-email-otp',{
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    emailId: emailField.value,
+                }),
+            });
+            const result = await response.json();
+            message.textContent = result.message;
+            message.classList.remove('message-hidden');
+
+            setTimeout(()=>{
+                message.classList.add('message-hidden');
+            },4000);
+            let time = 60;
+            const fxn =  setInterval(()=>{
+                if(Math.floor(time/60)!=0){
+                    regenerateOTPBtn.textContent = `Resend OTP in ${Math.floor(time/60)}m ${time%60}s`;
+                }else{
+                    regenerateOTPBtn.textContent = `Resend OTP in ${time%60}s`;
+                }
+                time--;
+                if(time==-1){
+                    clearInterval(fxn);
+                    regenerateOTPBtn.classList.add('button');
+                    regenerateOTPBtn.textContent = 'Resend OTP';
+                    regenerateOTPBtn.removeAttribute('disabled');
+                }
+            },1000);
+        })
+    </script>

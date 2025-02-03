@@ -2,63 +2,21 @@
 <!-- add stylesheets here -->
 <link rel="stylesheet" href="/styles/header.css">
 <link rel="stylesheet" href="/styles/customerSignup.css">
+<link rel="stylesheet" href="/styles/EmailVerification.css">
 <%- include('../utils/AfterLinkStyles.ejs') %>
 <%- include('../utils/Header.ejs') %>
-<style>
-    .hidden-customerSignup{
-        display: none;
-    }
-</style>
 <body>
-    <div class="popUpWrapper overlay-hidden">
-        <div class="popUpContainer">
-            <br>
-            <div class="closeBtnHolder" >
-                <div id="closeBtn">
-                    <img src="/images/close.png" alt="cross button" >
-                </div>
-            </div>
-            <div class="popUpHeader"><h3>Lets Verify Email Id</h3></div>
-            <br>
-            <form>
-                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Enter OTP',isTextArea:false,inputType:'number',nameAttribute:'emailOTP', inputClassName:'emailOtp',placeHolder:'Enter OTP here'}) %>
-                <div class="buttonHolder"><button class="button verifyEmailOTP" type="submit">Verify OTP</button></div>
-                <div>
-                    <form action="/signup/generate-email-otp" method="post">
-                        <div class="regenerateOTPForm">
-                            <p>Didn't Recieved OTP ?</p>
-                            <button class="button regenerateOTP">Regenerate OTP</button>
-                        </div>
-                    </form>
-                </div>
-            </form>
-        </div>
-    </div>
+    <%- include('../utils/OTP_popup.ejs') %>
     <%- include('../utils/MessageBox.ejs') %>
     <div class="body-wrapper">
-        <div class="pageHeading"><h2>Get Started with us. <br><br></h2></div>
+        <div class="pageHeading"><h2>Get Started with us. <br></h2></div>
         <div class="formHolder">
             <form>
-                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Name',isTextArea:false,inputType:'text',nameAttribute:'customerName',inputClassName:'customerName',placeHolder:'Enter Name here'}) %>
-                <!-- emailId should be made -->
-                    <div class="field-wrapper-email">
-                    <div class="textHolder-email">EmailId</div>
-                    <div class="email-holder">
-                        <div class="inputHolder-email"><input type="email" autocomplete="off" required placeholder="Email Id" class="email-input"></div>
-                        <div class="validateEmail">
-                            <div><button class="changeEmailBtn">Change Email</button></div>
-                            <div>
-                                <form id="generateEmailOTP">
-                                    <button class="verifyEmail" style="color: red;" type="submit" disabled>Verify Email</button>
-                                </form>
-                            </div>
-                            <div class="verifiedStatus hidden-customerSignup" style="color: Green; font-weight: 600;">✅ Verified</div>
-                        </div>
-                    </div>
-                    </div>
-                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Mobile No.',isTextArea:false,inputType:'number',nameAttribute:'mobileNo',inputClassName:'mobileNo',placeHolder:'Enter Phone Number'}) %>
-                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Password',isTextArea:false,inputType:'password',nameAttribute:'password',inputClassName:'password',placeHolder:'Enter password'}) %>
-                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Confirm Password',isTextArea:false,inputType:'password',nameAttribute:'confirmPassword',inputClassName:'',placeHolder:'Re-Enter password'}) %>
+                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Name',isTextArea:false,inputType:'text',nameAttribute:'customerName',inputClassName:'customerName',placeHolder:'Enter Name here',isRequired:true}) %>
+                <%- include('../utils/EmailVerification.ejs',{verifiedStatusFor:'hidden-customerSignup'}) %>
+                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Mobile No.',isTextArea:false,inputType:'number',nameAttribute:'mobileNo',inputClassName:'mobileNo',placeHolder:'Enter Phone Number',isRequired:true}) %>
+                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Password',isTextArea:false,inputType:'password',nameAttribute:'password',inputClassName:'password',placeHolder:'Enter password',isRequired:true}) %>
+                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Confirm Password',isTextArea:false,inputType:'password',nameAttribute:'confirmPassword',inputClassName:'confirmPassword',placeHolder:'Re-Enter password',isRequired:true}) %>
                 <div class="buttonHolder">
                     <button class="button" type="reset">Reset</button>
                     <button class="button registerCustomer" type="submit">Submit</button>
@@ -67,142 +25,13 @@
         </div>
     </div>
     <script>
-        const verifyEmailBtn = document.querySelector('.verifyEmail');
-        const changeEmailBtn = document.querySelector('.changeEmailBtn');
-        const emailField = document.querySelector('.email-input');
-        const popUp = document.querySelector('.popUpWrapper');
-        const closeBtnPopUp = document.querySelector('#closeBtn');
-        const generateEmailOTP = document.querySelector('.verifyEmail');
-        const message = document.querySelector('.message');
-        const verifyOTP = document.querySelector('.verifyEmailOTP');
-        const emailOtpField = document.querySelector('.emailOtp')
-        const verifiedStatus = document.querySelector('.verifiedStatus');
-        const regenerateOTPBtn = document.querySelector('.regenerateOTP');
         const customerName = document.querySelector('.customerName');
         const mobileNoField = document.querySelector('.mobileNo');
         const password = document.querySelector('.password');
-        emailField.addEventListener('input',(e)=>{
-            e.preventDefault();
-            const regex = /^[a-z0-9]+([\.\-\_][a-z0-9]+)*@[a-z0-9]+(\.[a-z]{2,})+$/;
-            if(regex.test(emailField.value)){
-                verifyEmailBtn.removeAttribute('disabled');
-                verifyEmailBtn.style.color='white';
-            }else{
-                verifyEmailBtn.setAttribute('disabled',true);
-                verifyEmailBtn.style.color='red';
-            }
-        })
-        // const closePopUp = document.querySelector('');
-        verifyEmailBtn.addEventListener('click',(e)=>{
-            e.preventDefault();
-            emailField.setAttribute('disabled',true);
-            popUp.style.animation = 'popUp 1s ease-in-out';
-            popUp.classList.remove('overlay-hidden');
-        });
+        const confirmPassword = document.querySelector('.confirmPassword');
 
-        closeBtnPopUp.addEventListener('click',(e)=>{
-            popUp.style.animation='popUpDown 1s ease-in-out';
-            setTimeout(()=>{
-                popUp.classList.add('overlay-hidden');
-            },900);
-        })
-        changeEmailBtn.addEventListener('click',(e)=>{
-            e.preventDefault();
-            emailField.removeAttribute("disabled");
-            emailField.value='';
-            verifiedStatus.classList.add('hidden-customerSignup');
-            generateEmailOTP.classList.remove('hidden-customerSignup');
-        });
-    </script>
-    <!-- generate otp script -->
-    <script>
-        generateEmailOTP.addEventListener('click',async(e)=>{
-            e.preventDefault();
-            console.log('entered');
-           
 
-            const response = await fetch('<%=url%>signup/generate-email-otp',{
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    emailId: emailField.value,
-                }),
-            });
-            const result = await response.json();
-            message.textContent = result.message;
-            message.classList.remove('message-hidden');
-
-            setTimeout(()=>{
-                message.classList.add('message-hidden');
-            },4000);
-        });
-    </script>
-     <!-- verify otp button -->
-    <script>
-        verifyOTP.addEventListener('click',async(e)=>{
-            e.preventDefault();
-            const response = await fetch('<%=url%>signup/email-otp-validation',{
-                method:'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body:JSON.stringify({
-                    emailId:emailField.value,
-                    emailOtp:emailOtpField.value,
-                }),
-            });
-            const result = await response.json();
-            message.textContent = result.message;
-            message.classList.remove('message-hidden');
-            if(result.success){
-                popUp.style.animation='popUpDown 1s ease-in-out';
-                setTimeout(()=>{
-                    popUp.classList.add('overlay-hidden');
-                },900);
-            }
-            generateEmailOTP.classList.add('hidden-customerSignup');
-            verifiedStatus.classList.remove('hidden-customerSignup');
-            setTimeout(()=>{
-                message.classList.add('message-hidden');
-            },4000);
-        })
-    </script>
-        <!-- regenerate otp button -->
-    <script>
-        regenerateOTPBtn.addEventListener('click',async(e)=>{
-            regenerateOTPBtn.setAttribute('disabled',true);
-            regenerateOTPBtn.classList.remove('button');
-            const response = await fetch('<%=url%>signup/generate-email-otp',{
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    emailId: emailField.value,
-                }),
-            });
-            const result = await response.json();
-            message.textContent = result.message;
-            message.classList.remove('message-hidden');
-
-            setTimeout(()=>{
-                message.classList.add('message-hidden');
-            },4000);
-            let time = 60;
-            const fxn =  setInterval(()=>{
-                if(Math.floor(time/60)!=0){
-                    regenerateOTPBtn.textContent = `Resend OTP in ${Math.floor(time/60)}m ${time%60}s`;
-                }else{
-                    regenerateOTPBtn.textContent = `Resend OTP in ${time%60}s`;
-                }
-                time--;
-                if(time==-1){
-                    clearInterval(fxn);
-                    regenerateOTPBtn.classList.add('button');
-                    regenerateOTPBtn.textContent = 'Resend OTP';
-                    regenerateOTPBtn.removeAttribute('disabled');
-                }
-            },1000);
-        })
-    </script>
-    <!-- register customer -->
-    <script>
+        //register customer
         document.querySelector('.registerCustomer').addEventListener('click',async()=>{
             const response = await fetch('<%=url%>signup/customer',{
                 method:'POST',
@@ -212,6 +41,7 @@
                     emailId:emailField.value,
                     mobileNo:mobileNoField.value,
                     password:password.value,
+                    confirmPassword:confirmPassword.value,
                 }),
             })
             const result = await response.json();
