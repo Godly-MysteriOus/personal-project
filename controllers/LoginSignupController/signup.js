@@ -17,6 +17,11 @@ exports.getSignUpPage = (req,res,next)=>{
         path:'/customer-signup',
     });
 }
+exports.getSellerSignupPage = (req,res,next)=>{
+    return res.render('Login/sellerSignup',{
+        path:'/seller-signup'
+    });
+}
 exports.destroySession=(session)=> {
     return new Promise((resolve, reject) => {
         session.destroy(err => {
