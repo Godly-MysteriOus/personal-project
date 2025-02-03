@@ -18,7 +18,7 @@ router.post('/customer',[
     validations.passwordValidation('password'),
     // validations.confirmPassword('confirm-password'),
 ],authController.postCustomerSignup);
-// router.get('/seller',);
+router.get('/seller',authController.getSellerSignupPage);
 router.post('/seller',[
     check('drug-license-number').custom(val=>{
         const DLNRegex = /^(0[1-9]|[1-2][0-9]|3[0-5])-([0-9]{8})$/;

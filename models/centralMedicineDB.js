@@ -51,8 +51,12 @@ const centralMedicineDB = new schema({
         type:String,
         required:true,
     },
+    package:{
+        type:String,
+        required:true,
+    },
     quantity:{
-        type:Number,
+        type:String,
         required:true,
     },
     productForm:{
@@ -60,7 +64,7 @@ const centralMedicineDB = new schema({
         required:true,
     },
     MRP:{
-        type:Number,
+        type:String,
         required:true,
     },
     manufacturer:{
@@ -68,7 +72,7 @@ const centralMedicineDB = new schema({
         required:true,
     },
     prescriptionRequired:{
-        type:Boolean,
+        type:String,
         required:true,
     },
     factBox:{
@@ -120,10 +124,6 @@ const centralMedicineDB = new schema({
         required:true,
     },
     howItWork:{
-        type:String,
-        required:true,
-    },
-    manufacturerDetails:{
         type:String,
         required:true,
     },
