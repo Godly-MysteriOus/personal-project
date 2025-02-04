@@ -1,23 +1,91 @@
 <%- include('../utils/Starter.ejs') %>
 <!-- Link your css files here -->
 <link rel="stylesheet" href="/styles/header.css">
-
-
+<link rel="stylesheet" href="/styles/emailVerification.css">
+<link rel="stylesheet" href="/styles/sellerSignup.css">
 <%- include('../utils/AfterLinkStyles.ejs') %>
 <%- include('../utils/Header.ejs') %>
 
 <body>
     <%- include('../utils/MessageBox.ejs') %>
+    <%- include('../utils/OTP_popup.ejs') %>
     <div class="body-wrapper">
         <div><h2 class=".bona-nova-sc-bold pageHeading">Lets get started with us</h2></div>
         <div class="formWrapper">
-            <form>
-                <fieldset>
-                    <legend>Basic Details</legend>
-                    <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'',isTextArea:'',inputType:'',nameAttribute:'',inputClassName:'',placeHolder:''}) %>
-                </fieldset>
+            <form id="seller-form1" enctype="multipart/form-data">
+                <div class="formView--1 formView ">
+                    <fieldset>
+                        <legend>Basic Details</legend>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Name',isTextArea:false,inputType:'text',nameAttribute:'sellerName',inputClassName:'sellerName',placeHolder:'Your Name',isRequired:true,isFile:false,fileType:''}) %>
+                        <%- include('../utils/EmailVerification.ejs',{verifiedStatusFor:'hidden-sellerSignup'}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Mobile No.',isTextArea:false,inputType:'number',nameAttribute:'mobileNo',inputClassName:'mobileNo',placeHolder:'Enter Mobile No.',isRequired:true,isFile:false,fileType:''}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Password',isTextArea:false,inputType:'password',nameAttribute:'password',inputClassName:'password',placeHolder:'Enter password',isRequired:true,isFile:false,fileType:''}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Confirm Password',isTextArea:false,inputType:'password',nameAttribute:'confirm-password',inputClassName:'confirm-password',placeHolder:'Re-enter password',isRequired:true,isFile:false,fileType:''}) %>
+                    </fieldset>
+                </div>
+                <div class="formView--2 formView formPageHidden">
+                    <fieldset>
+                        <legend>Store Details</legend>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Store Name',isTextArea:false,inputType:'text',nameAttribute:'storeName',inputClassName:'storeName',placeHolder:'Your Store Name',isRequired:true,isFile:false,fileType:''}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Store Logo',isTextArea:false,inputType:'file',nameAttribute:'storeLogo',inputClassName:'storeLogo',placeHolder:'Store Logo',isRequired:false,isFile:true,fileType:'image/png, image/jpeg, image/jpg'}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Header Logo for PDF',isTextArea:false,inputType:'file',nameAttribute:'headerLogoForPdf',inputClassName:'headerLogoForPdf',placeHolder:'Header Logo for PDF',isRequired:false,isFile:true,fileType:'image/png, image/jpeg, image/jpg'}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Footer Logo for PDF',isTextArea:false,inputType:'file',nameAttribute:'footerLogoForPdf',inputClassName:'footerLogoForPdf',placeHolder:'Footer Logo for PDF',isRequired:false,isFile:true,fileType:'image/png, image/jpeg, image/jpg'}) %>
+                    </fieldset>
+                </div>
+                <div class="formView--3 formView formPageHidden">
+                    <fieldset>
+                        <legend>Verification Details</legend>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Drug License Number',isTextArea:false,inputType:'text',nameAttribute:'drugLicenseNumber',inputClassName:'drugLicenseNumber',placeHolder:'',isRequired:true,isFile:false,fileType:''}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'GST Registration Number',isTextArea:false,inputType:'text',nameAttribute:'gstRegistrationNumber',inputClassName:'gstRegistrationNumber',placeHolder:'',isRequired:true,isFile:false,fileType:''}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'FSSAI License Number',isTextArea:false,inputType:'text',nameAttribute:'fssaiLicenseNumber',inputClassName:'fssaiLicenseNumber',placeHolder:'',isRequired:true,isFile:false,fileType:''}) %>
+                        <div class="formBtn">
+                            <div><button class="reset button" type="reset">Reset</button></div>
+                            <div><button class="submit button" type="button">Submit</button></div>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="formViewBtn">
+                    <div class="sellerFormBackBtn sellerFormBtn navigationButtonHidden" title="previous page"> <img src="/images/redArrow.png" alt="Red Arrow"></div>
+                    <div class="sellerFormFrontBtn sellerFormBtn" title="next page"><img src="/images/greenArrow.png" alt="Green Arrow"></div>
+                </div>
+                
+                
             </form>
         </div>
     </div>
 </body>
+<script>
+    let move = 1;
+    const maxMove=3,minMove=1;
+    const backButton = document.querySelector('.sellerFormBackBtn');
+    const frontButton = document.querySelector('.sellerFormFrontBtn');
+    const allPages = document.querySelectorAll('.formView');
+    backButton.addEventListener('click',async(e)=>{
+        if(move>1){
+            move--;
+            if(frontButton.classList.contains('navigationButtonHidden')){
+                frontButton.classList.remove('navigationButtonHidden');
+            }
+            allPages.forEach(item=>item.classList.add('formPageHidden'));
+            document.querySelector(`.formView--${move}`).classList.remove('formPageHidden');
+        }
+        if(move<=1){
+            backButton.classList.add('navigationButtonHidden');
+        }
+    });
+
+    frontButton.addEventListener('click',async(e)=>{
+        if(move<3){
+            move++;
+            if(backButton.classList.contains('navigationButtonHidden')){
+                backButton.classList.remove('navigationButtonHidden');
+            }   
+            allPages.forEach(item=>item.classList.add('formPageHidden'));
+            document.querySelector(`.formView--${move}`).classList.remove('formPageHidden');
+        }
+        if(move>=3){
+            frontButton.classList.add('navigationButtonHidden');
+        }
+    });
+</script>
 <%- include('../utils/Footer.ejs') %>

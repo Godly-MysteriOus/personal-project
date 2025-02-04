@@ -68,7 +68,7 @@
         <div class="popUpHeader"><h3>Lets Verify Email Id</h3></div>
         <br>
         <form>
-            <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Enter OTP',isTextArea:false,inputType:'number',nameAttribute:'emailOTP', inputClassName:'emailOtp',placeHolder:'Enter OTP here',isRequired:true}) %>
+            <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Enter OTP',isTextArea:false,inputType:'number',nameAttribute:'emailOTP', inputClassName:'emailOtp',placeHolder:'Enter OTP here',isRequired:true,isFile:false,fileType:''}) %>
             <div class="buttonHolder"><button class="button verifyEmailOTP" type="submit">Verify OTP</button></div>
             <div>
                 <form>

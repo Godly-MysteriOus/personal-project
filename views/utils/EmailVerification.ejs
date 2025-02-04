@@ -2,7 +2,7 @@
     <div class="textHolder-email">EmailId <span class="required">*</span> </div>
     <div class="email-holder">
         <div class="inputHolder-email">
-            <input type="email" autocomplete="off" required placeholder="Email Id" class="email-input" name="emailId">
+            <input type="email" autocomplete="off" required placeholder="Email Id"  autocomplete="off" class="email-input" name="emailId">
         </div>
         <div class="validateEmail">
             <div><button class="changeEmailBtn">Change Email</button></div>
@@ -48,8 +48,8 @@
             verifyEmailBtn.setAttribute('disabled',true);
             verifyEmailBtn.style.color='red';
             emailField.value='';
-            verifiedStatus.classList.add('hidden-customerSignup');
-            generateEmailOTP.classList.remove('hidden-customerSignup');
+            verifiedStatus.classList.add('<%=verifiedStatusFor%>');
+            generateEmailOTP.classList.remove('<%=verifiedStatusFor%>');
         });
     </script>
         <!-- generate otp script -->
@@ -95,8 +95,8 @@
                     popUp.classList.add('overlay-hidden');
                 },900);
             }
-            generateEmailOTP.classList.add('hidden-customerSignup');
-            verifiedStatus.classList.remove('hidden-customerSignup');
+            generateEmailOTP.classList.add('<%=verifiedStatusFor%>');
+            verifiedStatus.classList.remove('<%=verifiedStatusFor%>');
             setTimeout(()=>{
                 message.classList.add('message-hidden');
             },4000);
