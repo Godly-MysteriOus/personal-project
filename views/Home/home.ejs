@@ -92,11 +92,11 @@
         </div>
         <div class="formHolder">
             <form>
-                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'formClass', textName:'Email Id',isTextArea:false,nameAttribute:"emailNo", inputType: 'email',inputClassName:'emailId',placeHolder:'ex. abcd@gmail.com',isRequired:true}) %>
+                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'formClass', textName:'Email Id',isTextArea:false,nameAttribute:"emailNo", inputType: 'email',inputClassName:'emailId',placeHolder:'ex. abcd@gmail.com',isRequired:true,isFile:false,fileType:''}) %>
 
-                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'formClass',textName:'Mobile Number',isTextArea:false ,nameAttribute:"mobileNo" ,inputType:'number',inputClassName:'mobileNo', placeHolder:'ex. XXXX XXXXXX',isRequired:true}) %>
+                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'formClass',textName:'Mobile Number',isTextArea:false ,nameAttribute:"mobileNo" ,inputType:'number',inputClassName:'mobileNo', placeHolder:'ex. XXXX XXXXXX',isRequired:true,isFile:false,fileType:''}) %>
 
-                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'formClass',textName:'Message', isTextArea:true, nameAttribute:'userMessage', inputClassName:'userMessage',isRequired:true}) %>
+                <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'formClass',textName:'Message', isTextArea:true, nameAttribute:'userMessage', inputClassName:'userMessage',isRequired:true,isFile:false,fileType:''}) %>
 
                 <div class="buttonHolder">
                     <div><button class="resetBtn button">Reset</button></div>

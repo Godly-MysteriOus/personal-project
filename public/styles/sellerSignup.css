@@ -1,0 +1,77 @@
+.hidden-sellerSignup{
+    display: none;
+}
+.body-wrapper{
+    width: 100vw;
+    min-height: 87vh;
+    background: black;
+}
+.formWrapper{
+    width: 100vw;
+    display: grid;
+    place-items: center;
+    height: fit-content;
+    padding: 2rem 1rem;
+}
+.textHolder,legend{
+    color: white;
+}
+.formView{
+    min-height: 50vh;
+    display: grid;
+    place-items: center;
+}
+fieldset{
+    width: 90%;
+}
+.formViewBtn{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 1.5rem 0rem;
+    flex-grow: 1;
+}
+.sellerFormBtn img{
+    width: 2.5rem;
+    flex-grow: 1;
+    cursor: pointer;
+}
+.formPageHidden{
+    display: none;
+}
+.formBtn{
+    padding: 1rem 0rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+.navigationButtonHidden{
+    display: none;
+}
+#seller-form1{
+    height: fit-content;
+}
+@media screen and (min-width:901px) {
+    #seller-form1{
+        width: 35rem;
+    }
+    .textHolder{
+        font-size: 15px;
+    }
+}
+@media screen and (min-width:375px) and (max-width:900px) {
+    #seller-form1{
+        width: max(22.5rem,60vw);
+    }
+}
+@media screen and (max-width:375px) {
+    .formView{
+        width: 96%;
+    }
+     fieldset{
+        width: 100%;
+    }
+    #seller-form1{
+        width: 95vw;
+    }
+}

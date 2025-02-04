@@ -28,10 +28,10 @@ textarea{
 }
 .textHolder{
     font-size: 1rem;
-    width: 30%;
+    width: 35%;
 }
 .inputHolder{
-    width: 65%;
+    width: 60%;
     display: grid;
     place-items: center;
 }

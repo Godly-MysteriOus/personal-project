@@ -8,13 +8,14 @@
     color: white;
 }
 .email-holder{
-   width: 67%;
+   width: 62%;
 }
 .inputHolder-email{
     padding-right: 0.25rem;
     width: 100%;
     display: flex;
     justify-content: center;
+    color: white;
 }
 .inputHolder-email input{
     box-shadow: 1px 1px 10px 1px inset rgba(123, 123, 123, 0.997);
