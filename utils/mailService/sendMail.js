@@ -1,5 +1,6 @@
 const axios = require('axios');
-const apiKey = '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';
+const credential = require('../../config');
+const apiKey = credential.emailAPI_key;
 
 exports.sendMail = (emailId,otp)=>{
     const emailData = {

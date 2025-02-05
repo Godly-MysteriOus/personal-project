@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const path = require('path');
 const dbURI = require('./utils/Connection');
-const flash = require('connect-flash');
+const credential = require('./config');
 const app = express();
 const cors = require('cors');
 app.use(bodyParser.urlencoded({extended:false}));
@@ -53,10 +53,9 @@ app.use((req,res,next)=>{
     next();
 })
 app.use((req,res,next)=>{
-    res.locals.url = 'http://localhost:3100/';
+    res.locals.url = credential.hostURI;
     next();
 })
-app.use(flash());
 app.use(express.json());
 const signupRoutes = require('./routes/authRoutes/signup');
 const loginLogoutDeleteRoutes = require('./routes/authRoutes/login&logout');

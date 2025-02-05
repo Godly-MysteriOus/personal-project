@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
-
+const credential = require('../config');
 exports.DB_Connections = {
-  DEV_URI : 'mongodb+srv://jayant-singh:Jagrati_Sanju2510@medicine-project.xzrd8.mongodb.net/devDB?&w=majority&appName=Medicine-Project',
-  TEST_DB_URI : 'mongodb+srv://jayant-singh:Jagrati_Sanju2510@medicine-project.xzrd8.mongodb.net/testDB?&w=majority&appName=Medicine-Project',
-  PROD_DB : 'mongodb+srv://jayant-singh:Jagrati_Sanju2510@medicine-project.xzrd8.mongodb.net/prodDB?&w=majority&appName=Medicine-Project',
+  DEV_URI : credential.devURI,
+  TEST_DB_URI : credential.testURI,
+  PROD_DB : credential.prodURI,
 }
 exports.devDBConnection = (app,PORT_NUMBER)=>{
     mongoose.connect(this.DB_Connections.DEV_URI)
