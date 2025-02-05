@@ -1,2 +1,4 @@
 node_modules
 dataFeeder.js
+utils/smsService/sendSMS.js
+credential.env
