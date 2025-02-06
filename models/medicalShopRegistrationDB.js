@@ -12,11 +12,7 @@ const medicalShopDB = new Schema({
 
     fssaiLicenseNumber:{type:String,required:true,unique:true},
 
-    storeAddress:{
-        addressStructure,
-        latitude:{type:Number,required:true,unique:true},
-        longitude:{type:Number,required:true,unique:true},
-    },
+    storeAddress:addressStructure,
     storeDetails:{
         storeName:{type:String,required:true},
         ownerName:{type:String,required:true},

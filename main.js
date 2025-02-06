@@ -54,16 +54,26 @@ app.use((req,res,next)=>{
 })
 app.use((req,res,next)=>{
     res.locals.url = credential.hostURI;
+    res.locals.googleMapKey = credential.googleMapAPIKey,
     next();
 })
 app.use(express.json());
 const signupRoutes = require('./routes/authRoutes/signup');
 const loginLogoutDeleteRoutes = require('./routes/authRoutes/login&logout');
 const featureRoutes = require('./routes/additionalRoutes/featureRoutes');
+const utilRoutes = require('./routes/additionalRoutes/utilRoutes');
 app.use(express.static(path.join(__dirname,'public')));
 app.use('/signup',signupRoutes);
 app.use(loginLogoutDeleteRoutes);
+app.use('/utils',utilRoutes);
 app.use(featureRoutes);
+app.get('/loadGoogleMap',(req,res,next)=>{
+    const {latitude,longitude}=req.query;
+    return res.render('utils/GoogleMap',{
+        latitude:latitude,
+        longitude:longitude,
+    });
+})
 app.use('/',(req,res,next)=>{
    return res.render('Home/home',{
         path: '/homePage',
