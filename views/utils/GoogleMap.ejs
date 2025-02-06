@@ -1,0 +1,248 @@
+<!-- <html>
+  <head>
+    <title>Locate Your Store</title>
+
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <link rel="stylesheet" href="/styles/common.css">
+    <script type="module" src="./index.js"></script>
+  </head>
+  <style>
+    #map {
+      width: 100vw;
+      height: 70vh;
+    }
+
+    /* 
+    * Optional: Makes the sample page fill the window. 
+    */
+    html,body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    }
+    .putLocation{
+      width: 100vw;
+      padding: 1rem;
+    }
+    .searchBox{
+      display: flex;
+      justify-content: space-evenly;
+      padding: 1rem 0rem;
+    }
+    .searchBox input{
+      width: 50vw;
+    }
+    .buttonHolder{
+      width: 100vw;
+      display: flex;
+      justify-content: space-evenly;
+      padding: 1rem 0rem;
+    }
+  </style>
+  <body>
+    <div class="putLocation">
+      <form>
+        <div class="searchBox">Search here<input type="text" class="address"></div>
+        <div class="buttonHolder">
+          <button class="reset button" type="reset">Reset</button>
+          <button class="submit button" type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+    <div id="map"></div>
+
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgJIEEziazSjyDLPR4nmi8VAEuOoGnshc&libraries=places&callback=initMap" async defer></script>
+  </body>
+  <script>
+    let map;
+
+    async function initMap() {
+      let latitude = Number('<%=latitude%>'), longitude=Number('<%=longitude%>');
+      const mapOption={
+        center: { lat: latitude, lng: longitude },
+        zoom: 15, // Default zoom level
+        minZoom: 13, // Minimum zoom level (Zoom out)
+        maxZoom: 18, // Maximum zoom level (Zoom in)
+        scrollWheel:false,
+        gestureHandling: 'cooperative'
+      }
+      const { Map } = await google.maps.importLibrary("maps");
+      map = new Map(document.getElementById("map"), mapOption);
+      new google.maps.Marker({
+        position: { lat: latitude, lng: longitude },
+        map: map,
+        title: 'Your Location',
+        draggable:true,
+      });
+      let searchBox = new  google.maps.places.SearchBox(document.querySelector('.address'));
+      const marker = new google.maps.Marker({
+        map: map,
+        draggable: true,  // Allow marker dragging
+      });
+        // Listen for when a user selects a place from the search box
+      searchBox.addListener('places_changed', function() {
+        const places = searchBox.getPlaces();
+
+        if (places.length === 0) {
+          return;
+        }
+
+        // Get the first place and position the map at the location
+        const place = places[0];
+
+        // If the place has a geometry, move the map to the place
+        if (place.geometry) {
+          map.setCenter(place.geometry.location);
+          map.setZoom(17);  // Zoom in on the selected place
+          // Place a marker at the selected location
+          marker.setPosition(place.geometry.location);
+          console.log(place.geometry.location);
+
+        } else {
+          alert("No details available for input: '" + place.name + "'");
+        }
+      });
+    }
+    google.maps.event.addListener(marker, "dragend", function () {
+      const lat = marker.getPosition().lat();
+      const lng = marker.getPosition().lng();
+      console.log("New Coordinates:", lat, lng);
+    });
+    initMap();
+  </script>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locate Your Store</title>
+
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+    <link rel="stylesheet" href="/styles/common.css">
+    
+    <style>
+        #map {
+            width: 100vw;
+            height: 70vh;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .putLocation {
+            width: 100vw;
+            padding: 1rem;
+        }
+        .searchBox {
+            display: flex;
+            justify-content: center;
+            padding: 1rem 0rem;
+        }
+        .searchBox input {
+            width: 50vw;
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+        .buttonHolder {
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 1rem 0rem;
+        }
+        .button {
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="putLocation">
+        <form id="locationForm">
+            <div class="searchBox">
+                <input type="text" class="address" placeholder="Search location...">
+            </div>
+            <div class="buttonHolder">
+                <button type="reset" class="reset button">Reset</button>
+                <button type="submit" class="submit button">Submit</button>
+            </div>
+        </form>
+        <script>
+          const submitBtn = document.querySelector('.submit');
+          // submit should provide lat long to the seller signup page
+        </script>
+    </div>
+    <div id="map"></div>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAgJIEEziazSjyDLPR4nmi8VAEuOoGnshc&libraries=places&callback=initMap"></script>
+
+    <script>
+        let map, marker, searchBox;
+
+        function initMap() {
+            let latitude = Number('<%=latitude%>') || 28.6139; // Default: New Delhi
+            let longitude = Number('<%=longitude%>') || 77.2090;
+
+            const mapOptions = {
+                center: { lat: latitude, lng: longitude },
+                zoom: 15,
+                minZoom: 13,
+                maxZoom: 18,
+                scrollWheel: false,
+                gestureHandling: 'cooperative'
+            };
+
+            map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+            // Draggable marker
+            marker = new google.maps.Marker({
+                position: { lat: latitude, lng: longitude },
+                map: map,
+                draggable: true,
+                title: "Drag me!"
+            });
+
+            // Initialize search box
+            searchBox = new google.maps.places.SearchBox(document.querySelector('.address'));
+            
+            // Bias results to current viewport
+            map.addListener("bounds_changed", () => {
+                searchBox.setBounds(map.getBounds());
+            });
+
+            // Handle place search
+            searchBox.addListener('places_changed', function () {
+                const places = searchBox.getPlaces();
+                if (places.length === 0) return;
+
+                const place = places[0];
+                if (place.geometry) {
+                    map.setCenter(place.geometry.location);
+                    map.setZoom(17);
+                    marker.setPosition(place.geometry.location);
+                    console.log("Selected Location:", place.geometry.location.toJSON());
+                } else {
+                    alert("No details available for input: '" + place.name + "'");
+                }
+            });
+
+            // Capture new coordinates when the marker is moved
+            marker.addListener("dragend", function () {
+                const newLat = marker.getPosition().lat();
+                const newLng = marker.getPosition().lng();
+                console.log("New Coordinates:", { lat: newLat, lng: newLng });
+            });
+
+            // Form submission event
+            document.getElementById("locationForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+                alert(`Location Submitted: ${marker.getPosition().lat()}, ${marker.getPosition().lng()}`);
+            });
+        }
+    </script>
+</body>
+</html>

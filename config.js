@@ -6,4 +6,5 @@ module.exports = {
     prodURI:process.env.prodURI,
     hostURI:process.env.hostURI,
     emailAPI_key:process.env.emailAPI_KEY,
+    googleMapAPIKey:process.env.googleMapAPIKey,
 }
