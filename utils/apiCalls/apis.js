@@ -58,7 +58,6 @@ exports.getPincodeValidation= async(req,res,next)=>{
             state : result[0]["PostOffice"][0].State,
             city :  result[0]["PostOffice"][0].District,
         };
-        console.log(requiredData);
         return res.status(200).json({
             success:true,
             message:'Fetched data',
@@ -71,28 +70,4 @@ exports.getPincodeValidation= async(req,res,next)=>{
             message:'Error while fetching Pincode details',
         });
     }
-    // try{
-    //     const data = response.data;
-    //     if(data.length==0){
-    //         throw new Error('Invalid pincode');
-    //     }
-    //     const cscData = csc.State.getStateByCodeAndCountry(stateCode, 'IN');
-    //     console.log(cscData);
-    //     const stateNameFromPostalApi = String(data.State);
-    //     const stateNameFromCSC = String(cscData.name);
-    //     if(stateNameFromCSC.toLowerCase()!=stateNameFromPostalApi.toLowerCase()){
-    //         throw new Error('Pincode Does not exists within the given state');
-    //     }
-    //     return res.status(200).json({
-    //         success:false,
-    //         message:'Valid pincode',
-    //     });
-    // }catch(err){
-    //     console.log('Invalid pincode or pincode does not exists in given state');
-    //     return res.status(400).json({
-    //         success:false,
-    //         message:err.message,
-    //     })
-    // }
-    
 }
