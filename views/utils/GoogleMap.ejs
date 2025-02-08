@@ -1,3 +1,4 @@
+
 <!-- <html>
   <head>
     <title>Locate Your Store</title>
@@ -112,6 +113,7 @@
     initMap();
   </script>
 </html> -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -174,6 +176,15 @@
         <script>
           const submitBtn = document.querySelector('.submit');
           // submit should provide lat long to the seller signup page
+          submitBtn.addEventListener('click',async(e)=>{
+            const coords = {
+              latitude:marker.getPosition().lat(),
+              longitude:marker.getPosition().lng(),
+            };
+            window.opener.postMessage({coords:coords},"*");
+            window.close();
+          
+          })
         </script>
     </div>
     <div id="map"></div>
@@ -224,7 +235,6 @@
                     map.setCenter(place.geometry.location);
                     map.setZoom(17);
                     marker.setPosition(place.geometry.location);
-                    console.log("Selected Location:", place.geometry.location.toJSON());
                 } else {
                     alert("No details available for input: '" + place.name + "'");
                 }
@@ -234,7 +244,6 @@
             marker.addListener("dragend", function () {
                 const newLat = marker.getPosition().lat();
                 const newLng = marker.getPosition().lng();
-                console.log("New Coordinates:", { lat: newLat, lng: newLng });
             });
 
             // Form submission event
