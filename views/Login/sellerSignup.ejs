@@ -107,16 +107,21 @@
                         </div>
                         <script>
                             const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-                            days.reverse().forEach(day=>{
+                            const copyday = days;
+                            copyday.reverse().forEach(day=>{
                                 document.querySelector('.headerHolder').insertAdjacentHTML('afterend',
-                                `<div class="availableContentHolder">
-                                    <div  class="checkboxHolder"><input type="checkbox" value="${day}"></div>
-                                    <div class="dayName">${day}</div>
-                                    <div class="openTime"><input type="time" name="${day}" id="${day}"></div>
-                                    <div class="closeTime"><input type="time" name="${day}" id="${day}"></div>
-                                </div>`
-                            );
+                                    `<div class="availableContentHolder">
+                                        <div  class="checkboxHolder"><input type="checkbox" value="${day}" checked></div>
+                                        <div class="dayName">${day}</div>
+                                        <div class="openTime"><input type="time" name="${day}" id="openTime-${day}" value="09:00"></div>
+                                        <div class="closeTime"><input type="time" name="${day}" id="closeTime-${day}" value="22:00"></div>
+                                    </div>`
+                                );
                             });
+                            document.querySelector(`#openTime-${days[1]}`).addEventListener('click',()=>{
+                                console.log('Hi');
+                                console.log(document.querySelector(`#openTime-${days[1]}`).value);
+                            })
                         </script>
                         
                     </fieldset>
@@ -149,6 +154,11 @@
                                     document.querySelector(".latitude").value = event.data.coords.latitude;
                                     document.querySelector(".longitude").value = event.data.coords.longitude;
                                 }
+                                message.textContent = 'Fetched location successfully';
+                                message.classList.remove('message-hidden');
+                                setTimeout(() => {
+                                    message.classList.add('message-hidden');
+                                }, 3000);
                             });
                         </script>
                         <div class="formBtn">
@@ -189,15 +199,10 @@
                         </script>
                     </fieldset>
                 </div>
-                
-
-
                 <div class="formViewBtn ">
                     <div class="sellerFormBackBtn sellerFormBtn navigationButtonHidden" title="previous page"> <img src="/images/redArrow.png" alt="Red Arrow"></div>
                     <div class="sellerFormFrontBtn sellerFormBtn" title="next page"><img src="/images/greenArrow.png" alt="Green Arrow"></div>
                 </div>
-                
-                
             </form>
         </div>
     </div>
