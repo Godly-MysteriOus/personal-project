@@ -1,0 +1,118 @@
+<style>
+    .dropdowns{
+        display: flex;
+        padding: 0.5rem 0.75rem;
+        justify-content: space-between;
+    }
+    .textHolder{
+        color: white;
+    }
+    .required{
+        color: red;
+    }
+</style>
+
+<div class="stateCityPincode">
+    <div class="state dropdowns">
+        <div class="textHolder">State<span class="required"> *</span> </div>
+        <div class="selectField">
+            <select class="stateDropDown">
+                <option value="" class="stateSelect">Select</option>
+            </select>
+        </div>
+    </div>
+    <div class="city dropdowns">
+        <div class="textHolder">City<span class="required"> *</span></div>
+        <div class="selectField">
+            <select class="cityDropDown">
+                <option value="" class="citySelect">Select</option>
+            </select>
+        </div>
+    </div>
+    <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Pincode',isTextArea:false,inputType:'number',nameAttribute:'pincode',inputClassName:'pincode',placeHolder:'Enter Pincode',isRequired:true,isFile:false,fileType:''}) %>
+</div>
+<script>
+    const errorMessage = document.querySelector('.message');
+    let selectedState = '';
+</script>
+<script>
+    // state dropdown
+    const stateDropDown = document.querySelector('.stateDropDown');
+    const stateSelect = document.querySelector('.stateSelect');
+    let isFetched = false;
+    stateDropDown.addEventListener('click',async(e)=>{
+        if(isFetched)return;
+        const response = await fetch('<%= url %>utils/statesOfIndia',{
+            method:'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+        const result = await response.json();
+        isFetched  = true;
+        if(result.success){
+            result.data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.stateCode;
+                option.textContent = item.stateName;
+                stateDropDown.appendChild(option);
+                // stateDropDown.insertAdjacentHTML('afterbegin',);
+            });
+        }else{
+            errorMessage.textContent = result.message;
+            errorMessage.classList.remove('message-hidden');
+            setTimeout(() => {
+                errorMessage.classList.add('message-hidden');
+            }, 3000);
+        }
+    });
+</script>
+<script>
+    //city dropdown
+    const cityDropdown = document.querySelector('.cityDropDown');
+    cityDropdown.addEventListener('click',async(e)=>{
+        selectedState = stateDropDown.value;
+        console.log("selectedState = "+ (selectedState ? selectedState : "null"));
+        if(selectedState!=''){
+            selectedState = stateDropDown.value;
+            const response = await fetch('<%= url %>utils/cityOfState',{
+                method:'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body : JSON.stringify({stateCode:selectedState}),
+            });
+            const result = await response.json();
+            if(result.success && result.data.length==0 || result.success==false){
+                errorMessage.textContent  = result.message;
+                errorMessage.classList.remove('message-hidden');
+                setTimeout(()=>{
+                    errorMessage.classList.add('message-hidden');
+                },3000)
+            }else{
+                cityDropdown.innerHTML = '';
+                result.data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.cityName;
+                    option.textContent = item.cityName;
+                    cityDropdown.appendChild(option);
+                });
+            }
+        }else{
+            console.log('else condition');
+            console.log("selectedState = "+ (selectedState ? selectedState : "null"));
+            errorMessage.textContent  = 'Select state first';
+            errorMessage.classList.remove('message-hidden');
+            setTimeout(()=>{
+                errorMessage.classList.add('message-hidden');
+            },3000)
+        }
+           
+    });
+    stateDropDown.addEventListener('change', () => {
+        cityDropdown.innerHTML = '';
+        const option = document.createElement('option');
+        option.value="";
+        option.textContent = 'Select State'; 
+        cityDropdown.appendChild(option); // Reset dropdown
+    });
+</script>
+<script>
+    //pincode
+</script>

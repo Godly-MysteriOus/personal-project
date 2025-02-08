@@ -1,22 +1,48 @@
 const csc = require('country-state-city');
 
 
-exports.getAllStatesOfIndia = ()=>{
-    const states = csc.State.getStatesOfCountry("IN");
-
-    const requiredStateDetails = states.map(item=>({
-        stateName:item.name,
-        stateCode:item.isoCode,
-    }));
-    return requiredStateDetails;
+exports.getAllStatesOfIndia = (req,res,next)=>{
+    try{
+        const states = csc.State.getStatesOfCountry("IN");
+    
+        const requiredStateDetails = states.map(item=>({
+            stateName:item.name,
+            stateCode:item.isoCode,
+        }));
+        return res.status(200).json({
+            success:true,
+            message:'Successfully fetched states of India',
+            data: requiredStateDetails,
+        });
+    }catch(err){
+        console.log('Error While fetching states of india',err);
+        return res.status(200).json({
+            success:false,
+            message:err.message,
+        });
+    }
 };
 
-exports.getAllCitiesOfState = (statecode)=>{
-    const cities = csc.City.getCitiesOfState('IN',statecode);
-    const requiredCityDetail = cities.map(item=>({
-        cityName:item.name,
-    }));
-    return requiredCityDetail;
+exports.getAllCitiesOfState = (req,res,next)=>{
+    const {stateCode} = req.body; 
+    try{
+        const cities = csc.City.getCitiesOfState('IN',stateCode);
+        const requiredCityDetail = cities.map(item=>({
+            cityName:item.name,
+        }));
+        return res.status(200).json({
+            success:true,
+            message:'Successfully fetched city of State',
+            data : requiredCityDetail,
+        })
+    }catch(err){
+        console.log('Error while fetching the city of state ',err);
+        return res.status(200).json({
+            success:false,
+            message:err.message,
+        });
+    }
+
 }
 
 exports.getPincodeValidation= async(stateCode,pincode)=>{

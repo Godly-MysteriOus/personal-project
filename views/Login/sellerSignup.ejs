@@ -5,7 +5,36 @@
 <link rel="stylesheet" href="/styles/sellerSignup.css">
 <%- include('../utils/AfterLinkStyles.ejs') %>
 <%- include('../utils/Header.ejs') %>
-
+<style>
+    .storeLocation{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding: 1rem 0.5rem;
+        flex-grow: 1;
+    }
+    .storeLocation div{
+        flex-grow: 1;
+    }
+    .storeLocationTextHolder{
+        color: white;
+    }
+    .stateSelection{
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        padding: 1rem 0.5rem;
+    }
+    .stateSelection .textHolder{
+        width: 30%;
+    }
+    .selectField{
+        width: 62%;
+    }
+    select{
+        width: 100%;
+    }
+</style>
 <body>
     <%- include('../utils/MessageBox.ejs') %>
     <%- include('../utils/OTP_popup.ejs') %>
@@ -30,9 +59,42 @@
                         <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Store Logo',isTextArea:false,inputType:'file',nameAttribute:'storeLogo',inputClassName:'storeLogo',placeHolder:'Store Logo',isRequired:false,isFile:true,fileType:'image/png, image/jpeg, image/jpg'}) %>
                         <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Header Logo for PDF',isTextArea:false,inputType:'file',nameAttribute:'headerLogoForPdf',inputClassName:'headerLogoForPdf',placeHolder:'Header Logo for PDF',isRequired:false,isFile:true,fileType:'image/png, image/jpeg, image/jpg'}) %>
                         <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Footer Logo for PDF',isTextArea:false,inputType:'file',nameAttribute:'footerLogoForPdf',inputClassName:'footerLogoForPdf',placeHolder:'Footer Logo for PDF',isRequired:false,isFile:true,fileType:'image/png, image/jpeg, image/jpg'}) %>
+                       
                     </fieldset>
                 </div>
                 <div class="formView--3 formView formPageHidden">
+                    <fieldset>
+                        <legend>Store Location</legend>
+                        <br>
+                        <div style="color: white; padding:0.5rem;"><h3>Store Address</h3></div>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Line 1',isTextArea:false,inputType:'text',nameAttribute:'storeAddressLine1',inputClassName:'address-line1',placeHolder:'House Number/Apartment Number',isRequired:true,isFile:false,fileType:''}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Line 2',isTextArea:false,inputType:'text',nameAttribute:'storeAddressLine2',inputClassName:'address-line2',placeHolder:'Locality/Area',isRequired:true,isFile:false,fileType:''}) %>
+                       
+                        <!-- dropdowns -->
+                        <%- include('../utils/DropDown.ejs') %>
+                        <!-- location access handler -->
+                        <div class="storeLocation"> 
+                            <div class="storeLocationTextHolder">Store Location</div>
+                            <div>
+                                <button class="button getLocation">Locate Your Store</button>
+                            </div>
+                        </div>
+                        <input type="hidden" value="" class="latitude">
+                        <input type="hidden" value="" class="longitude">
+                        <script>
+                            window.addEventListener("message", function (event) {
+                                console.log("Received message:", event.data.coords); // Debugging
+                                if (event.data.coords) {
+                                    document.querySelector(".latitude").value = event.data.coords.latitude;
+                                    document.querySelector(".longitude").value = event.data.coords.longitude;
+                                }
+                            });
+                        </script>
+                        
+
+                    </fieldset>
+                </div>
+                <div class="formView--4 formView formPageHidden">
                     <fieldset>
                         <legend>Verification Details</legend>
                         <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Drug License Number',isTextArea:false,inputType:'text',nameAttribute:'drugLicenseNumber',inputClassName:'drugLicenseNumber',placeHolder:'',isRequired:true,isFile:false,fileType:''}) %>
@@ -44,7 +106,9 @@
                         </div>
                     </fieldset>
                 </div>
-                <div class="formViewBtn">
+
+
+                <div class="formViewBtn ">
                     <div class="sellerFormBackBtn sellerFormBtn navigationButtonHidden" title="previous page"> <img src="/images/redArrow.png" alt="Red Arrow"></div>
                     <div class="sellerFormFrontBtn sellerFormBtn" title="next page"><img src="/images/greenArrow.png" alt="Green Arrow"></div>
                 </div>
@@ -55,13 +119,35 @@
     </div>
 </body>
 <script>
+    const getLocation = document.querySelector('.getLocation');
+
+    // inputFields
+    // const drugLicenseNumber = document.querySelector('.drugLicenseNumber');
+    // const gstRegistrationNumber = document.querySelector('.gstRegistrationNumber');
+    // const fssaiLicenseNumber = document.querySelector('.fssaiLicenseNumber');
+    // const line1Address = document.querySelector('.address-line1');
+    // const line2Address = document.querySelector('.address-line2');
+    // const line3Address = document.querySelector('.address-line3');
+    // const shopState = document.querySelector('.shopState');
+    // const shopCity = document.querySelector('.shopCity');
+    // const shopPincode = document.querySelector('.shopPincode');
+    // const locationLatitude = document.querySelector('.locationLatitude');
+    // const locationLongitude = document.querySelector('.locationLongitude');
+    // const sellerName = document.querySelector('.sellerName');
+    // const sellerEmail = document.querySelector('.email-input');
+    // const sellerMobileNo = document.querySelector('.mobileNo');
+    // const sellerPassword = document.querySelector('.password');
+    
+    getLocation.addEventListener('click',()=>{
+        googleMapPopUp();
+    })
     let move = 1;
-    const maxMove=3,minMove=1;
+    const maxMove=4,minMove=1;
     const backButton = document.querySelector('.sellerFormBackBtn');
     const frontButton = document.querySelector('.sellerFormFrontBtn');
     const allPages = document.querySelectorAll('.formView');
     backButton.addEventListener('click',async(e)=>{
-        if(move>1){
+        if(move>minMove){
             move--;
             if(frontButton.classList.contains('navigationButtonHidden')){
                 frontButton.classList.remove('navigationButtonHidden');
@@ -69,13 +155,13 @@
             allPages.forEach(item=>item.classList.add('formPageHidden'));
             document.querySelector(`.formView--${move}`).classList.remove('formPageHidden');
         }
-        if(move<=1){
+        if(move<=minMove){
             backButton.classList.add('navigationButtonHidden');
         }
     });
 
     frontButton.addEventListener('click',async(e)=>{
-        if(move<3){
+        if(move<maxMove){
             move++;
             if(backButton.classList.contains('navigationButtonHidden')){
                 backButton.classList.remove('navigationButtonHidden');
@@ -83,9 +169,21 @@
             allPages.forEach(item=>item.classList.add('formPageHidden'));
             document.querySelector(`.formView--${move}`).classList.remove('formPageHidden');
         }
-        if(move>=3){
+        if(move>=maxMove){
             frontButton.classList.add('navigationButtonHidden');
         }
     });
+
+    function googleMapPopUp(){
+        const isLocationAllowed = confirm('Enable location access to prioritize your shop for nearby customers.');
+        if(isLocationAllowed){
+            navigator.geolocation.getCurrentPosition(async position=>{
+                const url = new URL('<%=url%>loadGoogleMap');
+                url.searchParams.append('latitude',position.coords.latitude);
+                url.searchParams.append('longitude',position.coords.longitude);
+                window.open(url,'_blank');
+            })
+        }
+    }
 </script>
 <%- include('../utils/Footer.ejs') %>
