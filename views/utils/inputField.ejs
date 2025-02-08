@@ -8,7 +8,7 @@
     <% if (isTextArea) { %>
         <div class="inputHolder"><textarea name="<%= nameAttribute %>" id="" class=" textarea <%= inputClassName %>" placeholder="drop text here..." autocomplete="off" <% if (isRequired){%>required<% } %>></textarea></div>
     <% }else{ %>
-        <div class="inputHolder"><input type="<%= inputType %>" autocomplete="off" name="<%= nameAttribute %>"class=" default <%= inputClassName %>" placeholder="<%= placeHolder %>" <% if (isRequired){%>required<% } %> <% if (isFile) { %>accept ="<%= fileType %>"<% } %>></div>
+        <div class="inputHolder"><input type="<%= inputType %>" autocomplete="off" name="<%= nameAttribute %>" class=" default <%= inputClassName %>" placeholder="<%= placeHolder %>" <% if (isRequired){%>required<% } %> <% if (isFile) { %>accept ="<%= fileType %>"<% } %> <% if(isDisabled) { %> disabled <% } %>  ></div>
     <%}%>
 </div>
 

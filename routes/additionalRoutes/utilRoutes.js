@@ -7,4 +7,6 @@ router.get('/statesOfIndia',utilController.getAllStatesOfIndia);
 
 router.post('/cityOfState',utilController.getAllCitiesOfState);
 
+router.post('/pincode',utilController.getPincodeValidation);
+
 module.exports = router;

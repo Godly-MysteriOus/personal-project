@@ -34,6 +34,32 @@
     select{
         width: 100%;
     }
+
+    .availableContentHolder{
+        display: flex;
+        color: white;
+        justify-content: space-between;
+        padding: 0.5rem 0.25rem;
+    }
+    .availableContentHolder div{
+        text-align: center;
+    }
+    .checkboxHolder{
+        width: 15%;
+    }
+    .dayName{
+        width: 25%;
+    }
+    .openTime,.closeTime{
+        width: 30%;
+    }
+    .openTime input, .closeTime input{
+        width: 80%;
+    }
+    .headerHolder{
+        padding: 1rem 0.25rem;
+        border-bottom: 2px solid grey;
+    }
 </style>
 <body>
     <%- include('../utils/MessageBox.ejs') %>
@@ -45,33 +71,67 @@
                 <div class="formView--1 formView ">
                     <fieldset>
                         <legend>Basic Details</legend>
-                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Name',isTextArea:false,inputType:'text',nameAttribute:'sellerName',inputClassName:'sellerName',placeHolder:'Your Name',isRequired:true,isFile:false,fileType:''}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Name',isTextArea:false,inputType:'text',nameAttribute:'sellerName',inputClassName:'sellerName',placeHolder:'Your Name',isRequired:true,isFile:false,fileType:'',isDisabled:false}) %>
                         <%- include('../utils/EmailVerification.ejs',{verifiedStatusFor:'hidden-sellerSignup'}) %>
-                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Mobile No.',isTextArea:false,inputType:'number',nameAttribute:'mobileNo',inputClassName:'mobileNo',placeHolder:'Enter Mobile No.',isRequired:true,isFile:false,fileType:''}) %>
-                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Password',isTextArea:false,inputType:'password',nameAttribute:'password',inputClassName:'password',placeHolder:'Enter password',isRequired:true,isFile:false,fileType:''}) %>
-                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Confirm Password',isTextArea:false,inputType:'password',nameAttribute:'confirm-password',inputClassName:'confirm-password',placeHolder:'Re-enter password',isRequired:true,isFile:false,fileType:''}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Mobile No.',isTextArea:false,inputType:'number',nameAttribute:'mobileNo',inputClassName:'mobileNo',placeHolder:'Enter Mobile No.',isRequired:true,isFile:false,fileType:'',isDisabled:false}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Password',isTextArea:false,inputType:'password',nameAttribute:'password',inputClassName:'password',placeHolder:'Enter password',isRequired:true,isFile:false,fileType:'',isDisabled:false}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Confirm Password',isTextArea:false,inputType:'password',nameAttribute:'confirm-password',inputClassName:'confirm-password',placeHolder:'Re-enter password',isRequired:true,isFile:false,fileType:'',isDisabled:false}) %>
                     </fieldset>
                 </div>
                 <div class="formView--2 formView formPageHidden">
                     <fieldset>
-                        <legend>Store Details</legend>
-                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Store Name',isTextArea:false,inputType:'text',nameAttribute:'storeName',inputClassName:'storeName',placeHolder:'Your Store Name',isRequired:true,isFile:false,fileType:''}) %>
-                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Store Logo',isTextArea:false,inputType:'file',nameAttribute:'storeLogo',inputClassName:'storeLogo',placeHolder:'Store Logo',isRequired:false,isFile:true,fileType:'image/png, image/jpeg, image/jpg'}) %>
-                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Header Logo for PDF',isTextArea:false,inputType:'file',nameAttribute:'headerLogoForPdf',inputClassName:'headerLogoForPdf',placeHolder:'Header Logo for PDF',isRequired:false,isFile:true,fileType:'image/png, image/jpeg, image/jpg'}) %>
-                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Footer Logo for PDF',isTextArea:false,inputType:'file',nameAttribute:'footerLogoForPdf',inputClassName:'footerLogoForPdf',placeHolder:'Footer Logo for PDF',isRequired:false,isFile:true,fileType:'image/png, image/jpeg, image/jpg'}) %>
-                       
+                        <legend>Registration Details</legend>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Drug License Number',isTextArea:false,inputType:'text',nameAttribute:'drugLicenseNumber',inputClassName:'drugLicenseNumber',placeHolder:'',isRequired:true,isFile:false,fileType:'',isDisabled:false}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'GST Registration Number',isTextArea:false,inputType:'text',nameAttribute:'gstRegistrationNumber',inputClassName:'gstRegistrationNumber',placeHolder:'',isRequired:true,isFile:false,fileType:'',isDisabled:false}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'FSSAI License Number',isTextArea:false,inputType:'text',nameAttribute:'fssaiLicenseNumber',inputClassName:'fssaiLicenseNumber',placeHolder:'',isRequired:true,isFile:false,fileType:'',isDisabled:false}) %>
+                        
                     </fieldset>
                 </div>
                 <div class="formView--3 formView formPageHidden">
                     <fieldset>
+                        <legend>Store Details</legend>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Store Name',isTextArea:false,inputType:'text',nameAttribute:'storeName',inputClassName:'storeName',placeHolder:'Your Store Name',isRequired:true,isFile:false,fileType:'',isDisabled:false}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Store Logo',isTextArea:false,inputType:'file',nameAttribute:'storeLogo',inputClassName:'storeLogo',placeHolder:'Store Logo',isRequired:false,isFile:true,fileType:'image/png, image/jpeg, image/jpg',isDisabled:false}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Header Logo for PDF',isTextArea:false,inputType:'file',nameAttribute:'headerLogoForPdf',inputClassName:'headerLogoForPdf',placeHolder:'Header Logo for PDF',isRequired:false,isFile:true,fileType:'image/png, image/jpeg, image/jpg',isDisabled:false}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Footer Logo for PDF',isTextArea:false,inputType:'file',nameAttribute:'footerLogoForPdf',inputClassName:'footerLogoForPdf',placeHolder:'Footer Logo for PDF',isRequired:false,isFile:true,fileType:'image/png, image/jpeg, image/jpg',isDisabled:false}) %>
+                    </fieldset>
+                </div>
+                <div class="formView--4 formView formPageHidden">
+                    <fieldset>
+                        <legend>Store Availability</legend>
+                        <div class="headerHolder availableContentHolder">
+                            <div class="checkboxHolder">Select</div>
+                            <div class="dayName">Day</div>
+                            <div class="openTime">Opening Time</div>
+                            <div class="closeTime">Closing Time</div>
+                        </div>
+                        <script>
+                            const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+                            days.reverse().forEach(day=>{
+                                document.querySelector('.headerHolder').insertAdjacentHTML('afterend',
+                                `<div class="availableContentHolder">
+                                    <div  class="checkboxHolder"><input type="checkbox" value="${day}"></div>
+                                    <div class="dayName">${day}</div>
+                                    <div class="openTime"><input type="time" name="${day}" id="${day}"></div>
+                                    <div class="closeTime"><input type="time" name="${day}" id="${day}"></div>
+                                </div>`
+                            );
+                            });
+                        </script>
+                        
+                    </fieldset>
+                </div>
+                <div class="formView--5 formView formPageHidden">
+                    <fieldset>
                         <legend>Store Location</legend>
                         <br>
                         <div style="color: white; padding:0.5rem;"><h3>Store Address</h3></div>
-                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Line 1',isTextArea:false,inputType:'text',nameAttribute:'storeAddressLine1',inputClassName:'address-line1',placeHolder:'House Number/Apartment Number',isRequired:true,isFile:false,fileType:''}) %>
-                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Line 2',isTextArea:false,inputType:'text',nameAttribute:'storeAddressLine2',inputClassName:'address-line2',placeHolder:'Locality/Area',isRequired:true,isFile:false,fileType:''}) %>
-                       
-                        <!-- dropdowns -->
-                        <%- include('../utils/DropDown.ejs') %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Line 1',isTextArea:false,inputType:'text',nameAttribute:'storeAddressLine1',inputClassName:'address-line1',placeHolder:'House Number/Apartment Number',isRequired:true,isFile:false,fileType:'',isDisabled:false}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Line 2',isTextArea:false,inputType:'text',nameAttribute:'storeAddressLine2',inputClassName:'address-line2',placeHolder:'Locality/Area',isRequired:true,isFile:false,fileType:'',isDisabled:false}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Pincode',isTextArea:false,inputType:'number',nameAttribute:'pincode',inputClassName:'pincode',placeHolder:'Enter Pincode',isRequired:true,isFile:false,fileType:'',isDisabled:false}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'State',isTextArea:false,inputType:'text',nameAttribute:'',inputClassName:'shopState',placeHolder:'',isRequired:true,isFile:false,fileType:'',isDisabled:true}) %>
+                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'City',isTextArea:false,inputType:'text',nameAttribute:'',inputClassName:'shopCity',placeHolder:'',isRequired:true,isFile:false,fileType:'',isDisabled:true}) %>
+        
                         <!-- location access handler -->
                         <div class="storeLocation"> 
                             <div class="storeLocationTextHolder">Store Location</div>
@@ -81,6 +141,7 @@
                         </div>
                         <input type="hidden" value="" class="latitude">
                         <input type="hidden" value="" class="longitude">
+                        <!-- google map script -->
                         <script>
                             window.addEventListener("message", function (event) {
                                 console.log("Received message:", event.data.coords); // Debugging
@@ -90,22 +151,45 @@
                                 }
                             });
                         </script>
-                        
-
-                    </fieldset>
-                </div>
-                <div class="formView--4 formView formPageHidden">
-                    <fieldset>
-                        <legend>Verification Details</legend>
-                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Drug License Number',isTextArea:false,inputType:'text',nameAttribute:'drugLicenseNumber',inputClassName:'drugLicenseNumber',placeHolder:'',isRequired:true,isFile:false,fileType:''}) %>
-                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'GST Registration Number',isTextArea:false,inputType:'text',nameAttribute:'gstRegistrationNumber',inputClassName:'gstRegistrationNumber',placeHolder:'',isRequired:true,isFile:false,fileType:''}) %>
-                        <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'FSSAI License Number',isTextArea:false,inputType:'text',nameAttribute:'fssaiLicenseNumber',inputClassName:'fssaiLicenseNumber',placeHolder:'',isRequired:true,isFile:false,fileType:''}) %>
                         <div class="formBtn">
                             <div><button class="reset button" type="reset">Reset</button></div>
                             <div><button class="submit button" type="button">Submit</button></div>
                         </div>
+                        <script>
+                            const pincodeField =  document.querySelector('.pincode');
+                            const state =document.querySelector('.shopState');
+                            const city = document.querySelector('.shopCity');
+                            pincodeField.addEventListener('input',async(e)=>{
+                                console.log(pincodeField.value);
+                                if(pincodeField.value.length==6){
+                                    const response = await fetch('<%= url %>utils/pincode',{
+                                        method:'POST',
+                                        headers:  { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            pincode : pincodeField.value
+                                        }),
+                                    });
+                                    const result = await response.json();
+
+                                    if(result.success){
+                                        state.value = result.data.state;
+                                        city.value = result.data.city;
+                                    }else{
+                                        message.textContent = result.message;
+                                        message.classList.remove('message-hidden');
+                                        setTimeout(()=>{
+                                            message.classList.add('message-hidden');
+                                        });
+                                    }
+                                }else{
+                                    state.value = '';
+                                    city.value = '';
+                                }
+                            })
+                        </script>
                     </fieldset>
                 </div>
+                
 
 
                 <div class="formViewBtn ">
@@ -120,7 +204,6 @@
 </body>
 <script>
     const getLocation = document.querySelector('.getLocation');
-
     // inputFields
     // const drugLicenseNumber = document.querySelector('.drugLicenseNumber');
     // const gstRegistrationNumber = document.querySelector('.gstRegistrationNumber');
@@ -142,7 +225,7 @@
         googleMapPopUp();
     })
     let move = 1;
-    const maxMove=4,minMove=1;
+    const maxMove=5,minMove=1;
     const backButton = document.querySelector('.sellerFormBackBtn');
     const frontButton = document.querySelector('.sellerFormFrontBtn');
     const allPages = document.querySelectorAll('.formView');
