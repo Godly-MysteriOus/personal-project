@@ -69,8 +69,8 @@
             <div class="pageHeader"><h2>Login Here <br><br></h2></div>
             <div class="formContainer">
                 <form  class="form">
-                    <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'textHolder',textName:'EmailId',isTextArea:false, inputType:'email',nameAttribute:'userCredential',inputClassName:'emailId',placeHolder:'Enter Email Id',isRequired:true,isFile:false,fileType:''}) %>
-                    <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'textHolder',textName:'Password',isTextArea:false, inputType:'password',nameAttribute:'password',inputClassName:'password',placeHolder:'Enter password',isRequired:true,isFile:false,fileType:''}) %>
+                    <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'textHolder',textName:'EmailId',isTextArea:false, inputType:'email',nameAttribute:'userCredential',inputClassName:'emailId',placeHolder:'Enter Email Id',isRequired:true,isFile:false,fileType:'',isDisabled:false}) %>
+                    <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'textHolder',textName:'Password',isTextArea:false, inputType:'password',nameAttribute:'password',inputClassName:'password',placeHolder:'Enter password',isRequired:true,isFile:false,fileType:'',isDisabled:false}) %>
                     <div class="buttonHolder">
                         <button class="button" type="reset">Reset</button>
                         <button class="submitBtn button" type="submit">Submit</button>
