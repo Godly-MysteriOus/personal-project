@@ -18,37 +18,38 @@ router.post('/customer',[
     validations.passwordValidation('password'),
     // validations.confirmPassword('confirm-password'),
 ],authController.postCustomerSignup);
+
 router.get('/seller',authController.getSellerSignupPage);
+
+
 router.post('/seller',[
-    check('drug-license-number').custom(val=>{
-        const DLNRegex = /^(0[1-9]|[1-2][0-9]|3[0-5])-([0-9]{8})$/;
+    check('drugLicenseNumber').custom(val=>{
+        const DLNRegex = /^([0][1-9]|[1-2][0-9]|[3][0-5])([2][0-1](B|C)?)([0-9]{5,6})$/;
         if(!DLNRegex.test(val)){
             throw new Error('Invalid Drug Lincense number format');
         }
     }),
-    check('gst-number').custom(val=>{
-        const gstRegex = /^(0[1-9]|[1-2][0-9]|3[0-7])[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
+    check('gstRegistrationNumber').custom(val=>{
+        const gstRegex = /^([0][1-9]|[1-3][0-9])[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z][Z][A-Z0-9]$/;
         if(!gstRegex.test(val)){
             throw new Error('Invalid GST Number Format');
         }
     }),
-    check('fssai-number').custom(val=>{
-        const stateCodes = ["AN", "AP", "AR", "AS", "BR", "CH", "CT", "DN", "DD", "DL", "GA", "GJ", "HR", "HP", "JK", "JH", "KA", "KL", "LD", "MP", "MH", "MN", "ML", "MZ", "NL", "OD", "PB", "RJ", "SK", "TN", "TS", "UP", "UK", "WB", "AR", "TR", "CG", "OD"];
-        const fssaiRegex = /^[A-Z]{2}[0-9]{7}[A-Za-z0-9]{0,4}$/;
+    check('fssaiLicenseNumber').custom(val=>{
+        const fssaiRegex = /^[1-2]([0][1-9]|[1-2][0-9]|3[0-5])[0-9]{2}[0-9]{2}[1-9][0-9]{5}[1-9]$/;
         if(!fssaiRegex.test(val)){
             throw new Error('Invalid FSSAI License Number format');
         }
-        if(!stateCodes.find(String(val).substring(0,2))){
-            throw new Error('Invalid State Code');
-        }
     }),
-    validations.addressValidation_stateCityPincode('state','city','pincode'),
-    validations.nameValidation('owner-name'),
+    validations.pincodeValidation('state','city','pincode'),
+    validations.nameValidation('sellerName'),
     validations.emailValidation('emailId'),
     validations.passwordValidation('password'),
-    validations.mobileNumberValidation('mobile-number'),
-    validations.timeValidation('opening-hours'),
-    validations.timeValidation('closing-hours'),
+    validations.mobileNumberValidation('mobileNo'),
+    validations.nameValidation('storeName'),
+    // add for address and figure out time validation
+    // validations.timeValidation('opening-hours'),
+    // validations.timeValidation('closing-hours'),
 ]
 ,authController.postSellerSignup);
 
