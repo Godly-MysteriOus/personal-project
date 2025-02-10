@@ -27,7 +27,7 @@
         const generateEmailOTP = document.querySelector('.verifyEmail');
         emailField.addEventListener('input',(e)=>{
             e.preventDefault();
-            const regex = /^[a-z0-9]+([\.\-\_][a-z0-9]+)*@[a-z0-9]+(\.[a-z]{2,})+$/;
+            const regex = /^[a-z0-9]+([\.\-\_][a-z0-9]+)*@[a-z0-9]+(\.[a-z]{2,}){1,3}$/;
             if(regex.test(emailField.value)){
                 verifyEmailBtn.removeAttribute('disabled');
                 verifyEmailBtn.style.color='white';
