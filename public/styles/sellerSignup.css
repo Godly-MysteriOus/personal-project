@@ -48,6 +48,68 @@ fieldset{
 .navigationButtonHidden{
     display: none;
 }
+.storeLocation{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 1rem 0.5rem;
+    flex-grow: 1;
+}
+.storeLocation div{
+    flex-grow: 1;
+}
+.storeLocationTextHolder{
+    color: white;
+}
+.stateSelection{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1rem 0.5rem;
+}
+.stateSelection .textHolder{
+    width: 30%;
+}
+.selectField{
+    width: 62%;
+}
+select{
+    width: 100%;
+}
+
+.availableContentHolder{
+    display: flex;
+    color: white;
+    justify-content: space-between;
+    padding: 0.5rem 0.25rem;
+}
+.availableContentHolder div{
+    text-align: center;
+}
+.checkboxHolder{
+    width: 15%;
+}
+.dayName{
+    width: 25%;
+}
+.openTime,.closeTime{
+    width: 30%;
+}
+.openTime input, .closeTime input{
+    width: 80%;
+}
+.headerHolder{
+    padding: 1rem 0.25rem;
+    border-bottom: 2px solid grey;
+}
+.heading{
+    display: grid;
+    place-items: center;
+    color: white;
+}
+.heading p{
+    font-size: 14px;
+}
 #seller-form1{
     height: fit-content;
 }
