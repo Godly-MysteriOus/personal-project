@@ -1,6 +1,6 @@
 const {check} = require('express-validator');
-const utilAPIs = require('../../utils/apiCalls/apis');
 const loginDB = require('../../models/allEntitiesDB');
+const csc = require('country-state-city');
 exports.mobileNumberValidation = (mobileNoField)=>{
     return check(mobileNoField).custom(value=>{
         if(!/^[1-9][0-9]{9}$/.test(value)){
@@ -59,33 +59,40 @@ exports.passwordValidation = (passwordField)=>{
         return true;
     })
 };
-exports.addressValidation_stateCityPincode = (state,city,pincode)=>{
-    return check(state).custom(val=>{
-       const stateData = utilAPIs.getAllStatesOfIndia();
-        if(!stateData.some(item=>item.stateCode==val)){
-            throw new Error('Invalid State Selected');
-        }
-        return addressValidation_city(val,city,pincode);
-    });
-};
-addressValidation_city = (stateCode,city,pincode)=>{
-    return check(city).custom(val=>{
-        const citiesData = utilAPIs.getAllCitiesOfState(stateCode);
-        if(!citiesData.some(item=>item.cityName==val)){
-            throw new Error('Invalid City Selected');
-        }
-        return pincodeValidation(pincode);
-    });
-}
-pincodeValidation = (stateCode,pincode)=>{
+exports.pincodeValidation = (pincode,state,city)=>{
     return check(pincode).custom(async val=>{
-        const result = await utilAPIs.getPincodeValidation(state,pincode);
+        response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`,{
+            method:'GET',
+            headers:{ 'Content-Type': 'application/json' },
+        });
+        const result = await response.json();
+        const requiredData = {
+            state : result[0]["PostOffice"][0].State,
+            city :  result[0]["PostOffice"][0].District,
+        };
         if(!result){
             throw new Error('Invalid pincode for the selected state');
         }
-        return true;
+        return stateValidation(state,city,requiredData);
     })
 }
+stateValidation = (state,city,requiredData)=>{
+    return check(state).custom(val=>{
+        if(requiredData.state!=val){
+            throw new Error('Invalid State Selected');
+        }
+        return cityValidation(city,requiredData);
+    });
+};
+cityValidation = (stateCode,city,pincode)=>{
+    return check(city).custom(val=>{
+        if(requiredData.city!=val){
+            throw new Error('Invalid City Selected');
+        }
+        return true;
+    });
+}
+
 
 exports.nameValidation=(name)=>{
     return check(name).custom(value=>{
