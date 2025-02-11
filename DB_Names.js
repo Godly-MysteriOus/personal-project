@@ -10,6 +10,7 @@ const DB_Constants = {
     LOGIN_INFO_DB : 'login_info_db',
     LOCATION_MAPPING_DB : 'state_city_district_db',
     USER_QUERIES_DB : 'user_queries_db',
+    PRODUCT_DB : 'product_db',
 };
 
 module.exports = DB_Constants;

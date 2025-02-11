@@ -9,7 +9,34 @@ const path = require('path');
 const dbURI = require('./utils/Connection');
 const credential = require('./config');
 const app = express();
-const cors = require('cors');
+// const cors = require('cors');
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+cloudinary.config({
+    cloud_name:'ds7uhsx2m',
+    api_key:'992771752558542',
+    api_secret:'1nB5sD3AeK--vHr5D_c6QixjZFo',
+});
+const storage = new CloudinaryStorage({
+    cloudinary:cloudinary,
+    params: async (req,file)=>{
+        let folderName = 'productImages';
+        if(file.fieldname === 'storeLogo'){
+            folderName = 'seller/storeLogo';
+        }else if(file.fieldname === 'headerLogoForPdf' || file.fieldname === 'footerLogoForPdf'){
+            folderName = 'seller/banner';
+        }
+        return {
+            folder : folderName,
+            allowed_formats: ["jpg", "jpeg", "png"],
+            public_id: `${file.fieldname}-${Date.now()}-${file.originalname.replace(/\s+/g, '_').split('.')[0]}`
+        }
+    } 
+});
+const upload= multer({storage});
+module.exports = {upload,cloudinary};
 app.use(bodyParser.urlencoded({extended:false}));
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -17,11 +44,11 @@ const store = new MongoDBStore({
     uri: dbURI.DB_Connections.DEV_URI,
     collection: 'sessions'
 });
-app.use(cors({
-    origin: 'http://localhost:5500', // Replace with your front-end URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true // Allow cookies if necessary
-}));
+// app.use(cors({
+//     origin: 'http://localhost:5500', // Replace with your front-end URL
+//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//     credentials: true // Allow cookies if necessary
+// }));
 app.use(
     session({
         secret: 'my secret',
