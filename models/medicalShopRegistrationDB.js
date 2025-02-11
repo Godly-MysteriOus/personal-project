@@ -5,6 +5,12 @@ const medicineInfo = require('../utils/Reusable Components/MedicineInfo');
 const addressStructure = require('../utils/Reusable Components/AddressInfo');
 
 
+const schedule = {
+    workingDay : {type:String, required:true},
+    openingHour : {type:String, required:true},
+    closingHour : {type:String, required:true},
+}
+
 const medicalShopDB = new Schema({
     drugLicenseNumber:{type:String,required:true,unique:true},
 
@@ -25,9 +31,7 @@ const medicalShopDB = new Schema({
             headerLogo:{type:String},
             footerLogo:{type:String},
         },
-        openingHours :{type:String,required:true},
-        closingHours:{type:String,required:true},
-        openOnDays:{type:String,required:true}
+        workingDetail : [schedule],
     },
     temporaryCart:{
         items:[medicineInfo],
@@ -35,12 +39,8 @@ const medicalShopDB = new Schema({
     },
     resetToken:{type:String},
     resetTokenExpiration:{type:Date},
-    roleAssigned:{
-        type:Number,
-        default:2,
-    }
+    products:[{type: Schema.Types.ObjectId, ref: DB_CONSTANT.PRODUCT_DB,required:true}],
 });
 module.exports = mongoose.model(DB_CONSTANT.MEDICAL_STORE_DB,medicalShopDB,DB_CONSTANT.MEDICAL_STORE_DB);
-
 
 //last thing you need to figure it out is the coordinate system

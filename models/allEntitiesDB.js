@@ -5,11 +5,9 @@ const Schema = mongoose.Schema;
 const loginInfoDB = new Schema({
     emailId:{
         type:String,
-        unique:true,
     },
     mobileNumber:{
         type:Number,
-        unique:true,
     },
     password:{
         type:String,
