@@ -10,7 +10,6 @@ const mailSender = require('../../utils/mailService/sendMail');
 const DB_Constants = require('../../DB_Names');
 const devDBURI = require('../../utils/Connection');
 const {MongoClient} = require('mongodb');
-
 // varibales used
 exports.getSignUpPage = (req,res,next)=>{
     return res.render('Login/customerSignup',{
@@ -294,11 +293,12 @@ exports.postCustomerSignup = async (req,res,next)=>{
         }
         loginObj.entityObject = new ObjectId(userObj._id);
         loginObj.entityModel = DB_Constants.USER_REGISTRATION_STORE_DB;
-
         const result = await loginObj.save();
         if(!result){
             throw new Error('Failed to register user into the database');
         }
+        await sessions.deleteOne({'session.emailId': sellerEmailId});
+        console.log('Deleted sessions');
         await transactionSession.commitTransaction();
         transactionSession.endSession();
         console.log('Successful signup');
@@ -322,34 +322,53 @@ exports.postCustomerSignup = async (req,res,next)=>{
 };
 exports.postSellerSignup = async (req,res,next)=>{
     // in future make an api call to validate the trueness of drug license number, gst registration number,fssai number
-
     //for now since the pattern of drug license number has already been validated and you will end up here if the validation is correct;
-
     const validationError = validationResult(req);
-    if(validationError){
+    if(validationError.array()[0]){
         return res.status(400).json({
-            errorMessage:validationError.array()[0].msg,
+            errorMessage:validationError.array()[0]?.msg,
             success:false,
         });
     }
+    // getting all the uploaded file links
+    const uploadedFiles = {};
+    for (const key in req.files) {
+      uploadedFiles[key] = req.files[key].map((file) => file.path);
+    }
     // this will only be executed if no validation errors are found.
-    const {drugLicenseNumber,gstRegistrationNumber,fssaiLicenseNumber,emailId,mobileNo,password,addrL1,addrL2,addrL3,state,city,pincode,shopLatitute,shopLongitude,storeName,ownerName,shopLogo, pdfHeaderLogo, pdfFooterLogo,openTime,closeTime,daysOpen} = req.body;
-
+    const {sellerName,sellerEmailId,sellerMobileNo,sellerPassword,drugLicenseNumber,gstRegistrationNumber,fssaiLicenseNumber,storeName, line1Address, line2Address, shopPincode, shopState, shopCity, locationLatitude,locationLongitude,activeTime} = req.body;
     // will only end up here when required fields are not empty, in that case it will throw an error at the time of input validations only
-    const hashedPassword = await bcrypt.hash(password,12);
-    let transactionSession;
+    const hashedPassword = await bcrypt.hash(sellerPassword,12);
+    let transactionSession=await mongoose.startSession();;
     try{
         //check whether the user already exists or not on the basis of drugLicense number, fssai number
         // here emailId and mobile number cannot be unique identifier as one customer can have two or more shop which he wants to register with the same emailId
+        transactionSession.startTransaction();
+       
         const isSellerAlreadyRegistered = await UserDetails.findOne({$or:[{drugLicenseNumber:drugLicenseNumber},{fssaiLicenseNumber:fssaiLicenseNumber}]});
         if(isSellerAlreadyRegistered){
             throw new Error('User already registered with provided Drug License Number or FSSAI Number');
+        }
+        //rarest case - If same email Id which is registered on different role has same password
+        // it is only achievable by a single user
+        
+        let isLoginObjPresent; 
+        await loginDetails.findOne({emailId:sellerEmailId}).then(async res=>{
+            if(res){
+                isLoginObjPresent = await bcrypt.compare(sellerPassword,res.password);
+            }else{
+                isLoginObjPresent = false;
+            }
+            // await bcrypt.compare(sellerPassword,res.password)
+        })
+        if(isLoginObjPresent){
+            throw new Error('This password exists for same emailId with different Role, please create different password');
         }
         // user is not registered, validate otps
         const client =await MongoClient.connect(devDBURI.DB_Connections.DEV_URI);
         const db = client.db('devDB');
         const sessions = db.collection('sessions');
-        const doesSessionExists = await sessions.findOne({'session.emailId':emailId});
+        const doesSessionExists = await sessions.findOne({'session.emailId':sellerEmailId});
         if(doesSessionExists){
             if(!doesSessionExists.session.isEmailOtpVerified){
                 throw new Error('OTP Verification pending');
@@ -357,63 +376,56 @@ exports.postSellerSignup = async (req,res,next)=>{
         }else{
             throw new Error('Please validate Email Address');
         }
-        // if(req.session && req.session.emailId==emailId && req.session.mobileNo==mobileNo){
-        //     if(!req.session.isEmailOtpVerified || !req.session.isMobileOtpVerified){
-        //         throw new Error('OTP verification pending');
-        //     }else{
-        //         deleteSessionItems(req.session);
-        //     }
-        // }else{
-        //     throw new Error('OTP expired. Please Re-validate OTP');
-        // }
-        //otps are verified
 
-        transactionSession = await mongoose.startSession();
-        transactionSession.startTransaction();
         let loginObj,userObj;
-        loginObj = await loginDetails.create({emailId:emailId,mobileNumber:mobileNo,password:hashedPassword,roleId:2});
+        loginObj = await loginDetails.create([{emailId:sellerEmailId,mobileNumber:sellerMobileNo,password:hashedPassword,roleId:2}],{session:transactionSession});
         if(!loginObj){
             throw new Error('Failed to create entry in login_details_db');
         }
-
-        const storeAddress = {
-            addressStructure:{
-                line1:addrL1,
-                line2:addrL2,
-                line3:addrL3,
-                state:state,
-                city:city,
-                pincode:pincode
-            },
-            latitude:shopLatitute,
-            longitude:shopLongitude
-        }
+        const addressStructure={
+            line1:line1Address,
+            line2:line2Address,
+            state:shopState,
+            city:shopCity,
+            pincode:Number(shopPincode),
+            latitude:Number(locationLatitude),
+            longitude:Number(locationLongitude),
+        };
+        const storeAddress = addressStructure;
+        // storing operating day and working hours
+        const operatingDays = String(activeTime).split(',');
+        const dayData = []
+        operatingDays.forEach(day=>{
+            const fields = day.split('&');
+            const obj = {
+                workingDay  : fields[0],
+                openingHour : fields[1],
+                closingHour : fields[2],
+            };
+            dayData.push(obj);
+        });
         const storeDetails ={
             storeName:storeName,
-            ownerName:ownerName,
-            emailId: ObjectId(loginObj._id),
-            password:ObjectId(loginObj._id),
-            contactNumber: ObjectId(loginObj._id),
+            ownerName:sellerName,
+            emailId: new ObjectId(loginObj._id),
+            password: new ObjectId(loginObj._id),
+            contactNumber:new ObjectId(loginObj._id),
             logoDetails:{
-                logo:shopLogo,
-                headerLogo:pdfHeaderLogo,
-                footerLogo:pdfFooterLogo,
+                logo:uploadedFiles.storeLogo[0],
+                headerLogo:uploadedFiles.headerLogoForPdf[0],
+                footerLogo:uploadedFiles.footerLogoForPdf[0],
             },
-            openingHours :openTime,
-            closingHours:closeTime,
-            // need to fix this no need to have a db for it
-            openOnDays:daysOpen,
+            workingDetail : dayData,
         }
-        userObj = await sellerDetails.create({drugLicenseNumber:drugLicenseNumber,gstRegistrationNumber:gstRegistrationNumber,fssaiLicenseNumber:fssaiLicenseNumber,storeAddress:storeAddress,storeDetails:storeDetails,'temporaryCart.items':[],'temporaryCart.totalPrice':0});
+        userObj = await sellerDetails.create([{drugLicenseNumber:drugLicenseNumber,gstRegistrationNumber:gstRegistrationNumber,fssaiLicenseNumber:fssaiLicenseNumber,storeAddress:storeAddress,storeDetails:storeDetails,'temporaryCart.items':[],'temporaryCart.totalPrice':0,resetToken:'',resetTokenExpiration:'',products:[]}],{session:transactionSession});
         if(!userObj){
             throw new Error('Failed to create entry in medicationShopRegistrationDB');
         }
-        loginObj.entityObject = ObjectId(userObj._id);
-        loginObj.entityModel = DB_Constants.MEDICAL_STORE_DB;
-        const isLoginDBupdated = await loginObj.save();
+        const isLoginDBupdated = await loginDetails.findOneAndUpdate({$and:[{emailId:sellerEmailId},{mobileNumber:sellerMobileNo},{roleId:2}]},{$set:{entityObject:new ObjectId(userObj._id),entityModel:DB_Constants.MEDICAL_STORE_DB}},{new:true,session:transactionSession});
         if(!isLoginDBupdated){
             throw new Error('Failed to update Login DB');
         }
+        await sessions.deleteOne({'session.emailId':sellerEmailId});
         await transactionSession.commitTransaction();
         transactionSession.endSession();
         return res.status(200).json({
@@ -422,7 +434,8 @@ exports.postSellerSignup = async (req,res,next)=>{
             redirectUrl:'/',
         })
     }catch(err){
-        await transactionSession.abortTransaction();
+        console.log(err.stack);
+        await transactionSession?.abortTransaction();
         transactionSession.endSession();
         return res.status(400).json({
             success:false,

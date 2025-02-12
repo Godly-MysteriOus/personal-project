@@ -36,3 +36,7 @@ function updateData(fieldName,value){
     console.log(sellerObj);
     localStorage.setItem("sellerData",JSON.stringify(sellerObj));
 };
+
+function deleteData(){
+    localStorage.removeItem('sellerData');
+}

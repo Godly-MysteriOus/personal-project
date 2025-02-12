@@ -60,7 +60,7 @@ exports.passwordValidation = (passwordField)=>{
     })
 };
 exports.pincodeValidation = (pincode,state,city)=>{
-    return check(pincode,'Aeii torr mai ke chodo').bail().custom(async val=>{
+    return check(pincode).bail().custom(async val=>{
         response = await fetch(`https://api.postalpincode.in/pincode/${val}`,{
             method:'GET',
             headers:{ 'Content-Type': 'application/json' },
@@ -70,7 +70,6 @@ exports.pincodeValidation = (pincode,state,city)=>{
             state : result[0]["PostOffice"][0].State,
             city :  result[0]["PostOffice"][0].District,
         };
-        console.log(requiredData);
         if(!result){
             throw new Error('Invalid pincode for the selected state');
         }
@@ -79,7 +78,6 @@ exports.pincodeValidation = (pincode,state,city)=>{
 }
 stateValidation = (state,city,requiredData)=>{
     return check(state).bail().custom(val=>{
-        console.log('stateValidation',requiredData,val);
         if(requiredData.state!=val){
             throw new Error('Invalid State Selected');
         }
@@ -88,7 +86,6 @@ stateValidation = (state,city,requiredData)=>{
 };
 cityValidation = (city,requiredData)=>{
     return check(city).bail().custom(val=>{
-        console.log('cityValidation',requiredData,val);
         if(requiredData.city!=val){
             throw new Error('Invalid City Selected');
         }
@@ -111,7 +108,6 @@ exports.nameValidation=(name)=>{
 };
 exports.confirmPassword = (confirmPass)=>{
     return check(confirmPass).bail().custom((value,{req})=>{
-        console.log(value,req.body.password);
         if(value!=req.body.password){
             throw new Error('Password and Confirm Password must be same');
         }
@@ -174,7 +170,7 @@ exports.pdfFileValidation = (file)=>{
     })
 }
 exports.dnl = (drugLicenseNumber)=>{
-    return check(drugLicenseNumber,'Teri maki chut').bail().custom(val=>{
+    return check(drugLicenseNumber).bail().custom(val=>{
         const DLNRegex = /^([0][1-9]|[1-2][0-9]|[3][0-5])([2][0-1](B|C)?)([0-9]{5,6})$/;
         if(!DLNRegex.test(val)){
             throw new Error('Invalid Drug Lincense number format');
