@@ -7,6 +7,7 @@
 <%- include('../utils/Header.ejs') %>
 
 <body>
+    <script src="/scripts/sellerLocalStorage.js"></script>
     <%- include('../utils/MessageBox.ejs') %>
     <%- include('../utils/OTP_popup.ejs') %>
     <div class="body-wrapper">
@@ -16,7 +17,7 @@
             <p>image for Store, Header and Footer for pdf</p>
         </div>
         <div class="formWrapper">
-            <form id="seller-form1" enctype="multipart/form-data">
+            <form id="seller-form1"  method="post" enctype="multipart/form-data">
                 <div class="formView--1 formView ">
                     <fieldset>
                         <legend>Basic Details</legend>
@@ -68,7 +69,7 @@
                                 );
                             });
                         </script>
-                        
+                        <input type="hidden" class="dayTime" name="dayTime" value="">
                     </fieldset>
                 </div>
                 <div class="formView--5 formView formPageHidden">
@@ -86,11 +87,11 @@
                         <div class="storeLocation"> 
                             <div class="storeLocationTextHolder">Store Location</div>
                             <div>
-                                <button class="button getLocation">Locate Your Store</button>
+                                <button class="button getLocation" type="button">Locate Your Store</button>
                             </div>
                         </div>
-                        <input type="hidden" value="" class="latitude">
-                        <input type="hidden" value="" class="longitude">
+                        <input type="text" value="" class="latitude message-hidden">
+                        <input type="text" value="" class="longitude message-hidden">
                         <!-- google map script -->
                         <script>
                             window.addEventListener("message", function (event) {
@@ -98,6 +99,8 @@
                                 if (event.data.coords) {
                                     document.querySelector(".latitude").value = event.data.coords.latitude;
                                     document.querySelector(".longitude").value = event.data.coords.longitude;
+                                    updateData('locationLatitude',document.querySelector(".latitude").value);
+                                    updateData('locationLongitude',document.querySelector(".longitude").value);
                                 }
                                 messageOperation( 'Fetched location successfully');
                             });
@@ -111,8 +114,8 @@
                             const state =document.querySelector('.shopState');
                             const city = document.querySelector('.shopCity');
                             pincodeField.addEventListener('input',async(e)=>{
-                                console.log(pincodeField.value);
                                 if(pincodeField.value.length==6){
+                                    updateData('pincode',pincodeField.value);
                                     const response = await fetch('<%= url %>utils/pincode',{
                                         method:'POST',
                                         headers:  { 'Content-Type': 'application/json' },
@@ -125,6 +128,8 @@
                                     if(result.success){
                                         state.value = result.data.state;
                                         city.value = result.data.city;
+                                        updateData('shopState',state.value);
+                                        updateData('shopCity',city.value);
                                     }else{
                                        messageOperation(result.message);
                                     }
@@ -145,7 +150,6 @@
     </div>
 </body>
 <script>
-    console.log(message);
     const getLocation = document.querySelector('.getLocation');
     // inputFields
     const sellerName = document.querySelector('.sellerName');
@@ -165,19 +169,38 @@
     const shopPincode = document.querySelector('.shopPincode');
     const shopState = document.querySelector('.shopState');
     const shopCity = document.querySelector('.shopCity');
-    const locationLatitude = document.querySelector('.locationLatitude');
-    const locationLongitude = document.querySelector('.locationLongitude');
+    const locationLatitude = document.querySelector('.latitude');
+    const locationLongitude = document.querySelector('.longitude');
+    const checkBoxes = document.querySelectorAll('.checkboxes');
+    //  fetches and places data
+    sellerName.value = fetchData('sellerName');
+    sellerEmail.value = fetchData('sellerEmail');
+    sellerMobileNo.value = fetchData('sellerMobileNo');
+    drugLicenseNumber.value = fetchData('drugLicenseNumber');
+    gstRegistrationNumber.value = fetchData('gstRegistrationNumber');
+    fssaiLicenseNumber.value = fetchData('fssaiLicenseNumber');
+    storeName.value = fetchData('storeName');
+    line1Address.value = fetchData('line1Address');
+    line2Address.value = fetchData('line2Address');
+    shopPincode.value = fetchData('pincode');
+    shopState.value = fetchData('shopState');
+    shopCity.value = fetchData('shopCity');
+    locationLatitude.value = fetchData('locationLatitude');
+    locationLongitude.value = fetchData('locationLongitude');
 
     const nameRegex = /^[a-zA-Z ]{2,}$/;
     const mobileRegex = /^[1-9][0-9]{9}$/;
     const drugLicenseNumberRegex  = /^([0][1-9]|[1-2][0-9]|[3][0-5])([2][0-1](B|C)?)([0-9]{5,6})$/;
     const gstRegistrationNumberRegex = /^([0][1-9]|[1-3][0-9])[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z][Z][A-Z0-9]$/;
-    const fssaiLicenseNumberRegex = /^[1-2]([0][1-9]|[1-2][0-9]|3[0-5])[0-9]{2}[0-9]{2}[1-9][0-9]{5}[1-9]$/;
+    const fssaiLicenseNumberRegex = /^[1-2]([0][1-9]|[1-2][0-9]|3[0-5])[0-9]{4}[1-9][0-9]{5}[1-9]$/;
     const addressRegex = /^[a-zA-Z0-9-,/ ]+$/;
     // opening hours, closing hours
-    const checkBoxes = document.querySelectorAll('.checkboxes');
     getLocation.addEventListener('click',()=>{
-        googleMapPopUp();
+        try{
+            googleMapPopUp();
+        }catch(err){
+            console.log(err.stack);
+        }
     })
     let move = 1;
     const maxMove=5,minMove=1;
@@ -225,9 +248,8 @@
     }
 </script>
 <script>
-    function validation(field,rgx,errorMessage,isRemoveSpace){
+    function validation(storageName,field,rgx,errorMessage,isRemoveSpace){
         field.addEventListener('blur',()=>{
-            console.log('entered');
             let trimmedInput = String(field.value).trim();
             if(isRemoveSpace){
                 trimmedInput = trimmedInput.replace(/\s/g,''); 
@@ -237,6 +259,7 @@
                 field.value = '';
                messageOperation(errorMessage);
             }
+            updateData(storageName,field.value);
         })
     }
     function messageOperation(errorMessage){
@@ -255,6 +278,7 @@
         if(value.length<3 || value.length>50){
             messageOperation('Name should be between 3 to 50 characters');
         }
+        updateData('storeName',value);
     });
     sellerName.addEventListener('blur',()=>{
         const value = String(sellerName.value).trim();
@@ -264,9 +288,10 @@
         if(value.length<3 || value.length>50){
             messageOperation('Name should be between 3 to 50 characters');
         }
+        updateData('sellerName',value);
     })
     // mobile number verification
-    validation(sellerMobileNo,mobileRegex,'Mobile number should be 10 digit long',false);
+    validation('sellerMobileNo',sellerMobileNo,mobileRegex,'Mobile number should be 10 digit long',false);
     // password verification
     sellerPassword.addEventListener('blur',()=>{
         const value = String(sellerPassword.value);
@@ -293,34 +318,39 @@
         }
     })
     //drug license number pattern verification
-    validation(drugLicenseNumber,drugLicenseNumberRegex,'Please enter valid Drug License Numeber',true);
+    validation('drugLicenseNumber',drugLicenseNumber,drugLicenseNumberRegex,'Please enter valid Drug License Numeber',true);
     //gst registeration number verification
-    validation(gstRegistrationNumber,gstRegistrationNumberRegex,'Please enter a valid GST Registration Number',true);
+    validation('gstRegistrationNumber',gstRegistrationNumber,gstRegistrationNumberRegex,'Please enter a valid GST Registration Number',true);
     //fssai number verification
-    validation(fssaiLicenseNumber,fssaiLicenseNumberRegex,'Please enter valid FSSAI License Number',true);
+    validation('fssaiLicenseNumber',fssaiLicenseNumber,fssaiLicenseNumberRegex,'Please enter valid FSSAI License Number',true);
     //address validation
     line1Address.addEventListener('blur',(e)=>{
         const value = String(line1Address.value).trim();
         if(!addressRegex.test(value)){
             messageOperation('Only special character allowed is - , / or space');
         }
+        updateData('line1Address',value);
     });
     line2Address.addEventListener('blur',()=>{
         const value = String(line2Address.value).trim();
         if(!addressRegex.test(value)){
             messageOperation('Only special character allowed is - , / or space');
         }
+        updateData('line2Address',value);
     });
     //decide some validation for store timing
-
+    sellerEmail.addEventListener('blur',()=>{
+        updateData('sellerEmail',sellerEmail.value);
+    })
 </script>
 <script>
     //customer signup API
     const submitBtn = document.querySelector('.submit');
+    console.log(submitBtn);
     submitBtn.addEventListener('click',async(e)=>{
         e.preventDefault();
         // throw an alert if required fields are empty
-        if(sellerName.value=='' || sellerEmail.value=='' || sellerMobileNo.value=='' || sellerPassword.value=='' || drugLicenseNumber.value==''|| gstRegistrationNumber.value==''|| fssaiLicenseNumber.value==''|| storeName.value=='' || line1Address.value==''|| line2Address.value=='' || pincodeField.value=='' || shopState.value=='' || shopCity.value==''){
+        if(sellerName.value=='' || sellerEmail.value=='' || sellerMobileNo.value=='' || sellerPassword.value==''|| confirmPassword.value == '' || drugLicenseNumber.value==''|| gstRegistrationNumber.value==''|| fssaiLicenseNumber.value==''|| storeName.value=='' || line1Address.value==''|| line2Address.value=='' || pincodeField.value=='' || shopState.value=='' || shopCity.value==''){
             alert('Please fill the mandatory fields');
             return;
         };
@@ -334,8 +364,8 @@
             }
         }
         // validate inputs sellerName and store Name
-        inputValidation(sellerName,nameRegex,'Name shall only contain Upper and lower case letters and space');
-        inputValidation(storeName,nameRegex,'Name shall only contain Upper and lower case letters and space');
+        inputValidation(sellerName.value,nameRegex,'Name shall only contain Upper and lower case letters and space',false);
+        inputValidation(storeName.value,nameRegex,'Name shall only contain Upper and lower case letters and space',false);
         if(String(sellerName.value).length > 50 || String(sellerName.value).length<3 || String(storeName.value).length > 50 || String(sellerName.value).length<3){
             return alert('Name should be between 3 to 50 characters');
         }
@@ -348,7 +378,7 @@
             return alert('Please enter valid mobile Number');
         }
         // password
-        const password = String(password.value);
+        const password = String(sellerPassword.value);
         if(password.length<=8){
             return alert('Password must be 8 characters long');
         }else if(password.indexOf(' ')!=-1){
@@ -361,7 +391,7 @@
             return alert('Password must contain atleast 1 numeric character');
         }else if(!(/[^a-zA-Z0-9]+/.test(password))){
             return alert('Password must contain atleast 1 special character');
-        }else if(value.length>25){
+        }else if(password.length>25){
             return alert('Password must be less than 25 characters');
         }
         //confirm password
@@ -369,19 +399,13 @@
             return alert('Password and confirm password values must be same');
         }
         // drug license number
-        if(!drugLicenseNumberRegex.test(String(drugLicenseNumber.value).replace(/\s/g,''))){
-            return alert('Invalid Drug License Number');
-        }
-        if(!gstRegistrationNumberRegex.test(String(gstRegistrationNumber.value).replace(/\s/g,''))){
-            return alert('Invalid GST Registration number format');
-        }
+        inputValidation(drugLicenseNumber.value,drugLicenseNumberRegex,'Invalid Drug License Number',true);
+        //gst registration number
+        inputValidation(gstRegistrationNumber.value,gstRegistrationNumberRegex,'Invalid GST Registration number format',true);
         // fssai code
-        if(!fssaiLicenseNumberRegex.test(String(fssaiLicenseNumber.value).replace(/\s/g,''))){
-            return alert('Invalid FSSAI Number');
-        }
-        if(!addressRegex.test(String(line1Address.value).trim() || !addressRegex.test(String(line2Address.value).trim()))){
-            return  alert('Address can only contain, - / special characters');
-        }
+        inputValidation(fssaiLicenseNumber.value,fssaiLicenseNumberRegex,'Invalid FSSAI Number',true);
+        inputValidation(line1Address.value,addressRegex,'Address can only contain, - / special characters',false);
+        inputValidation(line2Address.value,addressRegex,'Address can only contain, - / special characters',false);
         //pincode
         if(String(pincodeField.value).length!=6){
             return alert('Pincode must be Numeric and 6 character long');
@@ -389,17 +413,38 @@
         if(shopState.value==''|| shopCity.value==''){
             return alert('Invalid pincode, please enter valid pincode');
         }
+        let trueCount = 0;
+        const dayTime = document.querySelector('.dayTime');
+        let openInfo = String('');
+        checkBoxes.forEach(item=>{
+            if(item.checked==true){
+                trueCount++;
+                const value = item.getAttribute('value');
+                const openTime = document.querySelector(`#openTime-${value}`).value;
+                const closeTime = document.querySelector(`#closeTime-${value}`).value;
+                let data = `${value}&${openTime}&${closeTime}`;
+                openInfo+=data+",";
+            }
+        });
+        if(trueCount<=3){
+            return alert('Shop should be opened atleast on 3 days');
+        }
+        dayTime.value = openInfo.substring(0,openInfo.length-1);
+        console.log(dayTime.value);
         // validate opening hours and closing hours here
         const formData = new FormData();
         formData.append('sellerName',sellerName.value);
         formData.append('sellerEmailId',sellerEmail.value);
         formData.append('sellerMobileNo',sellerMobileNo.value);
         formData.append('sellerPassword',sellerPassword.value);
+        formData.append('sellerConfirmPassword',confirmPassword.value);
         formData.append('drugLicenseNumber',drugLicenseNumber.value);
         formData.append('gstRegistrationNumber',gstRegistrationNumber.value);
         formData.append('fssaiLicenseNumber',fssaiLicenseNumber.value);
         formData.append('storeName',storeName.value);
         formData.append('storeLogo',storeLogo.files[0]),
+        formData.append('headerLogoForPdf',headerLogo.files[0]);
+        formData.append('footerLogoForPdf',footerLogo.files[0]);
         formData.append('line1Address',line1Address.value);
         formData.append('line2Address',line2Address.value);
         formData.append('shopPincode', shopPincode.value);
@@ -407,6 +452,7 @@
         formData.append('shopCity',shopCity.value);
         formData.append('locationLatitude',locationLatitude.value);
         formData.append('locationLongitude',locationLongitude.value);
+        formData.append('activeTime',dayTime.value);
         const response = await fetch('<%= url %>signup/seller',{
             method: 'POST',
             body : formData,
@@ -415,6 +461,8 @@
         if(result.success){
             const time = 5;
             message.classList.remove('message-hidden');
+            //comes from localstorage, used to delete sellerData obj stored in local storage
+            deleteData();
             const fxn = setInterval(()=>{
                 if(time==0){
                     clearInterval(fxn);
@@ -426,7 +474,14 @@
                 message.classList.add('message-hidden');
                 window.location.href = '<%= url %>login';
             },5000)
+        }else{
+            message.textContent = result.message;
+            message.classList.remove('message-hidden');
+            setTimeout(()=>{
+                message.classList.add('message-hidden');
+            },3000);
         }
     })
 </script>
+
 <%- include('../utils/Footer.ejs') %>
