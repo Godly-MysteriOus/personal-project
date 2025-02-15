@@ -89,11 +89,16 @@ const signupRoutes = require('./routes/authRoutes/signup');
 const loginLogoutDeleteRoutes = require('./routes/authRoutes/login&logout');
 const featureRoutes = require('./routes/additionalRoutes/featureRoutes');
 const utilRoutes = require('./routes/additionalRoutes/utilRoutes');
+const sellerRoutes = require('./routes/sellerRoutes/sellerRoutes');
 app.use(express.static(path.join(__dirname,'public')));
+
+
 app.use('/signup',signupRoutes);
 app.use(loginLogoutDeleteRoutes);
 app.use('/utils',utilRoutes);
 app.use(featureRoutes);
+app.use('/seller',sellerRoutes);
+
 app.get('/loadGoogleMap',(req,res,next)=>{
     const {latitude,longitude}=req.query;
     return res.render('utils/GoogleMap',{
