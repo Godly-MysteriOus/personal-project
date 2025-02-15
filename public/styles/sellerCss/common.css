@@ -1,0 +1,17 @@
+*{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html{
+    width: 100%;
+    height: fit-content;
+}
+body{
+    width: 100%;
+    height: fit-content;
+}
+footer{
+    background: rgb(5, 174, 160);
+    height: 4.1rem;
+}
