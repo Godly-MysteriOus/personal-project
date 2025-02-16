@@ -21,21 +21,21 @@ router.get('/add-bulk-products',authRoute.sellerAuthentication,productController
 router.post('/add-bulk-products',authRoute.sellerAuthentication,productController.postBulkAddProduct);
 
 // shop data related routes // logic yet to be created
-router.get('/create-order',authRoute.sellerAuthentication,productController);
+// router.get('/create-order',authRoute.sellerAuthentication,productController);
 
-router.get('/checkout',authRoute.sellerAuthentication,salesController);
-router.post('/checkout',authRoute.sellerAuthentication,salesController);
-router.get('/active-orders',authRoute.sellerAuthentication,salesController);
-router.get('/active-order:orderId',authRoute.sellerAuthentication,salesController);
-router.post('/active-order/accept:orderId',authRoute.sellerAuthentication,salesController);
-router.post('/active-order/reject:orderId',authRoute.sellerAuthentication,salesController);
-// make route for accept or reject order
-router.get('/sales',authRoute.sellerAuthentication,salesController);
-router.get('/sales:sales',authRoute.sellerAuthentication,salesController);
-router.get('/analytics',authRoute.sellerAuthentication,salesController);
+// router.get('/checkout',authRoute.sellerAuthentication,salesController);
+// router.post('/checkout',authRoute.sellerAuthentication,salesController);
+// router.get('/active-orders',authRoute.sellerAuthentication,salesController);
+// router.get('/active-order:orderId',authRoute.sellerAuthentication,salesController);
+// router.post('/active-order/accept:orderId',authRoute.sellerAuthentication,salesController);
+// router.post('/active-order/reject:orderId',authRoute.sellerAuthentication,salesController);
+// // make route for accept or reject order
+// router.get('/sales',authRoute.sellerAuthentication,salesController);
+// router.get('/sales:saleId',authRoute.sellerAuthentication,salesController);
+// router.get('/analytics',authRoute.sellerAuthentication,salesController);
 
 
-router.get('/accounts',authRoute.sellerAuthentication,accountController);
+// router.get('/accounts',authRoute.sellerAuthentication,accountController);
 
 
 module.exports = router;

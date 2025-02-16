@@ -1,10 +1,35 @@
-<%- include('../utils/Starter.ejs') %>
-<!-- add custom css here -->
-<%- include('../utils/AfterLinkStyles.ejs') %>
-<!-- add header here -->
+<%- include('../sellerUtils/starter.ejs') %>
+<link rel="stylesheet" href="/styles/sellerCss/sellerHeader.css">
+</head>
 
-
+<%- include('../sellerUtils/sellerHeader.ejs') %>
+<style>
+    .body-wrapper{
+        height: calc(100vh - 9.15rem);
+        overflow-y: scroll;
+    }
+    footer{
+        position: relative;
+        top: -1;
+    }
+</style>
 <body>
-    
+    <div class="body-wrapper">
+        <% if (products.length == 0) { %>
+            <div><h3>No product listed yet...</h3></div>
+        <% }else{ %>
+            <% for(let product of products ) { %>
+                <div class="product-wrapper">
+                    <div class="productImage"><img src=">" alt=""></div>
+                    <div class="detailsBtn"></div>
+                    <div class="moreButtons">
+                        <div><button type="button">Edit</button></div>
+                        <div><button type="button">Delete</button></div>
+                    </div>
+                </div>
+            <% } %>
+        <% } %>
+    </div>
 </body>
-<!-- add footer here -->
+
+<%- include('../sellerUtils/footer.ejs') %>

@@ -407,9 +407,9 @@ exports.postSellerSignup = async (req,res,next)=>{
         const storeDetails ={
             storeName:storeName,
             ownerName:sellerName,
-            emailId: new ObjectId(loginObj._id),
-            password: new ObjectId(loginObj._id),
-            contactNumber:new ObjectId(loginObj._id),
+            emailId: new ObjectId(loginObj[0]._id),
+            password: new ObjectId(loginObj[0]._id),
+            contactNumber:new ObjectId(loginObj[0]._id),
             logoDetails:{
                 logo:uploadedFiles.storeLogo[0],
                 headerLogo:uploadedFiles.headerLogoForPdf[0],

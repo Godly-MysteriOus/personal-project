@@ -58,18 +58,19 @@ app.use(
     })
 );
 app.use((req,res,next)=>{
-    if(!req.session.user || !req.session.credentials){
+    if(!req.session.isLoggedIn){
         return next();
     }else{
-        if(req.session.user.roleId==1){
+        if(req.session.credentials.roleId==1){
+            userDB.
             userDB.findById(req.session.user._id)
             .then(result=>{
                 req.user = result; 
                 next();
             })
             .catch(()=>console.log('Failed to find user from session Id'));
-        }else if(req.session.user.roleId==2){
-            sellerDB.findById(req.session.user._id)
+        }else if(req.session.credentials.roleId==2){
+            sellerDB.findOne({_id: req.session.user._id})
             .then(result=>{
                 req.user = result; 
                 next();
@@ -77,8 +78,7 @@ app.use((req,res,next)=>{
             .catch(()=>console.log('Failed to find user from session Id'));
         }
     }
-    next();
-})
+});
 app.use((req,res,next)=>{
     res.locals.url = credential.hostURI;
     res.locals.googleMapKey = credential.googleMapAPIKey,
@@ -90,6 +90,7 @@ const loginLogoutDeleteRoutes = require('./routes/authRoutes/login&logout');
 const featureRoutes = require('./routes/additionalRoutes/featureRoutes');
 const utilRoutes = require('./routes/additionalRoutes/utilRoutes');
 const sellerRoutes = require('./routes/sellerRoutes/sellerRoutes');
+const { default: mongoose } = require('mongoose');
 app.use(express.static(path.join(__dirname,'public')));
 
 
