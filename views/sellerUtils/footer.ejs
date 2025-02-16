@@ -1,0 +1,72 @@
+<style>
+    .footer-wrapper{
+        width: 100%;
+        padding: 0.5rem 2rem;
+        display: flex;
+        justify-content: space-evenly;
+    }
+    .item-container{
+        display: grid;
+        place-items: center;
+        width: fit-content;
+        cursor: pointer;
+    }
+    .footerItemsLogo img{
+        width: 1.75rem;
+    }
+    .notificationNumber{
+        position: absolute;
+       color: white;
+       z-index: 5;
+       right: 0;
+       border-radius: 50%;
+       font-size: 12px;
+       background-color: red;
+    }
+</style>
+<footer>
+    
+    <div class="footer-wrapper">
+        <div class="item-container">
+            <div class="footerItemsLogo"><img src="/images/add-product.png" alt="account-image"></div>
+            <fiv class="text">Add product</fiv>
+        </div>
+        <div class="item-container">
+            <div class="footerItemsLogo"><img src="/images/bulk-add-product.png" alt="account-image"></div>
+            <fiv class="text">Add Bulk Products</fiv>
+        </div>
+        <div class="item-container">
+            <div class="footerItemsLogo"><img src="/images/active-orders.png" alt="account-image"></div>
+            <fiv class="text">Active orders</fiv>
+        </div>
+        <div class="item-container">
+            <div class="footerItemsLogo"><img src="/images/shopping-cart.png" alt="account-image"></div>
+            <fiv class="text">Create Order</fiv>
+        </div>
+        
+
+        <div class="item-container">
+            <div class="footerItemsLogo">
+                <div class="notificationNumber layover-hidden">&nbsp;<span id="notificationNumber">2</span>&nbsp;</div>
+                <img src="/images/notification.png" alt="account-image">
+            </div>
+            <fiv class="text">Notifications</fiv>
+        </div>
+        <!-- <div class="item-container">
+            <div class="footerItemsLogo"><img src="/images/user.png" alt="account-image"></div>
+            <fiv class="text">Account</fiv>
+        </div> -->
+    </div>
+</footer>
+</html>
+<script>
+    const NumberOfNotifications = document.querySelector('#notificationNumber');
+    const notificationNumberContainer = document.querySelector('.notificationNumber');
+    window.addEventListener('load',(e)=>{
+        e.preventDefault();
+        if(NumberOfNotifications.textContent!=false && NumberOfNotifications.textContent!=0){
+            console.log(true);
+            notificationNumberContainer.classList.remove('layover-hidden');
+        }
+    })
+</script>
