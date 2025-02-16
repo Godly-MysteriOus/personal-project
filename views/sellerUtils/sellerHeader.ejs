@@ -1,0 +1,48 @@
+<div class="featureBar layover-hidden">
+    <div class="featureBarContentHolder">
+        <div class="featureContent">
+            <div class="featureLogo"><img src="/images/accounting.png" alt="account-image"></div>
+            <fiv class="featureText">Sale orders</fiv>
+        </div>
+        <div class="featureContent">
+            <div class="featureLogo"><img src="/images/analytics.png" alt="account-image"></div>
+            <fiv class="featureText">Store Analytics</fiv>
+        </div>
+        <div class="featureContent">
+            <div class="featureLogo"><img src="/images/user.png" alt="account-image"></div>
+            <fiv class="featureText">Account</fiv>
+        </div>
+    </div>
+</div>
+<header>
+    <div class="storeDetails">
+        <div class="logo"><img src="https://res.cloudinary.com/ds7uhsx2m/image/upload/v1739301892/seller/storeLogo/storeLogo-1739301888640-austin-neill-emH2e5SBifE-unsplash.jpg" alt="" srcset=""></div>
+        <!-- <div class="storeName">Britney and Jhonson</div> -->
+    </div>
+    <div class="ownerName"><h2>Hi, Jayant!</h2></div>
+    <div class="moreFeature">
+        <div class="menuBtn featureIcon"><img src="/images/menu-black.png" alt="menubtn"></div>
+        <div class="closeBtn featureIcon header-hidden"><img src="/images/close-black.png" alt="closeBtn"></div>
+    </div>
+</header>
+
+<script>
+    const featureBtns = document.querySelector('.moreFeature');
+    const menuBtn = document.querySelector('.menuBtn');
+    const closeBtn = document.querySelector('.closeBtn');
+    const featureBar = document.querySelector('.featureBar');
+    featureBtns.addEventListener('click',(e)=>{
+        menuBtn.classList.toggle('header-hidden');
+        if(menuBtn.classList.contains('header-hidden')){
+            featureBar.classList.remove('layover-hidden');
+            featureBar.style.animation = 'showFeature 0.4s ease-in-out 1';
+        }
+        closeBtn.classList.toggle('header-hidden');
+        if(closeBtn.classList.contains('header-hidden')){
+            featureBar.style.animation = 'hideFeature 0.4s ease-in-out 1';
+            setTimeout(()=>{
+                featureBar.classList.add('layover-hidden');
+            },350)
+        }
+    })
+</script>

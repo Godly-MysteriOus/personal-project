@@ -1,3 +1,7 @@
+/*  
+    z-index 50 for menu btn and close btn 
+    z-index 40 for slide in view more option
+*/
 header{
     /* background: rgb(4, 111, 102); */
     background: rgb(5, 174, 160);
@@ -8,21 +12,78 @@ header{
     align-items: center;
     justify-content: space-between;
 }
+
 .logo img{
+    display: grid;
+    place-items: center;
     width: 7rem;
     border-radius: 0.25rem;
 }
-.storeDetails{
-    display: grid;
-    /* gap: 1rem; */
-    place-items: center;
-}
-.moreFeature{
+.storeDetails,.moreFeature{
     display: flex;
 }
-.featureIcon img{
+.ownerName{
+    width: fit-content;
+    text-align: center;
+}
+.moreFeature{
+    z-index: 50;
+}
+.featureIcon img,.closeBtn img{
+    width: 1.5rem;
+}
+
+.header-hidden{
+    display: none;
+}
+
+/* featureBar */
+.featureBar{
+    position: absolute;
+    z-index: 40;
+    background-color: rgba(204, 203, 192, 0.95);
+    top: 0;
+    right: 0;
+    width: 17rem;
+    height: 100vh;
+    padding: 1rem 2rem;
+    display: grid;
+    gap: 1rem 0rem;
+}
+.featureBarContentHolder{
+    margin-top: 4rem;
+    width: 100%;
+}
+.featureContent{
+    cursor: pointer;
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    border-bottom: 1px solid grey;
+}
+
+.featureLogo img{
     width: 2rem;
 }
-.closeBtn img{
-    width: 2.6rem;
+.layover-hidden{
+    display: none;
+}
+
+@keyframes showFeature {
+    0%{
+        transform: translateX(100%);
+    }
+    100%{
+        transform: translateX(0%);
+    }
+}
+@keyframes hideFeature {
+    0%{
+        transform: translateX(0%);
+    }
+    100%{
+        transform: translateX(100%);
+    }
 }

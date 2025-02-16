@@ -2,13 +2,15 @@
     margin:0;
     padding: 0;
     box-sizing: border-box;
+    position: relative;
 }
 html{
     width: 100%;
     height: fit-content;
 }
 body{
-    width: 100%;
+    width: 100vw;
+    overflow-x: hidden;
     height: fit-content;
 }
 footer{
