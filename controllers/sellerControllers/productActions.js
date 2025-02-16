@@ -2,7 +2,6 @@ const path = require('path');
 const productDBPath = path.join('..','..','models','productDB');
 const productDB = require(productDBPath);
 const mongoose = require('mongoose');
-const session = require('express-session');
 function findProduct(productId,userId){
     return productDB.findOne({productId:productId,sellerId:userId}).then(result=>result);
 }
@@ -11,10 +10,19 @@ function createProduct(productId,userId,quantity,price,transactionSession){
 }
 // req.user contains the data of loggedIn user
 exports.getListedProducts = async(req,res,next)=>{
-    const userId = new ObjectId(req.user._id);
-    const listedProducts = await productDB.findAll({sellerId:userId});
+    const storeName = req.user?.storeDetails.storeName;
+    const ownerName =  req.user?.storeDetails.ownerName;
+    const storeLogo =  req.user?.storeDetails.logoDetails.logo;
+    const userDetail = {
+        storeName:storeName,
+        ownerName:ownerName,
+        storeLogo:storeLogo,
+    };
+    const userId = new mongoose.Types.ObjectId(req.user?._id);
+    const listedProducts = await productDB.find({sellerId:userId}).populate('productId','productImage');
     return res.render('Seller/sellerHomePage',{
         products : listedProducts || [],
+        userDetails : userDetail,
     });
 };
 

@@ -61,7 +61,6 @@ app.use((req,res,next)=>{
     if(!req.session.isLoggedIn){
         return next();
     }else{
-        console.log(req.session.credentials.roleId);
         if(req.session.credentials.roleId==1){
             userDB.
             userDB.findById(req.session.user._id)
