@@ -16,10 +16,10 @@
 </div>
 <header>
     <div class="storeDetails">
-        <div class="logo"><img src="https://res.cloudinary.com/ds7uhsx2m/image/upload/v1739301892/seller/storeLogo/storeLogo-1739301888640-austin-neill-emH2e5SBifE-unsplash.jpg" alt="" srcset=""></div>
+        <div class="logo"><img src="<%=userDetails.storeLogo %>" alt="" srcset=""></div>
         <!-- <div class="storeName">Britney and Jhonson</div> -->
     </div>
-    <div class="ownerName"><h2>Hi, Jayant!</h2></div>
+    <div class="ownerName"><h2>Hi, <%= userDetails.ownerName.split(' ')[0] %></h2></div>
     <div class="moreFeature">
         <div class="menuBtn featureIcon"><img src="/images/menu-black.png" alt="menubtn"></div>
         <div class="closeBtn featureIcon header-hidden"><img src="/images/close-black.png" alt="closeBtn"></div>
