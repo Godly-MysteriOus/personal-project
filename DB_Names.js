@@ -4,7 +4,6 @@ const DB_Constants = {
     SELL_ORDERS_DB : 'sell_order_detail_db',
     BUY_ORDERS_DB : 'buy_order_detail_db',
     DAILY_SALES_DB : 'daily_sales_db',
-    LOCAL_MEDICINE_DB : 'local_medicine_db',
     USER_REGISTRATION_STORE_DB :'user_detail_db',
     RECIEVE_TYPE_DB : 'recieve_type_db',
     LOGIN_INFO_DB : 'login_info_db',
