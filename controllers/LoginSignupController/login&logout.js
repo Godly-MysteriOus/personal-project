@@ -7,7 +7,17 @@ const {ObjectId} = require('mongodb');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 
-
+let saveSession=(session)=> {
+    return new Promise((resolve, reject) => {
+        session.save(err => {
+            if (err) {
+                reject(new Error('Failed to save session'));
+            } else {
+                resolve(true);
+            }
+        });
+    });
+}
 exports.getLogin = (req,res,next)=>{
     return res.render('Login/login',{
         path:'/login',
@@ -30,7 +40,7 @@ exports.postLogin =async (req,res)=>{
     let transactionSession= await mongoose.startSession();;
     try{
         transactionSession.startTransaction();
-        const loginObj = await loginDetails.findOne({$or:[{emailId:credentialField},{mobileNumber:credentialField}]});
+        const loginObj = await loginDetails.findOne({emailId:credentialField});
         if(!loginObj){
             throw new Error('Failed to find login credentials with provided credentials');
         }
@@ -40,22 +50,26 @@ exports.postLogin =async (req,res)=>{
         }
         let userObj;
         if(loginObj.roleId==1){
-            userObj = await UserDetails.findOne({emailId:ObjectId(loginObj._id),mobileNumber:ObjectId(loginObj._id)});
+            userObj = await UserDetails.findOne({emailId:new ObjectId(loginObj._id),mobileNumber:new ObjectId(loginObj._id)});
         }else if(loginObj.roleId==2){
-            userObj = await sellerDetails.findOne({'storeDetails.emailId':ObjectId(loginObj._id),'storeDetails.contactNumber':ObjectId(loginObj._id)});
+            userObj = await sellerDetails.findOne({'storeDetails.emailId': new ObjectId(loginObj._id),'storeDetails.contactNumber': new ObjectId(loginObj._id)});
         }else{
             throw new Error('Invalid Role Id');
         }
-        await transactionSession.commitTransaction();
-        await transactionSession.endSession();
+        if(!userObj){
+            throw new Error('No user found!!!');
+        }
         req.session.isLoggedIn = true,
+        req.session.roleId = 2;
         req.session.credentials = loginObj;
         req.session.user = userObj;
-        await sessionActions.saveSession(req.session);
+        await saveSession(req.session);
+        await transactionSession.commitTransaction();
+        await transactionSession.endSession();
         return res.status(200).json({
             message:'Successfully Logged in',
             success:true,
-            redirectUrl:'/seller/home',
+            redirectUrl:'seller/listed-products',
         });
     }catch(err){
         transactionSession?.abortTransaction();
@@ -90,12 +104,12 @@ exports.deleteUser = async(req,res)=>{
         transactionSession = mongoose.startSession();
         (await transactionSession).startTransaction();
         if(req.user.roleId==1){
-            const user = await UserDetails.deleteOne({emailId:ObjectId(req.user._id),mobileNumber:ObjectId(req.user._id)})
+            const user = await UserDetails.deleteOne({emailId:new ObjectId(req.user._id),mobileNumber:new ObjectId(req.user._id)})
             if(!user){
                 throw new Error('Failed to delete user record');
             }
         }else if(req.user.roleId==2){
-            const seller = await sellerDetails.deleteOne({emailId:ObjectId(req.user._id),mobileNo:ObjectId(req.user._id)});
+            const seller = await sellerDetails.deleteOne({emailId:new ObjectId(req.user._id),mobileNo:new ObjectId(req.user._id)});
             if(!seller){
                 throw new Error('Failed to delete seller record');
             }

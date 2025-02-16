@@ -39,7 +39,6 @@ const medicalShopDB = new Schema({
     },
     resetToken:{type:String},
     resetTokenExpiration:{type:Date},
-    products:[{type: Schema.Types.ObjectId, ref: DB_CONSTANT.PRODUCT_DB,required:true}],
 });
 module.exports = mongoose.model(DB_CONSTANT.MEDICAL_STORE_DB,medicalShopDB,DB_CONSTANT.MEDICAL_STORE_DB);
 

@@ -73,7 +73,7 @@
                     <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'textHolder',textName:'Password',isTextArea:false, inputType:'password',nameAttribute:'password',inputClassName:'password',placeHolder:'Enter password',isRequired:true,isFile:false,fileType:'',isDisabled:false}) %>
                     <div class="buttonHolder">
                         <button class="button" type="reset">Reset</button>
-                        <button class="submitBtn button" type="submit">Submit</button>
+                        <button class="submitBtn button" type="button">Submit</button>
                     </div>
                 </form>
             </div>
@@ -95,7 +95,7 @@
         const message = document.querySelector('.message');
         submitBtn.addEventListener('click',async(e)=>{
             e.preventDefault();
-            const response = await fetch('<%=url%>signup/seller',{
+            const response = await fetch('<%=url%>login',{
                 method:'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -105,18 +105,12 @@
             });
             const result = await response.json();
             if(result.success){
-                let str = '';
-                if(result.roleId==1){
-                    str = 'customer';
-                }else if(result.roleId==2){
-                    str = 'seller';
-                }
-                window.location.href = `<%=url%>${str}`;
+                window.location.href = `<%=url%>${result.redirectUrl}`;
             }else{
                 message.textContent = result.message,
                 message.classList.remove('message-hidden');
                 setTimeout(() => {
-                    message.classList.add('.message-hidden');
+                    message.classList.add('message-hidden');
                 }, 3000);
             }
         })
