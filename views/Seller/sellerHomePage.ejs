@@ -20,11 +20,13 @@
         <% }else{ %>
             <% for(let product of products ) { %>
                 <div class="product-wrapper">
-                    <div class="productImage"><img src=">" alt=""></div>
-                    <div class="detailsBtn"></div>
+                    <div class="productImage"><img src="<%= product.image %>" alt=""></div>
+                    <div class="productName"><%= product.name %></div>
+                    <!-- details button -->
+                    <%- include('../sellerUtils/detailsButton.ejs',product) %>
                     <div class="moreButtons">
-                        <div><button type="button">Edit</button></div>
-                        <div><button type="button">Delete</button></div>
+                        <%- include('../sellerUtils/editButton.ejs',product) %>
+                        <%- include('../sellerUtils/deleteButton.ejs',product) %>
                     </div>
                 </div>
             <% } %>
