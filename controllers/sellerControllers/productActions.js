@@ -20,9 +20,10 @@ exports.getListedProducts = async(req,res,next)=>{
     };
     const userId = new mongoose.Types.ObjectId(req.user?._id);
     const listedProducts = await productDB.find({sellerId:userId}).populate('productId','productImage');
-    return res.render('Seller/sellerHomePage',{
+    return res.render(path.join('Seller','sellerHomePage'),{
         products : listedProducts || [],
         userDetails : userDetail,
+        path:path,
     });
 };
 
@@ -33,7 +34,7 @@ exports.postDeleteProduct = async(req,res,next)=>{
         return res.json({
             success: true,
             message: 'Successfully deleted product',
-            redirectUrl : 'seller/listed-products',
+            redirectUrl : path.join('seller','listed-products'),
         });
     }catch(err){
         console.log('Error while deleting product',err.stack);
@@ -44,7 +45,8 @@ exports.postDeleteProduct = async(req,res,next)=>{
     }
 }
 exports.getAddProduct = (req,res,next)=>{
-    return res.render('Seller/addProductPage',{   
+    
+    return res.render(path.join('Seller','addProductPage'),{   
 
     });
 };
@@ -57,7 +59,7 @@ exports.postAddProduct  =async (req,res,next)=>{
         return res.json({
             success:true,
             message: 'Product added succesfully!!',
-            redirectUrl : 'seller/listed-products',
+            redirectUrl : path.join('seller','listed-products'),
         });
     }catch(err){
         console.log('Failed to add product',err.stack);
@@ -72,7 +74,7 @@ exports.getEditProduct = async(req,res,next)=>{
     const productId = new ObjectId(req.params.productId);
     const userId = new ObjectId(req.user._id);
     const product = findProduct(productId,userId);
-    return res.render('Seller/editProduct',{
+    return res.render(path.join('Seller','editProduct'),{
         product:product || [],
     });
 }
@@ -88,7 +90,7 @@ exports.postEditProduct = async(req,res,next)=>{
         return res.json({
             success:true,
             message: 'Successfully editted product details',
-            redirectUrl : 'seller/listed-products',
+            redirectUrl : path.join('seller','listed-products'),
         });
     }catch(err){
         console.log('Error editting product details',err.stack);
@@ -100,7 +102,7 @@ exports.postEditProduct = async(req,res,next)=>{
 }
 
 exports.getBulkUpload = (req,res,next)=>{
-    return res.render('Seller/bulkUploadPage');
+    return res.render(path.join('Seller','bulkUploadPage'),{});
 };
 exports.postBulkAddProduct = async(req,res,next)=>{
     const productList = req.body;
