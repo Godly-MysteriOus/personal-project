@@ -8,16 +8,18 @@ const express = require('express');
 const path = require('path');
 const dbURI = require('./utils/Connection');
 const credential = require('./config');
+const {Redis} = require('@upstash/redis');
 const app = express();
 // const cors = require('cors');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
+//file storage middlewares
 cloudinary.config({
-    cloud_name:'ds7uhsx2m',
-    api_key:'992771752558542',
-    api_secret:'1nB5sD3AeK--vHr5D_c6QixjZFo',
+    cloud_name:credential.cloudinaryCloudName,
+    api_key:credential.cloudinaryApiKey,
+    api_secret:credential.cloudinaryApiSecret,
 });
 const storage = new CloudinaryStorage({
     cloudinary:cloudinary,
@@ -35,8 +37,16 @@ const storage = new CloudinaryStorage({
         }
     } 
 });
+const redis = new Redis({
+    url : credential.upstashRedisUrl,
+    token: credential.upstashRedisToken,
+});
+
+
 const upload= multer({storage});
-module.exports = {upload,cloudinary};
+module.exports = {upload,cloudinary,redis};
+
+// body parsers and ejs engines
 app.use(bodyParser.urlencoded({extended:false}));
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -49,6 +59,7 @@ const store = new MongoDBStore({
 //     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 //     credentials: true // Allow cookies if necessary
 // }));
+
 app.use(
     session({
         secret: 'my secret',
@@ -75,7 +86,7 @@ app.use((req,res,next)=>{
                 req.user = result; 
                 next();
             })
-            .catch(()=>console.log('Failed to find user from session Id'));
+            .catch((err)=>console.log('Failed to find seller from session Id',err.stack));
         }
     }
 });
@@ -112,6 +123,9 @@ app.use('/',(req,res,next)=>{
         path: '/homePage',
    });
 });
+app.use((req,res,next)=>{
+    res.send('<h1>Page not found</h1>')
+})
 
 
 connectionProvider.devDBConnection(app,3100);

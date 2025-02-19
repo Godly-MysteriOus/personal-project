@@ -1,0 +1,88 @@
+<style>
+    .searchBar{
+        background-color: white;
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        width: 40vw;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+    }
+    .searchInput,.suggestionBox{
+        width: 28vw;
+    }
+    .suggestionBox{
+        position: absolute;
+        z-index: 5;
+        height: fit-content;
+        background: rgb(246, 246, 246);
+    }
+    .suggestionBox-hidden{
+        display: none;
+    }
+    .optionField{
+        padding: 0.5rem;
+        border-bottom: 1px solid rgb(85, 85, 85);
+        cursor: pointer;
+    }
+</style>
+<div class="searchBar">
+    <div class="text">Search Here</div>
+    <div class="searchBox">
+        <input type="text" class="searchInput">
+        <div class="suggestionBox suggestionBox-hidden"></div>
+    </div>
+</div>
+<script>
+    let dropdownItemsNumber,currentState=-1;
+    const searchInputField = document.querySelector('.searchInput');
+    const suggesstions = document.querySelector('.suggestionBox');
+    searchInputField.addEventListener('input',async(e)=>{
+        const val = String(searchInputField.value);
+        if(val.length>=3){
+            // make a API call to get suggesstions
+            const response = await fetch('<%=url%>utils/searchProduct',{
+                method:'POST',
+                headers : { 'Content-Type': 'application/json' },
+                body:JSON.stringify({
+                    medicineName: val,
+                }),
+            });
+            const result = await response.json();
+            if(result.success){
+                //get data and place it in dropDown item
+                suggesstions.classList.remove('suggestionBox-hidden');
+                suggesstions.innerHTML = '';
+                dropdownItemsNumber = result.data.length;
+                result.data.forEach((item,i) => {
+                    const option = document.createElement('option');
+                    option.textContent = item.nameOfMedicine;
+                    option.value = item.productId;
+                    option.classList.add('optionField');
+                    option.dataset.navigateoption = i;
+                    suggesstions.appendChild(option);
+                });
+            }else{
+                //display error message
+                message.textContent = result.message;
+                message.classList.remove('message-hidden');
+                setTimeout(()=>{
+                    message.classList.add('message-hidden');
+                },3000);
+            }
+        }
+    });
+    suggesstions.addEventListener('click',(e)=>{
+        console.log(e.target.textContent);
+        searchInputField.value = e.target.textContent;
+        suggesstions.classList.add('suggestionBox-hidden');
+    });
+    searchInputField.addEventListener('click',(e)=>{
+        suggesstions.classList.remove('suggestionBox-hidden');
+    });
+    window.addEventListener('click',(e)=>{
+        if(e.target.getAttribute('class')!='searchInput' && e.target.getAttribute('class')!='optionField'){
+            suggesstions.classList.add('suggestionBox-hidden');
+        }
+    })
+</script>

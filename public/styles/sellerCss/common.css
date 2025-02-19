@@ -13,7 +13,8 @@ body{
     overflow-x: hidden;
     height: fit-content;
 }
+
 footer{
-    background: rgb(5, 174, 160);
-    height: 4.1rem;
+    background-color: rgb(5, 174, 160);
+    height: 3.5rem;
 }

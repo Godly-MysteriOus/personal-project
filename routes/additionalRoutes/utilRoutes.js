@@ -9,4 +9,6 @@ router.post('/cityOfState',utilController.getAllCitiesOfState);
 
 router.post('/pincode',utilController.getPincodeValidation);
 
+router.post('/searchProduct',utilController.searchBarSeller);
+
 module.exports = router;

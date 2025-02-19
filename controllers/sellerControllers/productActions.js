@@ -1,6 +1,7 @@
 const path = require('path');
 const productDBPath = path.join('..','..','models','productDB');
 const productDB = require(productDBPath);
+const redis = require('../../main').redis;
 const mongoose = require('mongoose');
 function findProduct(productId,userId){
     return productDB.findOne({productId:productId,sellerId:userId}).then(result=>result);
@@ -45,9 +46,17 @@ exports.postDeleteProduct = async(req,res,next)=>{
     }
 }
 exports.getAddProduct = (req,res,next)=>{
-    
+    const storeName = req.user?.storeDetails.storeName;
+    const ownerName =  req.user?.storeDetails.ownerName;
+    const storeLogo =  req.user?.storeDetails.logoDetails.logo;
+    const userDetail = {
+        storeName:storeName,
+        ownerName:ownerName,
+        storeLogo:storeLogo,
+    };
+    const userId = new mongoose.Types.ObjectId(req.user?._id);
     return res.render(path.join('Seller','addProductPage'),{   
-
+        userDetails:userDetail,
     });
 };
 exports.postAddProduct  =async (req,res,next)=>{

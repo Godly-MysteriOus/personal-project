@@ -1,5 +1,6 @@
 <style>
     .footer-wrapper{
+        background-color: rgb(5, 174, 160);
         width: 100%;
         padding: 0.5rem 2rem;
         display: flex;
@@ -12,7 +13,10 @@
         cursor: pointer;
     }
     .footerItemsLogo img{
-        width: 1.75rem;
+        width: 1.5rem;
+    }
+    .text{
+        font-size: 13px;
     }
     .notificationNumber{
         position: absolute;
@@ -25,7 +29,6 @@
     }
 </style>
 <footer>
-    
     <div class="footer-wrapper">
         <div class="item-container">
             <div class="footerItemsLogo"><img src="/images/add-product.png" alt="account-image" onclick="window.location.href = `<%=url%>seller/add-product`;"></div>
