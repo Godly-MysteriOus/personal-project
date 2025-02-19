@@ -1,9 +1,20 @@
 <%- include('../utils/Starter.ejs') %>
 <!-- add custom css here -->
+<link rel="stylesheet" href="/styles/sellerCss/sellerHeader.css">
 <%- include('../utils/AfterLinkStyles.ejs') %>
+<style>
+    .searchOperation{
+        border: 1px solid black;
+        height: 3rem;
+        display: grid;
+        place-items: center;
+    }
+</style>
 <!-- add header here -->
-
-
+<%- include('../sellerUtils/sellerHeader.ejs') %>
+<div class="searchOperation">
+    <%- include('../utils/searchBox-addProduct') %>
+</div>
 <body>
     
 </body>
