@@ -19,6 +19,6 @@ module.exports = {
     cloudinaryApiSecret : process.env.cloudinary_api_secret,
 
     //upstash redis key
-    upstashRedisUrl : process.env.upstash_redis_url,
-    upstasRedisToken : process.env.upstash_redis_token,
+    upstashRedisUrl : process.env.UPSTASH_REDIS_REST_URL,
+    upstashRedisToken : process.env.UPSTASH_REDIS_REST_TOKEN,
 }
