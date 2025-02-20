@@ -1,0 +1,8 @@
+<div class="fieldHolder">
+    <div class="textHolder"><%=text%></div>
+    <% if (isInput) { %>
+        <input type="<%= type %>" class="<%= className %>" value="<%= value %>" <%if(isDisabled){%>disabled<%}%> >
+    <% }else{ %>
+    <div class="inputHolder <%= className %>"><%= value %></div>
+    <%}%>
+</div>

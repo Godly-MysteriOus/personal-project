@@ -1,21 +1,38 @@
 <%- include('../sellerUtils/starter.ejs') %>
 <!-- add custom css here -->
 <link rel="stylesheet" href="/styles/sellerCss/sellerHeader.css">
-
+<link rel="stylesheet" href="/styles/sellerCss/addProductPage.css">
 <%- include('../utils/AfterLinkStyles.ejs') %>
-<style>
-    .body-wrapper{
-        height: calc(100vh - 10.8rem);
-        overflow-y: scroll;
-    }
-</style>
 <!-- add header here -->
-<%- include('../sellerUtils/sellerHeader.ejs') %>
-<div class="searchOperation">
-    <%- include('../utils/searchBox.ejs',{button:path}) %>
-</div>
 <body>
-    <div class="body-wrapper"></div>
+    <%- include('../sellerUtils/sellerHeader.ejs') %>
+    <div class="searchOperation">
+        <%- include('../utils/searchBox.ejs',{button:path,pageTitle:'Add Product'}) %>
+    </div>
+    <div class="body-wrapper">
+        <form class="addProductForm">
+            <div class="productImageHolder"><img src="" alt=""></div>
+            <div class="produtDetailHolder">
+                <%- include('../sellerUtils/InputField.ejs',{text:'Product Name',className:'productName',value:'',isInput:false,isDisabled:true,type:''}) %>
+                <%- include('../sellerUtils/InputField.ejs',{text:'Manufacturer',className:'productManufacturer',value:'',isInput:false,isDisabled:true,type:''}) %>
+                <%- include('../sellerUtils/InputField.ejs',{text:'Packaging Detail',className:'productPackagingInfo',value:'',isInput:false,isDisabled:true,type:''}) %>
+                <%- include('../sellerUtils/InputField.ejs',{text:'Product Type',className:'productType',value:'',isInput:false,isDisabled:true,type:''}) %>
+                <div class="productPricing">
+                    <%- include('../sellerUtils/InputField.ejs',{text:'MRP',className:'originalPrice priceCss',value:'',isInput:true,isDisabled:true,type:'number'}) %>
+                    <%- include('../sellerUtils/InputField.ejs',{text:'Set price',className:'offeredPrice priceCss',value:'',isInput:true,isDisabled:false,type:'number'}) %>
+                </div>
+                <%- include('../sellerUtils/InputField.ejs',{text:'Use',className:'productUsage',value:'',isInput:false,isDisabled:true,type:''}) %>
+            </div>
+            <div class="buttonHolder">
+                <button class="reset addProductBtn" type="reset">Reset</button>
+                <button class="submit addProductBtn" type="button">Submit</button>
+            </div>
+        </form>
+    </div>
+    <%- include('../sellerUtils/footer.ejs') %>
 </body>
-<%- include('../sellerUtils/footer.ejs') %>
+
+<script>
+    
+</script>
 <!-- add footer here -->

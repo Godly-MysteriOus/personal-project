@@ -30,14 +30,24 @@
     .buttonCss{
         padding: 0.15rem 1rem;
     }
+    .buttonHolderSeachBox{
+        width: fit-content;
+    }
+    .pageName{
+        padding: 0rem 1rem;
+        position: absolute;
+        left: 0;
+    }
 </style>
+<div class="pageName"><h2><%= pageTitle %></h2></div>
 <div class="searchBar">
     <div class="searchText">Search Here</div>
     <div class="searchBox">
         <input type="text" class="searchInput">
+        <input type="hidden" class="medicineId" value="">
         <div class="suggestionBox suggestionBox-hidden"></div>
     </div>
-    <div class="buttonHolder">
+    <div class="buttonHolderSearchBox">
         <% if (button!='Seller/addProductPage') { %>
             <button class="searchBtn buttonCss" type="button">Search</button>
         <% }else{ %> 
@@ -49,6 +59,7 @@
     // this is common js for any page which uses searchBox
     const searchInputField = document.querySelector('.searchInput');
     const suggesstions = document.querySelector('.suggestionBox');
+    const medicineIdValue = document.querySelector('.medicineId');
     searchInputField.addEventListener('input',async(e)=>{
         const val = String(searchInputField.value);
         if(val.length>=3){
@@ -88,6 +99,8 @@
     suggesstions.addEventListener('click',(e)=>{
         console.log(e.target.textContent);
         searchInputField.value = e.target.textContent;
+        console.log(e.target.textContent,e.target.value);
+        medicineIdValue.value = e.target.value;
         suggesstions.classList.add('suggestionBox-hidden');
     });
     // show suggesstionBox if you click on input field to reselect option
@@ -101,11 +114,3 @@
         }
     })
 </script>
-
-<% if (path=='Seller/addProductPage') { %>
-    <!-- scipt to add product in inventory -->
-<% }else if(path=='Seller/sellerHomePage'){ %>
-    <!-- script to see specific product listed by shop -->
-<%}else if(path=="something more"){%>
-    <!-- TBD -->
-<%}%>
