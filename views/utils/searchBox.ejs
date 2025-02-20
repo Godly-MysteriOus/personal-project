@@ -3,13 +3,15 @@
         background-color: white;
         display: flex;
         justify-content: space-between;
-        gap: 1rem;
-        width: 40vw;
-        justify-content: center;
+        align-items: center;
+        width: 45vw;
         padding: 0.75rem 1rem;
     }
     .searchInput,.suggestionBox{
         width: 28vw;
+    }
+    .searchInput{
+        padding: 0.15rem 0.5rem;
     }
     .suggestionBox{
         position: absolute;
@@ -25,18 +27,39 @@
         border-bottom: 1px solid rgb(85, 85, 85);
         cursor: pointer;
     }
+    .buttonCss{
+        padding: 0.15rem 1rem;
+    }
+    .buttonHolderSeachBox{
+        width: fit-content;
+    }
+    .pageName{
+        padding: 0rem 1rem;
+        position: absolute;
+        left: 0;
+    }
 </style>
+<div class="pageName"><h2><%= pageTitle %></h2></div>
 <div class="searchBar">
-    <div class="text">Search Here</div>
+    <div class="searchText">Search Here</div>
     <div class="searchBox">
         <input type="text" class="searchInput">
+        <input type="hidden" class="medicineId" value="">
         <div class="suggestionBox suggestionBox-hidden"></div>
+    </div>
+    <div class="buttonHolderSearchBox">
+        <% if (button!='Seller/addProductPage') { %>
+            <button class="searchBtn buttonCss" type="button">Search</button>
+        <% }else{ %> 
+            <button class="addBtn buttonCss" type="button">Add</button>
+        <%}%>
     </div>
 </div>
 <script>
-    let dropdownItemsNumber,currentState=-1;
+    // this is common js for any page which uses searchBox
     const searchInputField = document.querySelector('.searchInput');
     const suggesstions = document.querySelector('.suggestionBox');
+    const medicineIdValue = document.querySelector('.medicineId');
     searchInputField.addEventListener('input',async(e)=>{
         const val = String(searchInputField.value);
         if(val.length>=3){
@@ -72,14 +95,19 @@
             }
         }
     });
+    // copy suggestion text to input field
     suggesstions.addEventListener('click',(e)=>{
         console.log(e.target.textContent);
         searchInputField.value = e.target.textContent;
+        console.log(e.target.textContent,e.target.value);
+        medicineIdValue.value = e.target.value;
         suggesstions.classList.add('suggestionBox-hidden');
     });
+    // show suggesstionBox if you click on input field to reselect option
     searchInputField.addEventListener('click',(e)=>{
         suggesstions.classList.remove('suggestionBox-hidden');
     });
+    // hide suggesstion when clicked outside it
     window.addEventListener('click',(e)=>{
         if(e.target.getAttribute('class')!='searchInput' && e.target.getAttribute('class')!='optionField'){
             suggesstions.classList.add('suggestionBox-hidden');

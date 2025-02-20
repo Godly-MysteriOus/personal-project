@@ -1,6 +1,3 @@
-const express = require('express');
-const router = express.Router();
-
 exports.sellerAuthentication = (req,res,next)=>{
     if(req.session.isLoggedIn && req.session.roleId==2){
         next();

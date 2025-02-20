@@ -38,4 +38,8 @@ router.post('/add-bulk-products',authRoute.sellerAuthentication,productControlle
 // router.get('/accounts',authRoute.sellerAuthentication,accountController);
 
 
+//utility routes
+router.post('/get-listed-product',authRoute.sellerAuthentication,productController.getListedProducts);
+
+
 module.exports = router;

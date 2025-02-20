@@ -5,11 +5,15 @@
 <%- include('../sellerUtils/sellerHeader.ejs') %>
 <style>
     .body-wrapper{
-        height: calc(100vh - 7.7rem);
+        padding: 0.5rem 2rem;
+        height: calc(100vh - 10.8rem);
         overflow-y: scroll;
     }
 </style>
 <body>
+    <div class="searchOperation">
+        <%- include('../utils/searchBox.ejs',{button:path}) %>
+    </div>
     <div class="body-wrapper">
         <% if (products.length == 0) { %>
             <div><h3>No product listed yet...</h3></div>

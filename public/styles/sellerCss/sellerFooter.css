@@ -1,0 +1,32 @@
+footer{
+    position: sticky;
+    bottom: 0;
+}
+.footer-wrapper{
+    background-color: rgb(5, 174, 160);
+    width: 100%;
+    padding: 0.5rem 2rem;
+    display: flex;
+    justify-content: space-evenly;
+}
+.item-container{
+    display: grid;
+    place-items: center;
+    width: fit-content;
+    cursor: pointer;
+}
+.footerItemsLogo img{
+    width: 1.5rem;
+}
+.text{
+    font-size: 13px;
+}
+.notificationNumber{
+    position: absolute;
+   color: white;
+   z-index: 5;
+   right: 0;
+   border-radius: 50%;
+   font-size: 12px;
+   background-color: red;
+}

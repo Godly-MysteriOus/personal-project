@@ -101,7 +101,6 @@ const loginLogoutDeleteRoutes = require('./routes/authRoutes/login&logout');
 const featureRoutes = require('./routes/additionalRoutes/featureRoutes');
 const utilRoutes = require('./routes/additionalRoutes/utilRoutes');
 const sellerRoutes = require('./routes/sellerRoutes/sellerRoutes');
-const { default: mongoose } = require('mongoose');
 app.use(express.static(path.join(__dirname,'public')));
 
 
