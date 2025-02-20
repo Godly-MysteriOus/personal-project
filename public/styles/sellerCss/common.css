@@ -18,3 +18,9 @@ footer{
     background-color: rgb(5, 174, 160);
     height: 3.5rem;
 }
+.searchOperation{
+    border-bottom: 2px solid rgba(0, 0, 0, 0.444);
+    height: fit-content;
+    display: grid;
+    place-items: center;
+}

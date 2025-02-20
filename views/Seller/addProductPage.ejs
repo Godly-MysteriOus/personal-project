@@ -1,24 +1,18 @@
-<%- include('../utils/Starter.ejs') %>
+<%- include('../sellerUtils/starter.ejs') %>
 <!-- add custom css here -->
 <link rel="stylesheet" href="/styles/sellerCss/sellerHeader.css">
 
 <%- include('../utils/AfterLinkStyles.ejs') %>
 <style>
-    .searchOperation{
-        border: 1px solid black;
-        height: 3rem;
-        display: grid;
-        place-items: center;
-    }
     .body-wrapper{
-        height: calc(100vh - 10.7rem);
+        height: calc(100vh - 10.8rem);
         overflow-y: scroll;
     }
 </style>
 <!-- add header here -->
 <%- include('../sellerUtils/sellerHeader.ejs') %>
 <div class="searchOperation">
-    <%- include('../utils/searchBox-addProduct') %>
+    <%- include('../utils/searchBox.ejs',{button:path}) %>
 </div>
 <body>
     <div class="body-wrapper"></div>
