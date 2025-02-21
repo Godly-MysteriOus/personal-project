@@ -9,6 +9,7 @@ const path = require('path');
 const dbURI = require('./utils/Connection');
 const credential = require('./config');
 const {Redis} = require('@upstash/redis');
+const localStorageKey = require('./LocalStorageKey');
 const app = express();
 // const cors = require('cors');
 const multer = require('multer');
@@ -93,6 +94,7 @@ app.use((req,res,next)=>{
 app.use((req,res,next)=>{
     res.locals.url = credential.hostURI;
     res.locals.googleMapKey = credential.googleMapAPIKey,
+    res.locals.localStorageKey = localStorageKey;
     next();
 })
 app.use(express.json());
