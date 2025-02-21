@@ -10,6 +10,7 @@ router.post('/delete-product:productId',authRoute.sellerAuthentication,productCo
 
 //add single product
 router.get('/add-product',authRoute.sellerAuthentication,productController.getAddProduct);
+router.post('/load-details',authRoute.sellerAuthentication,productController.loadProductDetails);
 router.post('/add-product',authRoute.sellerAuthentication,productController.postAddProduct);
 
 // edit product

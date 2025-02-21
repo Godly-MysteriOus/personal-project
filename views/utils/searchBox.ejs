@@ -1,44 +1,4 @@
-<style>
-    .searchBar{
-        background-color: white;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 45vw;
-        padding: 0.75rem 1rem;
-    }
-    .searchInput,.suggestionBox{
-        width: 28vw;
-    }
-    .searchInput{
-        padding: 0.15rem 0.5rem;
-    }
-    .suggestionBox{
-        position: absolute;
-        z-index: 5;
-        height: fit-content;
-        background: rgb(246, 246, 246);
-    }
-    .suggestionBox-hidden{
-        display: none;
-    }
-    .optionField{
-        padding: 0.5rem;
-        border-bottom: 1px solid rgb(85, 85, 85);
-        cursor: pointer;
-    }
-    .buttonCss{
-        padding: 0.15rem 1rem;
-    }
-    .buttonHolderSeachBox{
-        width: fit-content;
-    }
-    .pageName{
-        padding: 0rem 1rem;
-        position: absolute;
-        left: 0;
-    }
-</style>
+<link rel="stylesheet" href="/styles/sellerCss/searchBox.css">
 <div class="pageName"><h2><%= pageTitle %></h2></div>
 <div class="searchBar">
     <div class="searchText">Search Here</div>
@@ -60,6 +20,7 @@
     const searchInputField = document.querySelector('.searchInput');
     const suggesstions = document.querySelector('.suggestionBox');
     const medicineIdValue = document.querySelector('.medicineId');
+    var medicineDataCacheOrDB;
     searchInputField.addEventListener('input',async(e)=>{
         const val = String(searchInputField.value);
         if(val.length>=3){
@@ -77,6 +38,7 @@
                 suggesstions.classList.remove('suggestionBox-hidden');
                 suggesstions.innerHTML = '';
                 dropdownItemsNumber = result.data.length;
+                medicineDataCacheOrDB = result.data;
                 result.data.forEach((item,i) => {
                     const option = document.createElement('option');
                     option.textContent = item.nameOfMedicine;

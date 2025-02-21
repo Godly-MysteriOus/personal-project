@@ -1,6 +1,7 @@
 footer{
     position: sticky;
     bottom: 0;
+    z-index: 5;
 }
 .footer-wrapper{
     background-color: rgb(5, 174, 160);
