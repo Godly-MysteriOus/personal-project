@@ -3,6 +3,8 @@ const productDBPath = path.join('..','..','models','productDB');
 const productDB = require(productDBPath);
 const redis = require('../../main').redis;
 const mongoose = require('mongoose');
+const { validationResult } = require('express-validator');
+const centralMedicineDB = require('../../models/centralMedicineDB');
 function findProduct(productId,userId){
     return productDB.findOne({productId:productId,sellerId:userId}).then(result=>result);
 }
@@ -10,6 +12,32 @@ function createProduct(productId,userId,quantity,price,transactionSession){
     return productDB.create({productId:productId,sellerId:userId,quantity:quantity,price:price,buyers:0,ratingCount:0,reviews:[]},{session:transactionSession}).then(result=>result.toObject());
 }
 // req.user contains the data of loggedIn user
+
+// exports.searchProductSeller = async(req,res,next)=>{
+//     //sanitize medicine Id
+//     const errors = validationResult(req);
+//     if(errors.array().length!=0){
+//         return res.status(400).json({
+//             success:false,
+//             message:errors.array()[0].msg,
+//         })
+//     }
+//     const {medicineId} = req.body;
+//     try{
+//         const listedMedicine = productDB.find({sellerId: req.session.user._id,productId: new mongoose.Types.ObjectId(medicineId)});
+//         return res.status({
+//             succcess:true,
+//             products:listedMedicine,
+//             message:'Fetched listed product successfully',
+//         });
+//     }catch(err){
+//         console.log('Encountered problem while fetching listed products',err.stack);
+//         return res.status(400).json({
+//             success:false,
+//             message:err.message,
+//         })
+//     }
+// }
 exports.getListedProducts = async(req,res,next)=>{
     const storeName = req.user?.storeDetails.storeName;
     const ownerName =  req.user?.storeDetails.ownerName;
@@ -24,7 +52,7 @@ exports.getListedProducts = async(req,res,next)=>{
     return res.render(path.join('Seller','sellerHomePage'),{
         products : listedProducts || [],
         userDetails : userDetail,
-        path:path,
+        path:"Seller/sellerHomePage",
     });
 };
 
@@ -54,9 +82,9 @@ exports.getAddProduct = (req,res,next)=>{
         ownerName:ownerName,
         storeLogo:storeLogo,
     };
-    const userId = new mongoose.Types.ObjectId(req.user?._id);
     return res.render(path.join('Seller','addProductPage'),{   
         userDetails:userDetail,
+        path:'Seller/addProductPage',
     });
 };
 exports.postAddProduct  =async (req,res,next)=>{
@@ -147,4 +175,23 @@ exports.postBulkAddProduct = async(req,res,next)=>{
             message:err.messsage,
         });
     }
+}
+
+exports.loadProductDetails = async(req,res,next)=>{
+    const {medicineId} = req.body;
+    try{
+        const findProduct = await centralMedicineDB.findOne({productId:medicineId}).select('productImage name manufacturer packagingDetails productForm MRP useOf').lean();
+        return res.status(200).json({
+            success:true,
+            message:'Successfully fetched data',
+            data:findProduct,
+        })
+    }catch(err){
+        console.log('Error while fetching product details',err.stack);
+        return res.status(400).json({
+            success:false,
+            message: 'Error fetching data',
+        });
+    }
+
 }

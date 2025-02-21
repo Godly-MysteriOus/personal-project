@@ -5,13 +5,17 @@
 <%- include('../utils/AfterLinkStyles.ejs') %>
 <!-- add header here -->
 <body>
+    <script>
+        const message = document.querySelector('.message');
+    </script>
+    <%- include('../utils/MessageBox.ejs') %>
     <%- include('../sellerUtils/sellerHeader.ejs') %>
     <div class="searchOperation">
         <%- include('../utils/searchBox.ejs',{button:path,pageTitle:'Add Product'}) %>
     </div>
     <div class="body-wrapper">
         <form class="addProductForm">
-            <div class="productImageHolder"><img src="" alt=""></div>
+            <div class="productImageHolder"><img src="" alt="No Product" class="productImage"></div>
             <div class="produtDetailHolder">
                 <%- include('../sellerUtils/InputField.ejs',{text:'Product Name',className:'productName',value:'',isInput:false,isDisabled:true,type:''}) %>
                 <%- include('../sellerUtils/InputField.ejs',{text:'Manufacturer',className:'productManufacturer',value:'',isInput:false,isDisabled:true,type:''}) %>
@@ -33,6 +37,60 @@
 </body>
 
 <script>
-    
+    /*
+    const searchInputField = document.querySelector('.searchInput');
+    const suggesstions = document.querySelector('.suggestionBox');
+    const medicineIdValue = document.querySelector('.medicineId');
+
+    -------------- already declared in searchBox -------------------------
+    */
+   const addBtnSearchBox = document.querySelector('.addBtn');
+
+   //fields
+    const productName = document.querySelector('.productName');
+    const productManufacturer = document.querySelector('.productManufacturer');
+    const productPackagingInfo = document.querySelector('.productPackagingInfo');
+    const productType = document.querySelector('.productType');
+    const originalPrice = document.querySelector('.originalPrice');
+    const productUsage = document.querySelector('.productUsage');
+    const productImage = document.querySelector('.productImage');
+
+   addBtnSearchBox.addEventListener('click',async(e)=>{
+        const keyName = '<%= localStorageKey.suggestions %>';
+        const suggesstionList = JSON.parse(localStorage.getItem(keyName));
+        const abc = suggesstionList.find(item=>item.name==searchInputField.value);
+        if(abc==undefined){
+            message.textContent = 'Invalid Medicine Name. Cannot add product!';
+            message.classList.remove('message-hidden');
+            setTimeout(()=>{
+                message.classList.add('message-hidden');
+            },3000);
+            return;
+        };
+        const response  = await fetch('<%= url %>seller/load-details',{
+            method:'POST',
+            headers:{ 'Content-Type': 'application/json' },
+            body : JSON.stringify({
+                medicineId: medicineIdValue.value,
+            }),
+        });
+        const result = await response.json();
+        if(result.success){
+            const data = result.data;
+            productName.textContent = data.name;
+            productManufacturer.textContent = data.manufacturer;
+            productPackagingInfo.textContent = data.packagingDetails;
+            productType.textContent = data.productForm;
+            productUsage.textContent = data.useOf;
+            originalPrice.value = data.MRP;
+            productImage.setAttribute('src',data.productImage);
+        }else{
+            message.textContent = result.message;
+            message.classList.remove('message-hidden');
+            setTimeout(()=>{
+                message.classList.add('message-hidden');
+            },3000);
+        }
+   });
 </script>
 <!-- add footer here -->

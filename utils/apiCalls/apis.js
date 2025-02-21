@@ -72,47 +72,24 @@ exports.getPincodeValidation= async(req,res,next)=>{
     }
 }
 exports.searchBarSeller = async(req,res,next)=>{
+    console.log('we are here');
     const reqData = req.body.medicineName; 
-    if(String(reqData).length<3){
-        return;
-    }
-    const cachedProducts = await redis.get('medicineSuggestions');
-    if(cachedProducts && cachedProducts.length>=1){
-        //for now I will be returning entire product details which should not be the case, and it shall be like only required data should be passed so that seller can list his product
-        const desiredProducts = cachedProducts.filter(item=> String(item.nameOfMedicine).toLowerCase().includes(reqData.toLowerCase()));
-        if(desiredProducts.length!=0){
-            return res.status(200).json({
-                success:true,
-                data: desiredProducts,
-                message:'TMC',
-            });
+    //fetch data from db
+    try{
+        let suggestions = await centralMedicineDB.find({name:{$regex:new RegExp(reqData,'i')}}).select('name productId -_id').limit(30);
+        if(!suggestions){
+            throw new Error('Failed to fetch data from Database');
         }
-    }
-    let suggestions = await centralMedicineDB.find({name:{$regex:new RegExp(reqData,'i')}}).limit(10);
-    if(!suggestions){
-        return res.status(400).json({
-            success:false,
-            message:'Failed to fetch data from Database',
-            data:[],
-        });
-    }
-    suggestions = suggestions.map(item=> {
-        return {
-            nameOfMedicine :  item.name,
-            productId : item.productId,
-        }
-    });
-    const searchSuggestions = await redis.set('medicineSuggestions',JSON.stringify(suggestions), {ex:3*60});
-    if(!searchSuggestions){
-        return res.status(400).json({
-            success:false,
-            message:'Failed to store data in Memory',
+        return res.status(200).json({
+            success:true,
             data:suggestions,
+            message:'Fetched data successfully',
+        });
+    }catch(err){
+        console.log('Failed to fetch product for searchBar',err.stack);
+        return res.status(400).json({
+            success:false,
+            message : err.message,
         });
     }
-    return res.status(200).json({
-        success:true,
-        data:suggestions,
-        message:'Fetched data successfully',
-    });
 }
