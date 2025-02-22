@@ -1,7 +1,6 @@
 const path = require('path');
 const productDBPath = path.join('..','..','models','productDB');
 const productDB = require(productDBPath);
-const redis = require('../../main').redis;
 const mongoose = require('mongoose');
 const { validationResult } = require('express-validator');
 const centralMedicineDB = require('../../models/centralMedicineDB');
@@ -38,6 +37,7 @@ function createProduct(productId,userId,quantity,price,transactionSession){
 //         })
 //     }
 // }
+
 exports.getListedProducts = async(req,res,next)=>{
     const storeName = req.user?.storeDetails.storeName;
     const ownerName =  req.user?.storeDetails.ownerName;
@@ -48,7 +48,7 @@ exports.getListedProducts = async(req,res,next)=>{
         storeLogo:storeLogo,
     };
     const userId = new mongoose.Types.ObjectId(req.user?._id);
-    const listedProducts = await productDB.find({sellerId:userId}).populate('productId','productImage');
+    const listedProducts = await productDB.find({sellerId:userId}).populate('productId','productId productImage name');
     return res.render(path.join('Seller','sellerHomePage'),{
         products : listedProducts || [],
         userDetails : userDetail,
@@ -87,6 +87,7 @@ exports.getAddProduct = (req,res,next)=>{
         path:'Seller/addProductPage',
     });
 };
+//working fine
 exports.postAddProduct  =async (req,res,next)=>{
     const{productId,quantity,price} = req.body;
     // throw if any validation error

@@ -1,5 +1,6 @@
 const csc = require('country-state-city');
-const redis = require('../../main').redis;
+const mongoose = require('mongoose');
+const productDB = require('../../models/productDB');
 const centralMedicineDB = require('../../models/centralMedicineDB');
 exports.getAllStatesOfIndia = (req,res,next)=>{
     try{
@@ -71,7 +72,7 @@ exports.getPincodeValidation= async(req,res,next)=>{
         });
     }
 }
-exports.searchBarSeller = async(req,res,next)=>{
+exports.searchBarSellerAddProduct = async(req,res,next)=>{
     const reqData = req.body.medicineName; 
     //fetch data from db
     try{
@@ -89,6 +90,30 @@ exports.searchBarSeller = async(req,res,next)=>{
         return res.status(400).json({
             success:false,
             message : err.message,
+        });
+    }
+}
+
+exports.searchBarSellerListedProduct = async(req,res,next)=>{
+    try{
+        const userId = new mongoose.Types.ObjectId(req.user?._id);
+        const listedProducts = await productDB.find({sellerId:userId}).populate('productId','productId productImage name');
+        const uiData = listedProducts.map(item=>{
+            return {
+                name :  item.productId.name,
+                productId: item.productId.productId,
+            }
+        });
+        return res.status(200).json({
+            success:true,
+            message:'Successfully Fetched data',
+            data:uiData,
+        });
+    }catch(err){
+        console.log('Unable to fetch data',err.stack);
+        return res.status(400).json({
+            success:false,
+            message:'Error Fetching data',
         });
     }
 }
