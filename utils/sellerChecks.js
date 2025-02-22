@@ -13,7 +13,6 @@ exports.priceCheck = (offerPrice)=>{
 
 exports.quantityCheck = (quantity)=>{
     return check(quantity).custom(val=>{
-        console.log(val);
         if(Number(val)<1){
             throw new Error('Quantity cannot be less than 1');
         }

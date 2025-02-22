@@ -108,7 +108,6 @@ exports.postAddProduct  =async (req,res,next)=>{
         if(!doesProductExists){
             throw new Error('Unable to get details for entered product name');
         }
-        console.log(doesProductExists);
         // find whether the product is already listed or not, if not add else throw an error to update product
         const isProductAlreadyListed = await productDB.findOne({productId:doesProductExists._id,sellerId:userId});
         if(isProductAlreadyListed){
@@ -118,7 +117,6 @@ exports.postAddProduct  =async (req,res,next)=>{
         if(!result){
             throw new Error('Error while adding product');
         }
-        console.log('result',result);
         transactionSession.commitTransaction();
         transactionSession.endSession();
         return res.json({
