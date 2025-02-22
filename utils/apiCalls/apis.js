@@ -72,7 +72,6 @@ exports.getPincodeValidation= async(req,res,next)=>{
     }
 }
 exports.searchBarSeller = async(req,res,next)=>{
-    console.log('we are here');
     const reqData = req.body.medicineName; 
     //fetch data from db
     try{

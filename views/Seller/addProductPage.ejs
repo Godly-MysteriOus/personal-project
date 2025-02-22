@@ -5,27 +5,28 @@
 <%- include('../utils/AfterLinkStyles.ejs') %>
 <!-- add header here -->
 <body>
+    <%- include('../utils/MessageBox.ejs') %>
     <script>
         const message = document.querySelector('.message');
     </script>
-    <%- include('../utils/MessageBox.ejs') %>
     <%- include('../sellerUtils/sellerHeader.ejs') %>
     <div class="searchOperation">
         <%- include('../utils/searchBox.ejs',{button:path,pageTitle:'Add Product'}) %>
     </div>
     <div class="body-wrapper">
         <form class="addProductForm">
-            <div class="productImageHolder"><img src="" alt="No Product" class="productImage"></div>
+            <div class="productImageHolder"><img src="" alt="medicine image" class="productImage"></div>
             <div class="produtDetailHolder">
-                <%- include('../sellerUtils/InputField.ejs',{text:'Product Name',className:'productName',value:'',isInput:false,isDisabled:true,type:''}) %>
-                <%- include('../sellerUtils/InputField.ejs',{text:'Manufacturer',className:'productManufacturer',value:'',isInput:false,isDisabled:true,type:''}) %>
-                <%- include('../sellerUtils/InputField.ejs',{text:'Packaging Detail',className:'productPackagingInfo',value:'',isInput:false,isDisabled:true,type:''}) %>
-                <%- include('../sellerUtils/InputField.ejs',{text:'Product Type',className:'productType',value:'',isInput:false,isDisabled:true,type:''}) %>
+                <%- include('../sellerUtils/InputField.ejs',{text:'Product Name',className:'productName',value:'',isInput:false,isDisabled:true,type:'',isRequired:false}) %>
+                <%- include('../sellerUtils/InputField.ejs',{text:'Manufacturer',className:'productManufacturer',value:'',isInput:false,isDisabled:true,type:'',isRequired:false}) %>
+                <%- include('../sellerUtils/InputField.ejs',{text:'Packaging Detail',className:'productPackagingInfo',value:'',isInput:false,isDisabled:true,type:'',isRequired:false}) %>
+                <%- include('../sellerUtils/InputField.ejs',{text:'Product Type',className:'productType',value:'',isInput:false,isDisabled:true,type:'',isRequired:false}) %>
+                <%- include('../sellerUtils/InputField.ejs',{text:'Use',className:'productUsage',value:'',isInput:false,isDisabled:true,type:'',isRequired:false}) %>
                 <div class="productPricing">
-                    <%- include('../sellerUtils/InputField.ejs',{text:'MRP',className:'originalPrice priceCss',value:'',isInput:true,isDisabled:true,type:'number'}) %>
-                    <%- include('../sellerUtils/InputField.ejs',{text:'Set price',className:'offeredPrice priceCss',value:'',isInput:true,isDisabled:false,type:'number'}) %>
+                    <%- include('../sellerUtils/InputField.ejs',{text:'MRP',className:'originalPrice priceCss',value:'',isInput:true,isDisabled:true,type:'number',isRequired:false}) %>
+                    <%- include('../sellerUtils/InputField.ejs',{text:'Set price',className:'offeredPrice priceCss',value:'',isInput:true,isDisabled:false,type:'number',isRequired:false}) %>
                 </div>
-                <%- include('../sellerUtils/InputField.ejs',{text:'Use',className:'productUsage',value:'',isInput:false,isDisabled:true,type:''}) %>
+                <%- include('../sellerUtils/InputField.ejs',{text:'Quantity',className:'productQuantity',value:'',isInput:true,isDisabled:false,type:'number',isRequired:true}) %>
             </div>
             <div class="buttonHolder">
                 <button class="reset addProductBtn" type="reset">Reset</button>
@@ -44,8 +45,9 @@
 
     -------------- already declared in searchBox -------------------------
     */
-   const addBtnSearchBox = document.querySelector('.addBtn');
-
+    const addBtnSearchBox = document.querySelector('.addBtn');
+    const resetBtn = document.querySelector('.reset');
+    const submitBtn = document.querySelector('.submit');
    //fields
     const productName = document.querySelector('.productName');
     const productManufacturer = document.querySelector('.productManufacturer');
@@ -54,8 +56,38 @@
     const originalPrice = document.querySelector('.originalPrice');
     const productUsage = document.querySelector('.productUsage');
     const productImage = document.querySelector('.productImage');
+    const offeredPrice = document.querySelector('.offeredPrice');
+    const quantity = document.querySelector('.productQuantity');
 
+    function quantityVerification(quantity){
+        if(Number(quantity)<=0){
+            message.textContent = 'Quantity cannot be less than 1';
+            message.classList.remove('message-hidden');
+            setTimeout(()=>{
+                message.classList.add('message-hidden');
+            },3000);
+            return;
+        }
+    }
+    quantity.addEventListener('blur',(e)=>{
+        quantityVerification(quantity.value);
+    });
+    function Price(offerPrice){
+        if(offerPrice!=undefined && Number(originalPrice.value)!=undefined && Number(originalPrice.value)!=0 && Number(offerPrice)>Number(originalPrice.value)){
+            message.textContent = 'Offered Price should not be greater than MRP';
+            message.classList.remove('message-hidden');
+            setTimeout(()=>{
+                message.classList.add('message-hidden');
+            },3000);
+            return;
+        }
+    }
+    offeredPrice.addEventListener('blur',(e)=>{
+        Price(offeredPrice.value);
+    });
    addBtnSearchBox.addEventListener('click',async(e)=>{
+        quantity.value='';
+        offeredPrice.value='';
         const keyName = '<%= localStorageKey.suggestions %>';
         const suggesstionList = JSON.parse(localStorage.getItem(keyName));
         const abc = suggesstionList.find(item=>item.name==searchInputField.value);
@@ -91,6 +123,55 @@
                 message.classList.add('message-hidden');
             },3000);
         }
+   });
+
+   resetBtn.addEventListener('click',(e)=>{
+        productName.textContent = '';
+        productManufacturer.textContent = '';
+        productPackagingInfo.textContent = '';
+        productType.textContent = '';
+        productUsage.textContent = '';
+        productImage.setAttribute('src','');
+   });
+
+   submitBtn.addEventListener('click',async(e)=>{
+        // if you set the offered price and it is greater than original price throw an error
+        Price(offeredPrice.value);
+        // quantityVerification
+        quantityVerification(quantity.value);
+        // landing here means either offered price is undefined or less than MRP
+
+        //if offered price is Null set price as MRP else set price as offered Price
+        const medicinePrice = Number(offeredPrice.value)==undefined ? Number(originalPrice.value) : Number(offeredPrice.value);  
+
+        const response = await fetch('<%= url %>seller/add-product',{
+            method:'POST',
+            headers:{ 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                productId : medicineIdValue.value,
+                quantity : Number(quantity.value),
+                originalPrice : Number(originalPrice.value),
+                price : Number(medicinePrice),
+            }),
+        });
+        const result = await response.json();
+        if(result.success){
+            productName.textContent = '';
+            productManufacturer.textContent = '';
+            productPackagingInfo.textContent = '';
+            productType.textContent = '';
+            productUsage.textContent = '';
+            productImage.setAttribute('src','');
+            originalPrice.value = '';
+            offeredPrice.value = '';
+            quantity.value = '';
+            searchInputField.value='';
+        }
+        message.textContent = result.message;
+        message.classList.remove('message-hidden');
+        setTimeout(()=>{
+            message.classList.add('message-hidden');
+        },3000);
    });
 </script>
 <!-- add footer here -->

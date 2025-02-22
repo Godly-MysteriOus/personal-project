@@ -12,14 +12,14 @@
 </style>
 <body>
     <div class="searchOperation">
-        <%- include('../utils/searchBox.ejs',{button:path}) %>
+        <%- include('../utils/searchBox.ejs',{button:path,pageTitle:'Home Page'}) %>
     </div>
     <div class="body-wrapper">
         <% if (products.length == 0) { %>
             <div><h3>No product listed yet...</h3></div>
         <% }else{ %>
             <% for(let product of products ) { %>
-                <div class="product-wrapper">
+                <arcticle class="product-wrapper">
                     <div class="productImage"><img src="<%= product.image %>" alt=""></div>
                     <div class="productName"><%= product.name %></div>
                     <!-- details button -->
@@ -32,6 +32,28 @@
             <% } %>
         <% } %>
     </div>
+    <script>
+        const searchBtn = document.querySelector('.searchBtn');
+        searchBtn.addEventListener('click',async(e)=>{
+            e.preventDefault();
+            if(medicineIdValue.value==''){
+                message.textContent = 'Please enter valid medicine name';
+                message.classList.remove('message-hidden');
+                setTimeout(()=>{
+                    
+                });
+            }
+            const response = await fetch('<%= url %>/seller/get-listed-product',{
+                method:'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:JSON.stringify({
+                    medicineId: medicineIdValue.value,
+                }),
+            });
+            const result = await response.json();
+            
+        })
+    </script>
 </body>
 
 <%- include('../sellerUtils/footer.ejs') %>

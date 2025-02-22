@@ -9,7 +9,7 @@ function findProduct(productId,userId){
     return productDB.findOne({productId:productId,sellerId:userId}).then(result=>result);
 }
 function createProduct(productId,userId,quantity,price,transactionSession){
-    return productDB.create({productId:productId,sellerId:userId,quantity:quantity,price:price,buyers:0,ratingCount:0,reviews:[]},{session:transactionSession}).then(result=>result.toObject());
+    return productDB.create([{productId:productId,sellerId:userId,quantity:quantity,price:price,buyers:0,ratingCount:0,reviews:[]}],{session:transactionSession}).then(result=>result);
 }
 // req.user contains the data of loggedIn user
 
@@ -89,17 +89,45 @@ exports.getAddProduct = (req,res,next)=>{
 };
 exports.postAddProduct  =async (req,res,next)=>{
     const{productId,quantity,price} = req.body;
-    const userId = new ObjectId(req.user._id);
-    const recievedProductId = new Object(productId);
+    // throw if any validation error
+    const error = validationResult(req);
+    if(!error.isEmpty()){
+        return res.status(400).json({
+            success:false,
+            message:error.array()[0].msg,
+        });
+    }
+    const userId = new mongoose.Types.ObjectId(req.user._id);
+    const recievedProductId = productId;
+    const transactionSession = await  mongoose.startSession();
+    //seller Id
     try{
-        const result = createProduct(recievedProductId,userId,Number(quantity),Number(price));
+        transactionSession.startTransaction();
+        //find whether product exists or not
+        const doesProductExists = await centralMedicineDB.findOne({productId:recievedProductId}).select('name');
+        if(!doesProductExists){
+            throw new Error('Unable to get details for entered product name');
+        }
+        // find whether the product is already listed or not, if not add else throw an error to update product
+        const isProductAlreadyListed = await productDB.findOne({productId:doesProductExists._id,sellerId:userId});
+        if(isProductAlreadyListed){
+            throw new Error('Medicine Already Listed, Cannot list again !');
+        }
+        const result = await createProduct(doesProductExists._id,userId,Number(quantity),Number(price),transactionSession);
+        if(!result){
+            throw new Error('Error while adding product');
+        }
+        transactionSession.commitTransaction();
+        transactionSession.endSession();
         return res.json({
             success:true,
             message: 'Product added succesfully!!',
             redirectUrl : path.join('seller','listed-products'),
         });
     }catch(err){
-        console.log('Failed to add product',err.stack);
+        transactionSession.abortTransaction();
+        transactionSession.endSession();
+        // console.log('Failed to add product',err.stack);
         return res.json({
             success:false,
             message:err.message,

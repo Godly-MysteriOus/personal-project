@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authRoute = require('../../middleware/authentication');
+const sellerChecks = require('../../utils/sellerChecks');
 const productController = require('../../controllers/sellerControllers/productActions');
 const accountController = require('../../controllers/sellerControllers/accountManagementAction');
 const salesController = require('../../controllers/sellerControllers/salesAction');
@@ -11,7 +12,12 @@ router.post('/delete-product:productId',authRoute.sellerAuthentication,productCo
 //add single product
 router.get('/add-product',authRoute.sellerAuthentication,productController.getAddProduct);
 router.post('/load-details',authRoute.sellerAuthentication,productController.loadProductDetails);
-router.post('/add-product',authRoute.sellerAuthentication,productController.postAddProduct);
+router.post('/add-product',authRoute.sellerAuthentication,
+[
+    sellerChecks.priceCheck('price'),
+    sellerChecks.quantityCheck('quantity'),
+],
+productController.postAddProduct);
 
 // edit product
 router.get('/edit-product:productId',authRoute.sellerAuthentication,productController.getEditProduct);
