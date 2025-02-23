@@ -72,8 +72,9 @@
             productManufacturer.textContent = data.manufacturer;
             productPackagingInfo.textContent = data.packagingDetails;
             productType.textContent = data.productForm;
-            productUsage.textContent = data.useOf;
+            productUsage.textContent = data.useOf.split('|')[0];
             originalPrice.value = data.MRP;
+            offeredPrice.value = data.MRP;
             productImage.setAttribute('src',data.productImage);
         }else{
             message.textContent = result.message;
@@ -101,7 +102,7 @@
         // landing here means either offered price is undefined or less than MRP
 
         //if offered price is Null set price as MRP else set price as offered Price
-        const medicinePrice = Number(offeredPrice.value)==undefined ? Number(originalPrice.value) : Number(offeredPrice.value);  
+        const medicinePrice = (Number(offeredPrice.value)==undefined|| Number(offeredPrice.value==0)) ? Number(originalPrice.value) : Number(offeredPrice.value);  
 
         const response = await fetch(url+'seller/add-product',{
             method:'POST',

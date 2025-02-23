@@ -10,33 +10,7 @@ function findProduct(productId,userId){
 function createProduct(productId,userId,quantity,price,transactionSession){
     return productDB.create([{productId:productId,sellerId:userId,quantity:quantity,price:price,buyers:0,ratingCount:0,reviews:[]}],{session:transactionSession}).then(result=>result);
 }
-// req.user contains the data of loggedIn user
 
-// exports.searchProductSeller = async(req,res,next)=>{
-//     //sanitize medicine Id
-//     const errors = validationResult(req);
-//     if(errors.array().length!=0){
-//         return res.status(400).json({
-//             success:false,
-//             message:errors.array()[0].msg,
-//         })
-//     }
-//     const {medicineId} = req.body;
-//     try{
-//         const listedMedicine = productDB.find({sellerId: req.session.user._id,productId: new mongoose.Types.ObjectId(medicineId)});
-//         return res.status({
-//             succcess:true,
-//             products:listedMedicine,
-//             message:'Fetched listed product successfully',
-//         });
-//     }catch(err){
-//         console.log('Encountered problem while fetching listed products',err.stack);
-//         return res.status(400).json({
-//             success:false,
-//             message:err.message,
-//         })
-//     }
-// }
 
 exports.getListedProducts = async(req,res,next)=>{
     const storeName = req.user?.storeDetails.storeName;
@@ -48,8 +22,7 @@ exports.getListedProducts = async(req,res,next)=>{
         storeLogo:storeLogo,
     };
     const userId = new mongoose.Types.ObjectId(req.user?._id);
-    const listedProducts = await productDB.find({sellerId:userId}).populate('productId','productId name useOf productForm manufacturer');
-    // console.log(listedProducts);
+    const listedProducts = await productDB.find({sellerId:userId}).select('productId quantity price -_id').populate('productId','productId name useOf productForm manufacturer -_id');
     return res.render(path.join('Seller','sellerHomePage'),{
         products : listedProducts || [],
         userDetails : userDetail,
@@ -58,19 +31,51 @@ exports.getListedProducts = async(req,res,next)=>{
 };
 
 exports.postDeleteProduct = async(req,res,next)=>{
+    const {productIdList} = req.body;
+    const userId = req.user._id;
+    const transactionSession = await mongoose.startSession();
+     transactionSession.startTransaction();
     try{
-        const productId = new ObjectId(req.params.productId);
-        await productDB.deleteOne({productId:productId});
+        const productIds = productIdList.split(',');
+        // find medicine Id against product Id first
+        let medicineIds = [];
+        for(let product of productIds){
+            const medicineId = await centralMedicineDB.findOne({productId:product}).select('_id name useOf');
+            if(!medicineId){
+                throw new Error('Invalid medicine selected to delete');
+            }
+            //medicineId._id contains Id of medicine in central db
+            medicineIds.push(medicineId._id);
+        }
+        //find whether the seller has listed this product or not
+        for(let medicineId of medicineIds){
+            const isListed = await productDB.findOne({productId:medicineId,sellerId: userId});
+            if(!isListed){
+                throw new Error('Only listed products can be deleted');
+            }
+        }
+        // seller has select products to delete which is listed by him - start deleting products
+        const isProductDeleted = await productDB.deleteMany({productId:{$in:medicineIds}});
+        if(isProductDeleted.acknowledged == false || isProductDeleted.deletedCount == 0){
+            throw new Error('Failed to delete products');
+        }
+        // fetch new list of product
+        const listedProducts = await productDB.find({sellerId:userId}).select('productId quantity price -_id').populate('productId','productId name useOf productForm manufacturer -_id');
+
+        await transactionSession.commitTransaction();
+        await transactionSession.endSession();
         return res.json({
             success: true,
             message: 'Successfully deleted product',
-            redirectUrl : path.join('seller','listed-products'),
+            data : listedProducts,
         });
     }catch(err){
         console.log('Error while deleting product',err.stack);
+        await transactionSession.abortTransaction();
+        await transactionSession.endSession();
         return res.json({
             success:false,
-            messaage:err.messaage,
+            message:err.message,
         });
     }
 }
@@ -129,7 +134,7 @@ exports.postAddProduct  =async (req,res,next)=>{
     }catch(err){
         await transactionSession.abortTransaction();
         await transactionSession.endSession();
-        // console.log('Failed to add product',err.stack);
+        console.log('Failed to add product',err.stack);
         return res.json({
             success:false,
             message:err.message,
