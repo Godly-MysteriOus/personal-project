@@ -1,59 +1,102 @@
 <%- include('../sellerUtils/starter.ejs') %>
 <link rel="stylesheet" href="/styles/sellerCss/sellerHeader.css">
 </head>
-
 <%- include('../sellerUtils/sellerHeader.ejs') %>
-<style>
-    .body-wrapper{
-        padding: 0.5rem 2rem;
-        height: calc(100vh - 10.8rem);
-        overflow-y: scroll;
-    }
-</style>
 <body>
+    <%- include('../utils/MessageBox.ejs') %>
+    <script>
+        const message = document.querySelector('.message');
+    </script>
+    <link rel="stylesheet" href="/styles/sellerCss/sellerHomePage.css">
     <div class="searchOperation">
-        <%- include('../utils/searchBox.ejs',{button:path,pageTitle:'Home Page'}) %>
+        <%- include('../utils/searchBox.ejs',{buttonsToRender:path,pageTitle:'Listed Medicines'}) %>
     </div>
     <div class="body-wrapper">
         <% if (products.length == 0) { %>
             <div><h3>No product listed yet...</h3></div>
         <% }else{ %>
-            <% for(let product of products ) { %>
-                <arcticle class="product-wrapper">
-                    <div class="productImage"><img src="<%= product.image %>" alt=""></div>
-                    <div class="productName"><%= product.name %></div>
-                    <!-- details button -->
-                    <%- include('../sellerUtils/detailsButton.ejs',product) %>
-                    <div class="moreButtons">
-                        <%- include('../sellerUtils/editButton.ejs',product) %>
-                        <%- include('../sellerUtils/deleteButton.ejs',product) %>
+            <div class="gridContainer">
+                <!-- buttons section -->
+                <div class="buttonHolder">
+                    <div>
+                        <button class="detailButton" type="button" disabled>Details</button>
+                        <input type="hidden" class="detailButtonValue" value="">
+                    </div>
+                    <div>
+                        <button  class="editButton" type="button" disabled>Edit</button>
+                        <input type="hidden" class="editButtonValue" value="">
+                    </div>
+                    <div>
+                        <button class="deleteButton" type="button" disabled>Delete</button>
+                        <input type="hidden" class="deleteButtonValue" value="">
                     </div>
                 </div>
-            <% } %>
+                <!-- data section -->
+                 <div class="gridDataHolder">
+                    <table>
+                        <tr class="gridHeader">
+                            <th class="checkBox"></th>
+                            <th class="medicineName"> Name </th>
+                            <th class="medicineUse"> Use </th>
+                            <th class="medicineForm"> Medicine Type </th>
+                            <th class="medicineManufacturer"> Manufacturer</th>
+                            <th class="medicinePrice"> Price</th>
+                            <th class="medicineQuantity"> Quantity</th>
+                        </tr>
+                        <tbody class="tableBody">
+                            <% for(let prod of products) { %>
+                                <tr>
+                                    <td class="checkBox"><input class="checkbox" type="checkbox" value="<%= prod.productId.productId %>"></th>
+                                    <td class="medicineName"> <%= prod.productId.name %> </td>
+                                    <td class="medicineUse"> <%= prod.productId.useOf.split('|')[0] %> </td>
+                                    <td class="medicineForm"> <%= prod.productId.productForm %> </td>
+                                    <td class="medicineManufacturer"> <%= prod.productId.manufacturer %> </td>
+                                    <td class="medicinePrice"> <%= prod.price %> </td>
+                                    <td class="medicineQuantity"> <%= prod.quantity %> </td>
+                                </tr>
+                            <% } %>
+                    </tbody>
+                    </table>
+                 </div>
+                <!-- pagination section -->
+                <div class="paginationHolder">
+                    <div class="paginationContent">
+                        <div class="paginationIcon"><img src="/images/double-left.png" alt="double left"></div>
+                        <div class="paginationIcon"><img src="/images/single-left.png" alt="single left"></div>
+                        <div class="pageInformation">Page &nbsp; <input type="number" class="pageNoHolder">&nbsp; of&nbsp;&nbsp; <input type="number" class="pageNoHolder" disabled> </div>
+                        <div class="paginationIcon"><img src="/images/single-right.png" alt="single right"></div>
+                        <div class="paginationIcon"><img src="/images/double-right.png" alt="double right"></div>
+                    </div>
+                </div>
+            </div>
         <% } %>
     </div>
     <script>
         const searchBtn = document.querySelector('.searchBtn');
-        searchBtn.addEventListener('click',async(e)=>{
-            e.preventDefault();
-            if(medicineIdValue.value==''){
-                message.textContent = 'Please enter valid medicine name';
-                message.classList.remove('message-hidden');
-                setTimeout(()=>{
-                    
-                });
-            }
-            const response = await fetch('<%= url %>/seller/get-listed-product',{
-                method:'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body:JSON.stringify({
-                    medicineId: medicineIdValue.value,
-                }),
-            });
-            const result = await response.json();
-            
+        const keyName = '<%= localStorageKey.sellerListedProduct %>';
+        const url = '<%= url %>';
+    </script>
+
+    <!-- load searchList -->
+    <script defer>
+        fetch(url+'utils/listedProduct',{
+            method: 'GET',
+            headers:{ 'Content-Type': 'application/json' },
+        })
+        .then(result=> result.json())
+        .then(result=>{
+            localStorage.setItem(keyName,JSON.stringify(result.data));
+        })
+        .catch(err=>{
+            console.log(err.stack);
+            message.textContent = 'Unable to fetch Listed Product Names';
+            message.classList.remove('message-hidden');
+            setTimeout(()=>{
+                message.classList.add('message-hidden');
+            },3000);
         })
     </script>
 </body>
 
+<script src="/scripts/sellerHomePage.js"></script>
 <%- include('../sellerUtils/footer.ejs') %>
