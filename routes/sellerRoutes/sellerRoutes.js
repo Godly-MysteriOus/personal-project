@@ -7,7 +7,7 @@ const accountController = require('../../controllers/sellerControllers/accountMa
 const salesController = require('../../controllers/sellerControllers/salesAction');
 // product related routes
 router.get('/listed-products',authRoute.sellerAuthentication,productController.getListedProducts);
-router.post('/delete-product:productId',authRoute.sellerAuthentication,productController.postDeleteProduct);
+router.post('/delete-product',authRoute.sellerAuthentication,productController.postDeleteProduct);
 
 //add single product
 router.get('/add-product',authRoute.sellerAuthentication,productController.getAddProduct);
