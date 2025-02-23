@@ -48,7 +48,8 @@ exports.getListedProducts = async(req,res,next)=>{
         storeLogo:storeLogo,
     };
     const userId = new mongoose.Types.ObjectId(req.user?._id);
-    const listedProducts = await productDB.find({sellerId:userId}).populate('productId','productId productImage name');
+    const listedProducts = await productDB.find({sellerId:userId}).populate('productId','productId name useOf productForm manufacturer');
+    // console.log(listedProducts);
     return res.render(path.join('Seller','sellerHomePage'),{
         products : listedProducts || [],
         userDetails : userDetail,
@@ -118,16 +119,16 @@ exports.postAddProduct  =async (req,res,next)=>{
         if(!result){
             throw new Error('Error while adding product');
         }
-        transactionSession.commitTransaction();
-        transactionSession.endSession();
+        await transactionSession.commitTransaction();
+        await transactionSession.endSession();
         return res.json({
             success:true,
             message: 'Product added succesfully!!',
             redirectUrl : path.join('seller','listed-products'),
         });
     }catch(err){
-        transactionSession.abortTransaction();
-        transactionSession.endSession();
+        await transactionSession.abortTransaction();
+        await transactionSession.endSession();
         // console.log('Failed to add product',err.stack);
         return res.json({
             success:false,
