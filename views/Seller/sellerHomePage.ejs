@@ -12,64 +12,8 @@
         <%- include('../utils/searchBox.ejs',{buttonsToRender:path,pageTitle:'Listed Medicines'}) %>
     </div>
     <div class="body-wrapper">
-        <% if (products.length == 0) { %>
-            <div><h3>No product listed yet...</h3></div>
-        <% }else{ %>
-            <div class="gridContainer">
-                <!-- buttons section -->
-                <div class="buttonHolder">
-                    <div>
-                        <button class="detailButton" type="button" disabled>Details</button>
-                        <input type="hidden" class="detailButtonValue" value="">
-                    </div>
-                    <div>
-                        <button  class="editButton" type="button" disabled>Edit</button>
-                        <input type="hidden" class="editButtonValue" value="">
-                    </div>
-                    <div>
-                        <button class="deleteButton" type="button" disabled>Delete</button>
-                        <input type="hidden" class="deleteButtonValue" value="">
-                    </div>
-                </div>
-                <!-- data section -->
-                 <div class="gridDataHolder">
-                    <table>
-                        <tr class="gridHeader">
-                            <th class="checkBox"></th>
-                            <th class="medicineName"> Name </th>
-                            <th class="medicineUse"> Use </th>
-                            <th class="medicineForm"> Medicine Type </th>
-                            <th class="medicineManufacturer"> Manufacturer</th>
-                            <th class="medicinePrice"> Price</th>
-                            <th class="medicineQuantity"> Quantity</th>
-                        </tr>
-                        <tbody class="tableBody">
-                            <% for(let prod of products) { %>
-                                <tr>
-                                    <td class="checkBox"><input class="checkbox" type="checkbox" value="<%= prod.productId.productId %>"></th>
-                                    <td class="medicineName"> <%= prod.productId.name %> </td>
-                                    <td class="medicineUse"> <%= prod.productId.useOf.split('|')[0] %> </td>
-                                    <td class="medicineForm"> <%= prod.productId.productForm %> </td>
-                                    <td class="medicineManufacturer"> <%= prod.productId.manufacturer %> </td>
-                                    <td class="medicinePrice"> <%= prod.price %> </td>
-                                    <td class="medicineQuantity"> <%= prod.quantity %> </td>
-                                </tr>
-                            <% } %>
-                    </tbody>
-                    </table>
-                 </div>
-                <!-- pagination section -->
-                <div class="paginationHolder">
-                    <div class="paginationContent">
-                        <div class="paginationIcon"><img src="/images/double-left.png" alt="double left"></div>
-                        <div class="paginationIcon"><img src="/images/single-left.png" alt="single left"></div>
-                        <div class="pageInformation">Page &nbsp; <input type="number" class="pageNoHolder">&nbsp; of&nbsp;&nbsp; <input type="number" class="pageNoHolder" disabled> </div>
-                        <div class="paginationIcon"><img src="/images/single-right.png" alt="single right"></div>
-                        <div class="paginationIcon"><img src="/images/double-right.png" alt="double right"></div>
-                    </div>
-                </div>
-            </div>
-        <% } %>
+        <!-- all listed products -->
+        <%- include('../sellerUtils/deleteButtonReload.ejs') %>
     </div>
     <script>
         const searchBtn = document.querySelector('.searchBtn');
@@ -94,9 +38,50 @@
             setTimeout(()=>{
                 message.classList.add('message-hidden');
             },3000);
-        })
+        });
     </script>
 </body>
 
-<script src="/scripts/sellerHomePage.js"></script>
+<script>
+        
+    // searchbar suggesstion and get all product button
+    /*
+        const searchInputField = document.querySelector('.searchInput');
+        const suggesstions = document.querySelector('.suggestionBox');
+        const medicineIdValue = document.querySelector('.medicineId');
+    
+        -------------- already declared in searchBox -------------------------
+    */
+    const getAllProductBtn = document.querySelector('.getAllProductBtn');
+    const suggestionBox = document.querySelector('.suggestionBox');
+    //  generate Suggesstion
+    function loadSuggestionData(inputData){
+        
+        const listedProductList = JSON.parse(localStorage.getItem(keyName));
+        let suggesstionList  = [];
+        suggesstionList =  listedProductList.filter(item=>String(item.name).toLowerCase().includes(inputData.toLowerCase()));
+        if(suggesstionList.length==0){
+            suggesstionList.push({name:'No Item Present',productId:''});
+        }
+        const maxIteration = suggesstionList.length > 10 ? 10 : suggesstionList.length;
+        suggestionBox.classList.remove('suggestionBox-hidden');
+        suggestionBox.innerHTML = '';
+        for(let i=0; i<maxIteration; i++){
+            const option = document.createElement('option');
+            option.textContent = suggesstionList[i].name;
+            option.value = suggesstionList[i].productId;
+            option.classList.add('optionField');
+            suggestionBox.appendChild(option);
+        }
+    }
+    searchInputField.addEventListener('input',async(e)=>{
+        const inputData = String(searchInputField.value);
+        loadSuggestionData(inputData);
+    });
+    // shows all product
+    getAllProductBtn.addEventListener('click',async(e)=>{
+        window.location.href = url+'seller/listed-products';
+    });
+    
+</script>
 <%- include('../sellerUtils/footer.ejs') %>
