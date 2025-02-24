@@ -33,7 +33,11 @@
     });
     // show suggesstionBox if you click on input field to reselect option
     searchInputField.addEventListener('click',(e)=>{
-        suggesstions.classList.remove('suggestionBox-hidden');
+        //load suggesstion data comes from each page's ejs file. mention loadSuggestionData according to the functionality of each page
+        if(searchInputField.value.length>=1){
+            loadSuggestionData('');
+            suggesstions.classList.remove('suggestionBox-hidden');
+        }
     });
     // hide suggesstion when clicked outside it
     window.addEventListener('click',(e)=>{
