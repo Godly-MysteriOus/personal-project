@@ -10,9 +10,32 @@ function findProduct(productId,userId){
 function createProduct(productId,userId,quantity,price,transactionSession){
     return productDB.create([{productId:productId,sellerId:userId,quantity:quantity,price:price,buyers:0,ratingCount:0,reviews:[]}],{session:transactionSession}).then(result=>result);
 }
-
-
 exports.getListedProducts = async(req,res,next)=>{
+    const userId = req.user._id;
+    try{
+        const listedProducts = await productDB.find({sellerId:userId}).select('productId -_id').populate('productId','productId name-_id');
+        const requiredData = listedProducts.map(item=>{
+            return{
+                name: item.productId.name,
+                productId:item.productId.productId,
+            }
+        });
+        console.log(requiredData);
+        return res.status(200).json({
+            success:true,
+            data : requiredData,
+            message: 'Fetched Data successfully',
+        });
+    }catch(err){
+        console.log('Error occured while getting name of listed product',err.stack);
+        return res.status(400).json({
+            success:false,
+            message:'Error while updating searchBar !',
+        });
+    }
+}
+
+exports.getListedProductsPage = async(req,res,next)=>{
     const storeName = req.user?.storeDetails.storeName;
     const ownerName =  req.user?.storeDetails.ownerName;
     const storeLogo =  req.user?.storeDetails.logoDetails.logo;
@@ -64,11 +87,12 @@ exports.postDeleteProduct = async(req,res,next)=>{
 
         await transactionSession.commitTransaction();
         await transactionSession.endSession();
-        return res.json({
-            success: true,
-            message: 'Successfully deleted product',
-            data : listedProducts,
-        });
+        // return res.json({
+        //     success: true,
+        //     message: 'Successfully deleted product',
+        //     data : listedProducts,
+        // });
+        return res.render('sellerUtils/deleteButtonReload',{products:listedProducts});
     }catch(err){
         console.log('Error while deleting product',err.stack);
         await transactionSession.abortTransaction();

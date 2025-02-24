@@ -75,7 +75,7 @@
             productUsage.textContent = data.useOf.split('|')[0];
             originalPrice.value = data.MRP;
             offeredPrice.value = data.MRP;
-            productImage.setAttribute('src',data.productImage);
+            productImage.setAttribute('src',data.productImage.split('|')[0]);
         }else{
             message.textContent = result.message;
             message.classList.remove('message-hidden');

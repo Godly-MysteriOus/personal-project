@@ -1,0 +1,60 @@
+
+<% if (products.length == 0) { %>
+    <div><h3>No product listed yet...</h3></div>
+<% }else{ %>
+    <div class="gridContainer">
+        <!-- buttons section -->
+        <div class="buttonHolder">
+            <div>
+                <button class="detailButton" type="button" disabled>Details</button>
+                <input type="hidden" class="detailButtonValue" value="">
+            </div>
+            <div>
+                <button  class="editButton" type="button" disabled>Edit</button>
+                <input type="hidden" class="editButtonValue" value="">
+            </div>
+            <div>
+                <button class="deleteButton" type="button" disabled>Delete</button>
+                <input type="hidden" class="deleteButtonValue" value="">
+            </div>
+        </div>
+        <!-- data section -->
+         <div class="gridDataHolder">
+            <table>
+                <tr class="gridHeader">
+                    <th class="checkBox"></th>
+                    <th class="medicineName"> Name </th>
+                    <th class="medicineUse"> Use </th>
+                    <th class="medicineForm"> Medicine Type </th>
+                    <th class="medicineManufacturer"> Manufacturer</th>
+                    <th class="medicinePrice"> Price</th>
+                    <th class="medicineQuantity"> Quantity</th>
+                </tr>
+                <tbody class="tableBody">
+                    <% for(let prod of products) { %>
+                        <tr>
+                            <td class="checkBox"><input class="checkbox" type="checkbox" value="<%= prod.productId.productId %>"></th>
+                            <td class="medicineName"> <%= prod.productId.name %> </td>
+                            <td class="medicineUse"> <%= prod.productId.useOf.split('|')[0] %> </td>
+                            <td class="medicineForm"> <%= prod.productId.productForm %> </td>
+                            <td class="medicineManufacturer"> <%= prod.productId.manufacturer %> </td>
+                            <td class="medicinePrice"> <%= prod.price %> </td>
+                            <td class="medicineQuantity"> <%= prod.quantity %> </td>
+                        </tr>
+                    <% } %>
+            </tbody>
+            </table>
+         </div>
+        <!-- pagination section -->
+        <div class="paginationHolder">
+            <div class="paginationContent">
+                <div class="paginationIcon"><img src="/images/double-left.png" alt="double left"></div>
+                <div class="paginationIcon"><img src="/images/single-left.png" alt="single left"></div>
+                <div class="pageInformation">Page &nbsp; <input type="number" class="pageNoHolder">&nbsp; of&nbsp;&nbsp; <input type="number" class="pageNoHolder" disabled> </div>
+                <div class="paginationIcon"><img src="/images/single-right.png" alt="single right"></div>
+                <div class="paginationIcon"><img src="/images/double-right.png" alt="double right"></div>
+            </div>
+        </div>
+    </div>
+    <script defer src="/scripts/sellerHomePage.js"></script>
+<% } %>

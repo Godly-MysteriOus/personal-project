@@ -6,7 +6,7 @@ const productController = require('../../controllers/sellerControllers/productAc
 const accountController = require('../../controllers/sellerControllers/accountManagementAction');
 const salesController = require('../../controllers/sellerControllers/salesAction');
 // product related routes
-router.get('/listed-products',authRoute.sellerAuthentication,productController.getListedProducts);
+router.get('/listed-products',authRoute.sellerAuthentication,productController.getListedProductsPage);
 router.post('/delete-product',authRoute.sellerAuthentication,productController.postDeleteProduct);
 
 //add single product
@@ -46,7 +46,7 @@ router.post('/add-bulk-products',authRoute.sellerAuthentication,productControlle
 
 
 //utility routes
-router.post('/get-listed-product',authRoute.sellerAuthentication,productController.getListedProducts);
+router.get('/listed-products-nameId',authRoute.sellerAuthentication,productController.getListedProducts);
 
 
 module.exports = router;
