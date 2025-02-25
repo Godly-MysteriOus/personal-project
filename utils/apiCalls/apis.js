@@ -97,7 +97,7 @@ exports.searchBarSellerAddProduct = async(req,res,next)=>{
 exports.searchBarSellerListedProduct = async(req,res,next)=>{
     try{
         const userId = new mongoose.Types.ObjectId(req.user?._id);
-        const listedProducts = await productDB.find({sellerId:userId}).populate('productId','productId productImage name');
+        const listedProducts = await productDB.find({sellerId:userId}).populate('productId','productId name');
         const uiData = listedProducts.map(item=>{
             return {
                 name :  item.productId.name,

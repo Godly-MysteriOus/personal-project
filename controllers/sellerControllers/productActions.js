@@ -76,7 +76,8 @@ exports.getListedProductsPage = async(req,res,next)=>{
 };
 
 exports.postDeleteProduct = async(req,res,next)=>{
-    const {productIdList,currentPage} = req.body;
+    let {productIdList,currentPage} = req.body;
+    currentPage = Number(currentPage);
     const userId = req.user._id;
     const transactionSession = await mongoose.startSession();
     transactionSession.startTransaction();
@@ -109,7 +110,8 @@ exports.postDeleteProduct = async(req,res,next)=>{
         const countDocuments = await productDB.countDocuments({sellerId:userId});
         await transactionSession.commitTransaction();
         await transactionSession.endSession();
-        return res.render('sellerUtils/dataGridReload',{products:listedProducts,currentPageNo:currentPage,lastPageNo:Math.ceil(countDocuments/PAGINATION_COUNT)});
+        const maxPageCount = Math.ceil(countDocuments/PAGINATION_COUNT);
+        return res.render('sellerUtils/dataGridReload',{products:listedProducts,currentPageNo:Math.min(currentPage,maxPageCount),lastPageNo:maxPageCount});
     }catch(err){
         console.log('Error while deleting product',err.stack);
         await transactionSession.abortTransaction();
@@ -270,4 +272,31 @@ exports.loadProductDetails = async(req,res,next)=>{
         });
     }
 
+}
+
+// search product functionality
+exports.searchListedProduct = async(req,res,next)=>{
+    const {medicineId} = req.body;
+    // check does product exists
+    const userId = req.user._id;
+    try{
+        const isGeniuneId = await centralMedicineDB.findOne({productId:medicineId}).select('_id');
+        if(!isGeniuneId){
+            throw new Error('Invalid Product Selected');
+        }
+        //check does user owns this product
+        let isListedByOwner = await productDB.findOne({sellerId:userId,productId:isGeniuneId._id}).select('productId quantity price -_id').populate('productId','productId name useOf productForm manufacturer -_id');
+        if(!isListedByOwner){
+            throw new Error('Medicine Not listed');
+        }
+        isListedByOwner = [isListedByOwner];
+        console.log(isListedByOwner);
+        return res.render('sellerUtils/dataGridReload',{products:isListedByOwner,currentPageNo:1,lastPageNo:1});
+    }catch(err){
+        console.log('Error while searching product');
+        return res.status(400).json({
+            success:false,
+            message:err.message,
+        });
+    }
 }
