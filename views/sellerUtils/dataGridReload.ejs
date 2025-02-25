@@ -48,11 +48,11 @@
         <!-- pagination section -->
         <div class="paginationHolder">
             <div class="paginationContent">
-                <div class="paginationIcon"><img src="/images/double-left.png" alt="double left"></div>
-                <div class="paginationIcon"><img src="/images/single-left.png" alt="single left"></div>
-                <div class="pageInformation">Page &nbsp; <input type="number" class="pageNoHolder">&nbsp; of&nbsp;&nbsp; <input type="number" class="pageNoHolder" disabled> </div>
-                <div class="paginationIcon"><img src="/images/single-right.png" alt="single right"></div>
-                <div class="paginationIcon"><img src="/images/double-right.png" alt="double right"></div>
+                <div class="double-left paginationIcon"><img src="/images/double-left.png" alt="double left"></div>
+                <div class="single-left paginationIcon"><img src="/images/single-left.png" alt="single left"></div>
+                <div class="pageInformation">Page &nbsp; <input type="number" class="currentPage pageNoHolder" value="<%= currentPageNo %>">&nbsp; of&nbsp;&nbsp; <input type="number" class="pageNoHolder lastPage" disabled value="<%= lastPageNo %>"> </div>
+                <div class="single-right paginationIcon"><img src="/images/single-right.png" alt="single right"></div>
+                <div class="double-right paginationIcon"><img src="/images/double-right.png" alt="double right"></div>
             </div>
         </div>
     </div>

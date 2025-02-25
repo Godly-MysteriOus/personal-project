@@ -1,5 +1,9 @@
-//  button related scripts foe grid
+
+
 function attachEventListner(){
+    //to reload data
+    const displayField = document.querySelector('.body-wrapper');
+    //  button related scripts for grid
     const checkbox = document.querySelectorAll('.checkbox');
     const detailButton = document.querySelector('.detailButton');
     const editButton = document.querySelector('.editButton');
@@ -8,6 +12,14 @@ function attachEventListner(){
     const editButtonValue = document.querySelector('.editButtonValue');
     const deleteButtonValue = document.querySelector('.deleteButtonValue');
     const gridFunctionality = document.querySelector('.gridDataHolder');
+    //pagination buttons
+    
+    const singleLeftBtn = document.querySelector('.single-left');
+    const doubleLeftBtn = document.querySelector('.double-left');
+    const singleRightBtn = document.querySelector('.single-right');
+    const doubleRightBtn = document.querySelector('.double-right');
+    const currentPage = document.querySelector('.currentPage');
+    const lastPage = document.querySelector('.lastPage');
     gridFunctionality?.addEventListener('click',async(e)=>{
         let checkedCount=0;
         let values = '';
@@ -50,6 +62,7 @@ function attachEventListner(){
             headers:{ 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 productIdList : deleteButtonValue.value,
+                currentPage : currentPage.value,
             }),
         });
         const contentType = response.headers.get('content-type');
@@ -66,7 +79,6 @@ function attachEventListner(){
         }else{
             // it might have returned the html content
             const res = await response.text();
-            const displayField = document.querySelector('.body-wrapper');
             displayField.innerHTML = res;
             attachEventListner();
             // to update the localstorage we need to call another API which returns productData
@@ -76,6 +88,46 @@ function attachEventListner(){
             const result = await listedProductLocalStorage.json();
             localStorage.setItem(keyName,JSON.stringify(result.data));
 
+        }
+    });
+
+    async function PaginatedDataLoading(pageNo){
+        const response = await fetch(url+'seller/paginated-data',{
+            method:'POST',
+            headers:{'Content-Type': 'application/json' },
+            body:JSON.stringify({
+                pageNo : pageNo,
+            }),
+        });
+        const contentType = response.headers.get('content-type');
+        if(contentType && contentType.includes('application/json')){
+            const result = await response.json();
+            message.textContent = result.message;
+            message.classList.remove('message-hidden');
+            setTimeout(()=>{
+                message.classList.add('message-hidden');
+            },3000);
+        }else{
+            const result = await response.text();
+            displayField.innerHTML = result;
+            attachEventListner();
+        }
+    }
+    singleLeftBtn.addEventListener('click',()=>{
+        PaginatedDataLoading(Number(currentPage.value)-1);
+    });
+    singleRightBtn.addEventListener('click',()=>{
+        PaginatedDataLoading(Number(currentPage.value)+1);
+    });
+    doubleLeftBtn.addEventListener('click',()=>{
+        PaginatedDataLoading(1);
+    });
+    doubleRightBtn.addEventListener('click',()=>{
+        PaginatedDataLoading(Number(lastPage.value));
+    });
+    currentPage.addEventListener('keydown',(e)=>{
+        if(e.key=='Enter'){
+            PaginatedDataLoading(Number(currentPage.value));
         }
     });
 }

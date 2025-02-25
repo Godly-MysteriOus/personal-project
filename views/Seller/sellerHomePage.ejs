@@ -11,9 +11,10 @@
     <div class="searchOperation">
         <%- include('../utils/searchBox.ejs',{buttonsToRender:path,pageTitle:'Listed Medicines'}) %>
     </div>
+    <script src="/scripts/sellerHomePageSearchBarScripts.js"></script>
     <div class="body-wrapper">
         <!-- all listed products -->
-        <%- include('../sellerUtils/deleteButtonReload.ejs') %>
+        <%- include('../sellerUtils/dataGridReload.ejs') %>
     </div>
     <script>
         const searchBtn = document.querySelector('.searchBtn');
@@ -41,5 +42,5 @@
         });
     </script>
 </body>
-<script src="/scripts/sellerHomePageSearchBarScripts.js"></script>
+
 <%- include('../sellerUtils/footer.ejs') %>
