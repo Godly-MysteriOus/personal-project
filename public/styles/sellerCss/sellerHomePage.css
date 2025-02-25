@@ -4,20 +4,37 @@
     overflow-y: scroll;
     display: flex;
     flex-wrap: wrap;
+    align-content:space-between
 }
 /* container */
 .gridContainer{
     width: 100%;
-    height: 100%;
-    border: 1px solid black;
+    min-height: 100%;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
+.gridContainer,.gridDataHolder{
+    -ms-overflow-style: none;  /* For IE and Edge */
+}
+.gridContainer::-webkit-scrollbar,.gridDataHolder::-webkit-scrollbar {
+    width: 2px;
+}
+.gridContainer::-webkit-scrollbar-thumb,.gridDataHolder::-webkit-scrollbar-thumb {
+    background-color: rgba(34, 34, 34, 0.563);  /* color of the thumb */
+    border-radius: 10px;  /* round the thumb edges */
+}
+  
 /* button holder */
 .buttonHolder{
     display: flex;
     align-items: center;
     gap: 2rem;
-    padding: 0rem 4rem;
-    height: 8%;
+    padding: 0.25rem 4rem;
+    /* height: 8%; */
+    height: fit-content;
+    border: 1px solid black;
 }
 .buttonHolder button{
     padding: 0.15rem 1rem;
@@ -26,16 +43,16 @@
 
 
 .gridDataHolder{
-    height: 84%;
+    height: 83%;
     width: 100%;
-    border: 1px solid rgb(5, 5, 5);
+    margin: 0 auto;
+    overflow-y: scroll;
 }
 table{
     width: 100%;
    border-collapse: collapse;
 }
 th,td{
-    /* width: fit-content; */
     padding: 0.25rem 0rem;
     border: 1px solid rgb(0, 0, 0);
     text-align: center;
@@ -66,9 +83,11 @@ td{
 /* pagination */
 .paginationHolder{
     width: 100%;
-    height: 8%;
+    height: fit-content;
     display: grid;
     place-items: center;
+    border: 1px solid black;
+    padding: 0.25rem 0rem;
 }
 .paginationContent{
     width: fit-content;

@@ -4,6 +4,7 @@ const productDB = require(productDBPath);
 const mongoose = require('mongoose');
 const { validationResult } = require('express-validator');
 const centralMedicineDB = require('../../models/centralMedicineDB');
+const PAGINATION_COUNT = 10;
 function findProduct(productId,userId){
     return productDB.findOne({productId:productId,sellerId:userId}).then(result=>result);
 }
@@ -20,7 +21,6 @@ exports.getListedProducts = async(req,res,next)=>{
                 productId:item.productId.productId,
             }
         });
-        console.log(requiredData);
         return res.status(200).json({
             success:true,
             data : requiredData,
@@ -34,7 +34,25 @@ exports.getListedProducts = async(req,res,next)=>{
         });
     }
 }
-
+exports.listedProductsPaginatedData = async(req,res,next)=>{
+    const currentPage = Number(req.body.pageNo) || 1;
+    const userId = req.user._id;
+    try{
+        const listedProductsCount = await productDB.countDocuments({sellerId:userId});
+        const maxPageCount = Math.ceil(Number(listedProductsCount)/PAGINATION_COUNT);
+        if(currentPage<1 || currentPage>maxPageCount){
+           throw new Error('Invalid page request');
+        }
+        const listedProduct = await productDB.find({sellerId:userId}).select('productId quantity price -_id').populate('productId','productId name useOf productForm manufacturer -_id').skip((currentPage-1)*PAGINATION_COUNT).limit(PAGINATION_COUNT);
+        return res.render('sellerUtils/dataGridReload',{products:listedProduct,currentPageNo:Math.min(currentPage,maxPageCount),lastPageNo:maxPageCount});
+    }catch(err){
+        console.log('Error loading pagination',err.stack);
+        return res.status(400).json({
+            success:false,
+            message:err.message,
+        });
+    }
+}
 exports.getListedProductsPage = async(req,res,next)=>{
     const storeName = req.user?.storeDetails.storeName;
     const ownerName =  req.user?.storeDetails.ownerName;
@@ -45,25 +63,29 @@ exports.getListedProductsPage = async(req,res,next)=>{
         storeLogo:storeLogo,
     };
     const userId = new mongoose.Types.ObjectId(req.user?._id);
-    const listedProducts = await productDB.find({sellerId:userId}).select('productId quantity price -_id').populate('productId','productId name useOf productForm manufacturer -_id');
+    const listedProductsCount = await productDB.countDocuments({sellerId:userId});
+    const maxPageCount = Math.ceil(Number(listedProductsCount)/PAGINATION_COUNT);
+    const listedProducts = await productDB.find({sellerId:userId}).select('productId quantity price -_id').populate('productId','productId name useOf productForm manufacturer -_id').limit(PAGINATION_COUNT);
     return res.render(path.join('Seller','sellerHomePage'),{
         products : listedProducts || [],
         userDetails : userDetail,
         path:"Seller/sellerHomePage",
+        currentPageNo:1,
+        lastPageNo:maxPageCount,
     });
 };
 
 exports.postDeleteProduct = async(req,res,next)=>{
-    const {productIdList} = req.body;
+    const {productIdList,currentPage} = req.body;
     const userId = req.user._id;
     const transactionSession = await mongoose.startSession();
-     transactionSession.startTransaction();
+    transactionSession.startTransaction();
     try{
         const productIds = productIdList.split(',');
         // find medicine Id against product Id first
         let medicineIds = [];
         for(let product of productIds){
-            const medicineId = await centralMedicineDB.findOne({productId:product}).select('_id name useOf');
+            const medicineId = await centralMedicineDB.findOne({productId:product});
             if(!medicineId){
                 throw new Error('Invalid medicine selected to delete');
             }
@@ -83,16 +105,11 @@ exports.postDeleteProduct = async(req,res,next)=>{
             throw new Error('Failed to delete products');
         }
         // fetch new list of product
-        const listedProducts = await productDB.find({sellerId:userId}).select('productId quantity price -_id').populate('productId','productId name useOf productForm manufacturer -_id');
-
+        const listedProducts = await productDB.find({sellerId:userId}).select('productId quantity price -_id').populate('productId','productId name useOf productForm manufacturer -_id').skip((Number(currentPage.value)-1)*PAGINATION_COUNT).limit(PAGINATION_COUNT);
+        const countDocuments = await productDB.countDocuments({sellerId:userId});
         await transactionSession.commitTransaction();
         await transactionSession.endSession();
-        // return res.json({
-        //     success: true,
-        //     message: 'Successfully deleted product',
-        //     data : listedProducts,
-        // });
-        return res.render('sellerUtils/deleteButtonReload',{products:listedProducts});
+        return res.render('sellerUtils/dataGridReload',{products:listedProducts,currentPageNo:currentPage,lastPageNo:Math.ceil(countDocuments/PAGINATION_COUNT)});
     }catch(err){
         console.log('Error while deleting product',err.stack);
         await transactionSession.abortTransaction();
