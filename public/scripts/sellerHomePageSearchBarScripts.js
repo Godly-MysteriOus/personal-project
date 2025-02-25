@@ -66,5 +66,6 @@ searchButton.addEventListener('click',async()=>{
         const bodyWrapper = document.querySelector('.body-wrapper');
         bodyWrapper.innerHTML = result;
         attachEventListner();
+        document.querySelector('.paginationHolder').style.display = 'none';
     }
 });

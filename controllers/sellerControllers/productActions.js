@@ -290,7 +290,6 @@ exports.searchListedProduct = async(req,res,next)=>{
             throw new Error('Medicine Not listed');
         }
         isListedByOwner = [isListedByOwner];
-        console.log(isListedByOwner);
         return res.render('sellerUtils/dataGridReload',{products:isListedByOwner,currentPageNo:1,lastPageNo:1});
     }catch(err){
         console.log('Error while searching product');
