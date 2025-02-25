@@ -8,11 +8,12 @@ const medicineIdValue = document.querySelector('.medicineId');
 -------------- already declared in searchBox -------------------------
 */
 const getAllProductBtn = document.querySelector('.getAllProductBtn');
+const searchButton = document.querySelector('.searchBtn');
 const suggestionBox = document.querySelector('.suggestionBox');
 //  generate Suggesstion
 function loadSuggestionData(inputData){
     // dont process suggestion list and show suggesstions when input size is null
-    if(inputData.valye<=0){
+    if(inputData.value<=0){
         suggestionBox.classList.add('suggestionBox-hidden');
         return;
     }
@@ -40,4 +41,30 @@ searchInputField.addEventListener('input',async(e)=>{
 // shows all product
 getAllProductBtn.addEventListener('click',async(e)=>{
     window.location.href = url+'seller/listed-products';
+});
+
+searchButton.addEventListener('click',async()=>{
+    const response = await fetch(url+'seller/search-listed-product',{
+        method:'POST',
+        headers:{ 'Content-Type': 'application/json' },
+        body:JSON.stringify({
+            medicineId: medicineIdValue.value,
+        }),
+    });
+    const contentType = response.headers.get('content-type');
+    if(contentType && contentType.includes('application/json')){
+        const result = await response.json();
+        message.textContent = result.message;
+        message.classList.remove('message-hidden');
+        setTimeout(()=>{
+            message.classList.add('message-hidden');
+        },3000);
+    }else{
+        const result = await response.text();
+        searchInputField.value='';
+        medicineIdValue.value = '';
+        const bodyWrapper = document.querySelector('.body-wrapper');
+        bodyWrapper.innerHTML = result;
+        attachEventListner();
+    }
 });
