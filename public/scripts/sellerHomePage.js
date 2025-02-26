@@ -114,10 +114,14 @@ function attachEventListner(){
         }
     }
     singleLeftBtn.addEventListener('click',()=>{
-        PaginatedDataLoading(Number(currentPage.value)-1);
+        if(Number(currentPage.value)>1){
+            PaginatedDataLoading(Number(currentPage.value)-1);
+        }
     });
     singleRightBtn.addEventListener('click',()=>{
-        PaginatedDataLoading(Number(currentPage.value)+1);
+        if(Number(lastPage.value)>Number(currentPage.value)){
+            PaginatedDataLoading(Number(currentPage.value)+1);
+        }
     });
     doubleLeftBtn.addEventListener('click',()=>{
         PaginatedDataLoading(1);
@@ -128,6 +132,14 @@ function attachEventListner(){
     currentPage.addEventListener('keydown',(e)=>{
         if(e.key=='Enter'){
             PaginatedDataLoading(Number(currentPage.value));
+        }
+    });
+    document.querySelector('.tableBody').addEventListener('click',(e)=>{
+        const element = e.target.closest('tr').querySelector('td').querySelector('input');
+        if(!element.getAttribute('checked')){
+            e.target.closest('tr').querySelector('td').querySelector('input').setAttribute('checked',true);
+        }else{
+            e.target.closest('tr').querySelector('td').querySelector('input').removeAttribute('checked');
         }
     });
 }

@@ -79,7 +79,9 @@ td{
 .medicinePrice,.medicineQuantity{
     width: 8%;
 }
-
+.row{
+    cursor:pointer;
+}
 /* pagination */
 .paginationHolder{
     width: 100%;
