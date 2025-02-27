@@ -20,7 +20,8 @@ router.post('/add-product',authRoute.sellerAuthentication,
 productController.postAddProduct);
 
 // edit product
-router.get('/edit-product:productId',authRoute.sellerAuthentication,productController.getEditProduct);
+router.get('/edit-product/:productId',authRoute.sellerAuthentication,productController.getEditProduct);
+router.get('/edit-product-detail/:productId',authRoute.sellerAuthentication,productController.getEditProductDetail);
 router.post('/edit-product',authRoute.sellerAuthentication,productController.postEditProduct);
 
 //add bulk product
