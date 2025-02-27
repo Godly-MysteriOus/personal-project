@@ -13,8 +13,8 @@
     const productManufacturer = document.querySelector('.productManufacturer');
     const productPackagingInfo = document.querySelector('.productPackagingInfo');
     const productType = document.querySelector('.productType');
-    const originalPrice = document.querySelector('.originalPrice');
     const productUsage = document.querySelector('.productUsage');
+    const originalPrice = document.querySelector('.originalPrice');
     const productImage = document.querySelector('.productImage');
     const offeredPrice = document.querySelector('.offeredPrice');
     const quantity = document.querySelector('.productQuantity');

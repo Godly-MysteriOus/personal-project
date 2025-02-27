@@ -23,7 +23,12 @@ function attachEventListner(){
     gridFunctionality?.addEventListener('click',async(e)=>{
         let checkedCount=0;
         let values = '';
-        
+        const element = e.target.closest('tr').querySelector('td').querySelector('input');
+        if(!element.getAttribute('checked')){
+            e.target.closest('tr').querySelector('td').querySelector('input').setAttribute('checked',true);
+        }else{
+            e.target.closest('tr').querySelector('td').querySelector('input').removeAttribute('checked');
+        }
         checkbox.forEach(item=>{
             if(item.checked){
                 values+=item.value;
@@ -43,9 +48,9 @@ function attachEventListner(){
             detailButton.removeAttribute('disabled');
             editButton.removeAttribute('disabled');
             deleteButton.removeAttribute('disabled');
-            detailButtonValue.value = e.target.value;
-            editButtonValue.value = e.target.value;
-            deleteButtonValue.value = e.target.value;
+            detailButtonValue.value = element.value;
+            editButtonValue.value = element.value;
+            deleteButtonValue.value = element.value;
         }else{
             detailButton.setAttribute('disabled',true);
             editButton.setAttribute('disabled',true);
@@ -74,11 +79,16 @@ function attachEventListner(){
             message.classList.remove('message-hidden');
             setTimeout(()=>{
                 message.classList.add('message-hidden');
-            });
+            },3000);
             return;
         }else{
             // it might have returned the html content
             const res = await response.text();
+            message.textContent = 'Deleted Product Successfully';
+            message.classList.remove('message-hidden');
+            setTimeout(()=>{
+                message.classList.add('message-hidden');
+            },3000);
             displayField.innerHTML = res;
             attachEventListner();
             // to update the localstorage we need to call another API which returns productData
@@ -87,7 +97,7 @@ function attachEventListner(){
             });
             const result = await listedProductLocalStorage.json();
             localStorage.setItem(keyName,JSON.stringify(result.data));
-
+            
         }
     });
 
@@ -134,12 +144,13 @@ function attachEventListner(){
             PaginatedDataLoading(Number(currentPage.value));
         }
     });
-    document.querySelector('.tableBody').addEventListener('click',(e)=>{
-        const element = e.target.closest('tr').querySelector('td').querySelector('input');
-        if(!element.getAttribute('checked')){
-            e.target.closest('tr').querySelector('td').querySelector('input').setAttribute('checked',true);
+    let editTab = null;
+    editButton.addEventListener('click',(e)=>{
+        console.log(editTab);
+        if(!editTab){
+            editTab = window.open(url+`seller/edit-product/${editButtonValue.value}`,'_blank');
         }else{
-            e.target.closest('tr').querySelector('td').querySelector('input').removeAttribute('checked');
+            editTab.focus();
         }
     });
 }

@@ -186,12 +186,54 @@ exports.postAddProduct  =async (req,res,next)=>{
 };
 
 exports.getEditProduct = async(req,res,next)=>{
-    const productId = new ObjectId(req.params.productId);
-    const userId = new ObjectId(req.user._id);
-    const product = findProduct(productId,userId);
-    return res.render(path.join('Seller','editProduct'),{
-        product:product || [],
-    });
+    try{
+
+        const storeName = req.user?.storeDetails.storeName;
+        const ownerName =  req.user?.storeDetails.ownerName;
+        const storeLogo =  req.user?.storeDetails.logoDetails.logo;
+        const userDetail = {
+            storeName:storeName,
+            ownerName:ownerName,
+            storeLogo:storeLogo,
+        };
+        return res.render(path.join('sellerUtils','editProductForm'),{
+            userDetails : userDetail,
+        });
+
+    }catch(err){
+        return res.status(400).json({
+            success:false,
+            message:err.message,
+        })
+    }
+}
+
+exports.getEditProductDetail = async(req,res,next)=>{
+    console.log('We hit here');
+    try{
+        const productId = req.params.productId;
+        const userId = req.user._id;
+        //find is this product Id true
+        let findProduct = await centralMedicineDB.findOne({productId:productId}).select('productImage name manufacturer packagingDetails productForm MRP useOf');
+        if(!findProduct){
+            throw new Error('Product not found');
+        }
+        const isProductListed = await productDB.findOne({productId:findProduct._id,sellerId:userId}).select('price quantity');
+        if(!isProductListed){
+            throw new Error('Product not listed');
+        }
+        return res.status(200).json({
+            success:true,
+            productDetail:findProduct || {},
+            sellingDetail : isProductListed || {},
+        });
+    }catch(err){
+        console.log('Error while fetching product details',err.stack);
+        return res.status(400).json({
+            success:false,
+            message: 'Error fetching data',
+        });
+    }
 }
 
 exports.postEditProduct = async(req,res,next)=>{
