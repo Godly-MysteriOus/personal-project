@@ -1,0 +1,52 @@
+<%- include('../sellerUtils/starter.ejs') %>
+<link rel="stylesheet" href="/styles/sellerCss/sellerHeader.css">
+<link rel="stylesheet" href="/styles/sellerCss/addProductPage.css">
+</head>
+<%- include('../sellerUtils/sellerHeader.ejs') %>
+<body>
+    <%- include('../utils/MessageBox.ejs') %>
+    <script>
+        const message = document.querySelector('.message');
+    </script>
+    <style>
+        .body-wrapper-edit{
+            padding: 0.5rem 0.5rem;
+            height: calc(100vh - 7.7rem);
+            overflow-y: scroll;
+            display: flex;
+            justify-content: space-evenly;
+            flex-wrap: wrap;
+            align-content:space-between;
+        }
+        .buttonHolder-editForm{
+            width: 100%;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-evenly;
+        }
+    </style>
+    <div class="body-wrapper-edit">
+        <form class="addProductForm">
+            <div class="productImageHolder"><img src="" alt="medicine image" class="productImage"></div>
+            <div class="produtDetailHolder">
+                <%- include('../sellerUtils/InputField.ejs',{text:'Product Name',className:'productName',value:'',isInput:false,isDisabled:true,type:'',isRequired:false}) %>
+                <%- include('../sellerUtils/InputField.ejs',{text:'Manufacturer',className:'productManufacturer',value:'',isInput:false,isDisabled:true,type:'',isRequired:false}) %>
+                <%- include('../sellerUtils/InputField.ejs',{text:'Packaging Detail',className:'productPackagingInfo',value:'',isInput:false,isDisabled:true,type:'',isRequired:false}) %>
+                <%- include('../sellerUtils/InputField.ejs',{text:'Product Type',className:'productType',value:'',isInput:false,isDisabled:true,type:'',isRequired:false}) %>
+                <%- include('../sellerUtils/InputField.ejs',{text:'Use',className:'productUsage',value:'',isInput:false,isDisabled:true,type:'',isRequired:false}) %>
+                <div class="productPricing">
+                    <%- include('../sellerUtils/InputField.ejs',{text:'MRP',className:'originalPrice priceCss',value:'',isInput:true,isDisabled:true,type:'number',isRequired:false}) %>
+                    <%- include('../sellerUtils/InputField.ejs',{text:'Set price',className:'offeredPrice priceCss',value:'',isInput:true,isDisabled:false,type:'number',isRequired:false}) %>
+                </div>
+                <%- include('../sellerUtils/InputField.ejs',{text:'Quantity',className:'productQuantity',value:'',isInput:true,isDisabled:false,type:'number',isRequired:true}) %>
+            </div>
+            <div class="buttonHolder-editForm">
+                <button class="cancel addProductBtn" type="button">Cancel</button>
+                <button class="submit addProductBtn" type="button">Submit</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+<%- include('../sellerUtils/footer.ejs') %>
+
