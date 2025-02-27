@@ -23,12 +23,7 @@ function attachEventListner(){
     gridFunctionality?.addEventListener('click',async(e)=>{
         let checkedCount=0;
         let values = '';
-        const element = e.target.closest('tr').querySelector('td').querySelector('input');
-        if(!element.getAttribute('checked')){
-            e.target.closest('tr').querySelector('td').querySelector('input').setAttribute('checked',true);
-        }else{
-            e.target.closest('tr').querySelector('td').querySelector('input').removeAttribute('checked');
-        }
+        
         checkbox.forEach(item=>{
             if(item.checked){
                 values+=item.value;
@@ -48,9 +43,9 @@ function attachEventListner(){
             detailButton.removeAttribute('disabled');
             editButton.removeAttribute('disabled');
             deleteButton.removeAttribute('disabled');
-            detailButtonValue.value = element.value;
-            editButtonValue.value = element.value;
-            deleteButtonValue.value = element.value;
+            detailButtonValue.value = e.target.value;
+            editButtonValue.value = e.target.value;
+            deleteButtonValue.value = e.target.value;
         }else{
             detailButton.setAttribute('disabled',true);
             editButton.setAttribute('disabled',true);
@@ -137,6 +132,14 @@ function attachEventListner(){
     currentPage.addEventListener('keydown',(e)=>{
         if(e.key=='Enter'){
             PaginatedDataLoading(Number(currentPage.value));
+        }
+    });
+    document.querySelector('.tableBody').addEventListener('click',(e)=>{
+        const element = e.target.closest('tr').querySelector('td').querySelector('input');
+        if(!element.getAttribute('checked')){
+            e.target.closest('tr').querySelector('td').querySelector('input').setAttribute('checked',true);
+        }else{
+            e.target.closest('tr').querySelector('td').querySelector('input').removeAttribute('checked');
         }
     });
 }
