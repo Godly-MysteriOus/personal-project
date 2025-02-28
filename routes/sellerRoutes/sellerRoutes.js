@@ -5,11 +5,11 @@ const sellerChecks = require('../../utils/sellerChecks');
 const productController = require('../../controllers/sellerControllers/productActions');
 const accountController = require('../../controllers/sellerControllers/accountManagementAction');
 const salesController = require('../../controllers/sellerControllers/salesAction');
-// product related routes
+// product related routes ----- completed
 router.get('/listed-products',authRoute.sellerAuthentication,productController.getListedProductsPage);
 router.post('/delete-product',authRoute.sellerAuthentication,productController.postDeleteProduct);
 
-//add single product
+//add single product   ---------- completed
 router.get('/add-product',authRoute.sellerAuthentication,productController.getAddProduct);
 router.post('/load-details',authRoute.sellerAuthentication,productController.loadProductDetails);
 router.post('/add-product',authRoute.sellerAuthentication,
@@ -19,7 +19,7 @@ router.post('/add-product',authRoute.sellerAuthentication,
 ],
 productController.postAddProduct);
 
-// edit product
+// edit product    -------- completed
 router.get('/edit-product/:productId',authRoute.sellerAuthentication,productController.getEditProduct);
 router.get('/edit-product-detail/:productId',authRoute.sellerAuthentication,productController.getEditProductDetail);
 router.post('/edit-product',authRoute.sellerAuthentication,productController.postEditProduct);

@@ -1,0 +1,22 @@
+<%- include('../sellerUtils/starter.ejs') %>
+<!-- link custom css -->
+<link rel="stylesheet" href="/styles/sellerCss/sellerHeader.css">
+</head>
+<%- include('../sellerUtils/sellerHeader.ejs') %>
+<%- include('../utils/MessageBox.ejs') %>
+<script>
+    const message = document.querySelector('.message');
+    const url = '<%= url %>';
+    const keyName = '<%=localStorageKey.suggestions%>';
+</script>
+<body>
+    <link rel="stylesheet" href="/styles/sellerCss/addBulkProduct.css">
+    <div class="searchBoxHolderBulkUploadPage">
+        <%- include('../utils/searchBox.ejs',{buttonsToRender:path,pageTitle:'Bulk Add Product'}) %>
+    </div>
+    <div class="body-wrapper-bulkUploadPage">
+
+    </div>
+</body>
+<script src="/scripts/bulkAddProductPageScript.js"></script>
+<%- include('../sellerUtils/footer.ejs') %>

@@ -266,7 +266,18 @@ exports.postEditProduct = async(req,res,next)=>{
 }
 
 exports.getBulkUpload = (req,res,next)=>{
-    return res.render(path.join('Seller','bulkUploadPage'),{});
+    const storeName = req.user?.storeDetails.storeName;
+    const ownerName =  req.user?.storeDetails.ownerName;
+    const storeLogo =  req.user?.storeDetails.logoDetails.logo;
+    const userDetail = {
+        storeName:storeName,
+        ownerName:ownerName,
+        storeLogo:storeLogo,
+    };
+    return res.render(path.join('Seller','bulkUploadPage'),{
+        userDetails : userDetail,
+        path: 'Seller/bulkUploadPage',
+    });
 };
 exports.postBulkAddProduct = async(req,res,next)=>{
     const productList = req.body;
