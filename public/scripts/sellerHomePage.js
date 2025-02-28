@@ -153,5 +153,12 @@ function attachEventListner(){
             editTab.focus();
         }
     });
+    window.addEventListener("message",(event)=>{
+        console.log(event.data.success);
+        if(event.data.success=='updated'){
+            editTab = null;
+            PaginatedDataLoading(currentPage.value);
+        }
+    });
 }
 attachEventListner();
