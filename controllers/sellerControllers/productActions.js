@@ -210,7 +210,6 @@ exports.getEditProduct = async(req,res,next)=>{
 }
 
 exports.getEditProductDetail = async(req,res,next)=>{
-    console.log('We hit here');
     try{
         const productId = req.params.productId;
         const userId = req.user._id;
@@ -238,7 +237,6 @@ exports.getEditProductDetail = async(req,res,next)=>{
 }
 
 exports.postEditProduct = async(req,res,next)=>{
-    console.log('came here');
     let {productId,price,qty} = req.body;
     const isProductGeniune = await centralMedicineDB.findOne({productId:productId}).select('_id');
     if(!isProductGeniune){
