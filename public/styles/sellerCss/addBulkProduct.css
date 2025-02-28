@@ -1,0 +1,11 @@
+.searchBoxHolderBulkUploadPage{
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.body-wrapper-bulkUploadPage{
+    width: 100%;
+    border-top: 1px solid grey;
+    height: calc(100vh - 10.7rem);
+}
