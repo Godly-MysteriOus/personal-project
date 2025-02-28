@@ -146,7 +146,7 @@ function attachEventListner(){
     });
     let editTab = null;
     editButton.addEventListener('click',(e)=>{
-        if(!editTab){
+        if(!editTab || editTab.closed){
             editTab = window.open(url+`seller/edit-product/${editButtonValue.value}`,'_blank');
         }else{
             editTab.focus();
