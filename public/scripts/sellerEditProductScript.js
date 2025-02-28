@@ -59,10 +59,10 @@ async function loadProductDetail() {
     if(result.success){
         productImage.setAttribute('src',result.productDetail.productImage.split('|')[0]);
         productName.textContent = result.productDetail.name;
-        productManufacturer.textContent = result.productDetail.manufacturer;
-        productPackagingInfo.textContent = result.productDetail.packagingDetails;
-        productType.textContent = result.productDetail.productForm;
-        productUsage.textContent = result.productDetail.useOf;
+        productManufacturer.textContent = result.productDetail.manufacturer.split('|')[0];
+        productPackagingInfo.textContent = result.productDetail.packagingDetails.split('|')[0];
+        productType.textContent = result.productDetail.productForm.split('|')[0];
+        productUsage.textContent = result.productDetail.useOf.split('|')[0];
         originalPrice.value = result.productDetail.MRP;
         offeredPrice.value = result.sellingDetail.price;
         quantity.value = result.sellingDetail.quantity;
@@ -74,4 +74,40 @@ async function loadProductDetail() {
         },3000);
     }
 }
+submitBtn.addEventListener('click',async()=>{
+    const prodId = window.location.href.split('/').pop();
+    const response = await fetch(url+'seller/edit-product',{
+        method: 'POST',
+        headers : {'Content-Type':'application/json'},
+        body:JSON.stringify({
+            productId : prodId,
+            qty : quantity.value,
+            price : offeredPrice.value,
+        }),
+    });
+    const result =  await response.json();
+    message.textContent = result.message;
+    message.classList.remove('message-hidden');
+    //for 2 sec display success message then for 3 sec display redirection message;
+    setTimeout(()=>{
+        let time = 3;
+        const fxn = setInterval(()=>{
+            message.textContent = `You will automatically be redirected in ${time}s`;
+            time--;
+            if(time==0){
+                clearInterval(fxn);
+            }
+        },1000);
+    },2000);
+
+    setTimeout(()=>{
+        message.classList.add('message-hidden');
+    },6000);
+    if(result.success){
+        window.opener.postMessage({success:'updated'},`${url}seller/listed-products`);
+        setTimeout(()=>{
+            window.close();
+        },6100);
+    }
+});
 window.onload = loadProductDetail();

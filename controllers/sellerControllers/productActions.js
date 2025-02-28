@@ -1,4 +1,5 @@
 const path = require('path');
+const url = require('../../config').hostURI;
 const productDBPath = path.join('..','..','models','productDB');
 const productDB = require(productDBPath);
 const mongoose = require('mongoose');
@@ -209,7 +210,6 @@ exports.getEditProduct = async(req,res,next)=>{
 }
 
 exports.getEditProductDetail = async(req,res,next)=>{
-    console.log('We hit here');
     try{
         const productId = req.params.productId;
         const userId = req.user._id;
@@ -237,13 +237,20 @@ exports.getEditProductDetail = async(req,res,next)=>{
 }
 
 exports.postEditProduct = async(req,res,next)=>{
-    let {productId,price,quantity} = req.body;
-    productId = new ObjectId(productId);
+    let {productId,price,qty} = req.body;
+    const isProductGeniune = await centralMedicineDB.findOne({productId:productId}).select('_id');
+    if(!isProductGeniune){
+        throw new Error('Invalid product to update');
+    }
+    const userId = req.user._id;
+    const isListedBySeller = await productDB.findOne({sellerId:userId, productId:isProductGeniune._id});
+    if(!isListedBySeller){
+        throw new Error('Cannot update unlisted product');
+    }
     price = Number(price);
-    quantity = Number(quantity);
-    const userId = new ObjectId(req.user._id);
+    qty = Number(qty);
     try{
-        const result = await productDB.updateOne({productId:productId,sellerId:userId},{$set:{price:price,quantity:quantity}});
+        const result = await productDB.updateOne({productId:isProductGeniune._id,sellerId:userId},{$set:{price:price,quantity:qty}});
         return res.json({
             success:true,
             message: 'Successfully editted product details',

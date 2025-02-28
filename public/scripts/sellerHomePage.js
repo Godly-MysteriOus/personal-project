@@ -146,11 +146,16 @@ function attachEventListner(){
     });
     let editTab = null;
     editButton.addEventListener('click',(e)=>{
-        console.log(editTab);
         if(!editTab){
             editTab = window.open(url+`seller/edit-product/${editButtonValue.value}`,'_blank');
         }else{
             editTab.focus();
+        }
+    });
+    window.addEventListener("message",(event)=>{
+        if(event.data.success=='updated'){
+            editTab = null;
+            PaginatedDataLoading(currentPage.value);
         }
     });
 }
