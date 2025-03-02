@@ -1,3 +1,4 @@
+
 .searchBoxHolderBulkUploadPage{
     display: flex;
     width: 100%;
@@ -5,7 +6,62 @@
     align-items: center;
 }
 .body-wrapper-bulkUploadPage{
-    width: 100%;
+    width: 100vw;
     border-top: 1px solid grey;
     height: calc(100vh - 10.7rem);
+    padding: 0.5rem;
+    overflow-y: scroll;
+}
+.bulkAddProductsForm{
+    width: 100%;
+    min-height: 68vh;
+    border: 1px solid rgb(0, 0, 0);
+   overflow-x: scroll;
+   /* overflow-y: scroll; */
+}
+.gridHolder{
+    border: 1px solid rgb(0, 0, 0);
+    width: 100%;
+    border-collapse: collapse;
+}
+th{
+    padding: 0.75rem 0rem;
+    border: 1px solid black;
+    text-align: center;
+}
+td{
+    padding: 0.25rem 0rem;
+    border: 1px solid black;
+    text-align: center;
+}
+.medicineName-header{
+    min-width: 15rem;
+}
+.manufacturer-header{
+    min-width: 15rem;
+}
+.productForm-header,.packagingInfo-header{
+    min-width: 12rem;
+}
+
+.originalPrice-header,.offeredPrice-header,.quantity-header{
+    min-width: 6rem;
+}
+.deleteProduct-header{
+    min-width: 5rem;
+}
+.offeredPrice-input,.quantity-input{
+    width: 4rem;
+}
+/* .submitBtnHolder{
+    display: flex;
+    padding: 0.5rem 1rem;
+    border: 1px solid blue;
+    justify-content: end;
+}
+.saveAllProductBtn{
+    padding: 0.25rem 1rem;
+} */
+.saveAllButton{
+    margin-left: 1rem;
 }

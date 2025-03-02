@@ -1,6 +1,7 @@
 const localStorageKey = {
     suggestions : 'searchSuggestion',
-    sellerListedProduct : 'searchListedProductSuggestion'
+    sellerListedProduct : 'searchListedProductSuggestion',
+    addBulkProductPage: 'addedProducts-AddBulkProductPage',
 };
 
 module.exports = localStorageKey;
