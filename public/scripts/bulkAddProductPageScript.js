@@ -85,7 +85,7 @@ function loadPage(){
                 button.value = item.id;
                 button.className = 'productId';
                 button.type = "button";
-                button.style.padding = '0.1rem 0.5rem';
+                button.style.padding = '0.15rem 0.5rem';
                 td.appendChild(button);
             }
             tr.appendChild(td);
@@ -126,6 +126,20 @@ addBtnSearchBox.addEventListener('click',async()=>{
     }
     if(result.success){
         searchInputField.value = '';
+        const localStorageData = JSON.parse(localStorage.getItem(addedBulkProductKeyName));
+        const doesAlreadyExists = localStorageData.find(item=>{
+            if(item.data[0] == result.data.name){
+                return item;
+            }
+        });
+        if(doesAlreadyExists){
+            message.textContent = 'Medicine Already added here, please update';
+            message.classList.remove('message-hidden');
+            setTimeout(()=>{
+                message.classList.add('message-hidden');
+            },3000);
+            return;
+        }
         const tr = document.createElement('tr');
         const classNames = ['medicineName','manufacturer','packagingInfo','productForm','originalPrice','offeredPrice','quantity','deleteProduct'];
         const data = result.data;
@@ -151,7 +165,7 @@ addBtnSearchBox.addEventListener('click',async()=>{
                 button.value = medicineIdValue.value;
                 button.className = 'productId';
                 button.type = "button";
-                // button.style.padding = '0.25rem 0.5rem';
+                button.style.padding = '0.15rem 0.5rem';
                 td.appendChild(button);
             }
             tr.appendChild(td);
