@@ -143,8 +143,8 @@ async function loadSuggestionData(val){
     // retreives data from lcoalstorage for key
     const suggesstionList = JSON.parse(localStorage.getItem(keyName));
     //filters data according to searchInput Data
-    let desiredSuggesstionList = suggesstionList.filter(item=>String(item?.name).toLowerCase().includes(val.toLowerCase())).sort((a,b)=> a.name.localeCompare(b.name));
-    if(desiredSuggesstionList.length<5){
+    let desiredSuggesstionList = suggesstionList?.filter(item=>String(item?.name).toLowerCase().includes(val.toLowerCase())).sort((a,b)=> a.name.localeCompare(b.name));
+    if(!desiredSuggesstionList || desiredSuggesstionList.length<5){
         // make a api call to fetch and store data in local storage
         const response = await fetch(url+'utils/searchProduct',{
             method:'POST',

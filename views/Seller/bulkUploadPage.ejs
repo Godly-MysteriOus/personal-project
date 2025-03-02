@@ -7,7 +7,10 @@
 <script>
     const message = document.querySelector('.message');
     const url = '<%= url %>';
+    // search bar suggesstion 
     const keyName = '<%=localStorageKey.suggestions%>';
+    // added product in add bulk product page
+    const addedBulkProductKeyName = '<%=localStorageKey.addBulkProductPage%>';
 </script>
 <body>
     <link rel="stylesheet" href="/styles/sellerCss/addBulkProduct.css">
@@ -15,7 +18,24 @@
         <%- include('../utils/searchBox.ejs',{buttonsToRender:path,pageTitle:'Bulk Add Product'}) %>
     </div>
     <div class="body-wrapper-bulkUploadPage">
-
+        <form action="" class="bulkAddProductsForm">
+            <table class="gridHolder">
+                <thead class="fieldLabel">
+                    <th class="medicineName-header">Medicine Name</th>
+                    <th class="manufacturer-header">Manufacturer</th>
+                    <th class="packagingInfo-header"> Packaging Details</th>
+                    <th class="productForm-header">Product Form</th>
+                    <th class="originalPrice-header">MRP</th>
+                    <th class="offeredPrice-header">Your Price</th>
+                    <th class="quantity-header">Quantiy</th>
+                    <th class="deleteProduct-header"></th>
+                </thead>
+                <tbody class="gridContent">
+                    <!--  added medicines will be stored here  -->
+                </tbody>
+            </table>
+        </form>
+        <!-- <div class="submitBtnHolder"><button class="saveAllProductBtn" type="button">Save</button></div> -->
     </div>
 </body>
 <script src="/scripts/bulkAddProductPageScript.js"></script>
