@@ -31,7 +31,7 @@ const store = new MongoDBStore({
 //     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 //     credentials: true // Allow cookies if necessary
 // }));
-app.use(helmet());
+// app.use(helmet());
 app.use(compression());
 // const accessLogs = fs.createWriteStream(path.join(__dirname,'logs',`${new Date().toISOString().split('T')[0]}`),{flags:'a'});
 // app.use(morgan('combined',{stream:accessLogs}));
