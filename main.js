@@ -129,4 +129,6 @@ app.use((req,res,next)=>{
 })
 
 
+connectionProvider.devDBConnection(app,3100);
+
 module.exports = app;
