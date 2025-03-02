@@ -130,4 +130,7 @@ app.use((req,res,next)=>{
 
 connectionProvider.devDBConnection(app,'https://personal-project-peach.vercel.app/');
 
-module.exports = {app,upload,cloudinary,redis};
+module.exports = {upload,cloudinary,redis};
+module.exports = (req,res)=>{
+    return app(req,res);
+}
