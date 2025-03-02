@@ -103,6 +103,6 @@ app.use((req,res,next)=>{
 })
 
 
-connectionProvider.devDBConnection();
+connectionProvider.devDBConnection(app,process.env.PORT||8080);
 
-module.exports = require('@vercel/node')(app);
+// module.exports = require('@vercel/node')(app);

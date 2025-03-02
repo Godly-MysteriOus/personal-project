@@ -5,9 +5,9 @@ exports.DB_Connections = {
   TEST_DB_URI : credential.testURI,
   PROD_DB : credential.prodURI,
 }
-exports.devDBConnection = ()=>{
+exports.devDBConnection = (app,PORT_NUMBER)=>{
     mongoose.connect(DB_Connections.DEV_URI)
-    // .then(result => app.listen(PORT_NUMBER))
+    .then(result => app.listen(PORT_NUMBER))
     .then(()=>console.log('connected to the server'))
     .catch(err => {
       console.log(err);
