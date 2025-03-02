@@ -33,8 +33,8 @@ const store = new MongoDBStore({
 // }));
 app.use(helmet());
 app.use(compression());
-const accessLogs = fs.createWriteStream(path.join(__dirname,'logs',`${new Date().toISOString().split('T')[0]}`),{flags:'a'});
-app.use(morgan('combined',{stream:accessLogs}));
+// const accessLogs = fs.createWriteStream(path.join(__dirname,'logs',`${new Date().toISOString().split('T')[0]}`),{flags:'a'});
+// app.use(morgan('combined',{stream:accessLogs}));
 app.use(
     session({
         secret: 'my secret',
