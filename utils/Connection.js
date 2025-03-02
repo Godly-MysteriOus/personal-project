@@ -6,7 +6,7 @@ exports.DB_Connections = {
   PROD_DB : credential.prodURI,
 }
 exports.devDBConnection = (app,PORT_NUMBER)=>{
-    mongoose.connect(DB_Connections.DEV_URI)
+    mongoose.connect(exports.DB_Connections.DEV_URI)
     .then(result => app.listen(PORT_NUMBER))
     .then(()=>console.log('connected to the server'))
     .catch(err => {
@@ -14,14 +14,14 @@ exports.devDBConnection = (app,PORT_NUMBER)=>{
     });
 };
 exports.testDBConnection = (app,PORT_NUMBER)=>{
-    mongoose.connect(this.DB_Connections.TEST_DB_URI)
+    mongoose.connect(exports.DB_Connections.TEST_DB_URI)
     .then(result => app.listen(PORT_NUMBER))
     .catch(err => {
       console.log(err);
     });
 };
 exports.prodDBConnection = (app,PORT_NUMBER)=>{
-    mongoose.connect(this.DB_Connections.PROD_DB)
+    mongoose.connect(exports.DB_Connections.PROD_DB)
     .then(result => app.listen(PORT_NUMBER))
     .catch(err => {
       console.log(err);
