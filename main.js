@@ -50,7 +50,7 @@ module.exports = {upload,cloudinary,redis};
 // body parsers and ejs engines
 app.use(bodyParser.urlencoded({extended:false}));
 app.set('view engine', 'ejs');
-app.set('views', 'views');
+app.set('views', path.join(__dirname,'views'));
 const store = new MongoDBStore({
     uri: dbURI.DB_Connections.DEV_URI,
     collection: 'sessions'
