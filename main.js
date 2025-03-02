@@ -45,7 +45,6 @@ const redis = new Redis({
 
 
 const upload= multer({storage});
-module.exports = {upload,cloudinary,redis};
 
 // body parsers and ejs engines
 app.use(bodyParser.urlencoded({extended:false}));
@@ -131,4 +130,4 @@ app.use((req,res,next)=>{
 
 connectionProvider.devDBConnection(app,'https://personal-project-peach.vercel.app/');
 
-module.exports = app;
+module.exports = {app,upload,cloudinary,redis};
