@@ -129,6 +129,6 @@ app.use((req,res,next)=>{
 })
 
 
-connectionProvider.devDBConnection(app,3100);
+connectionProvider.devDBConnection(app,'https://personal-project-peach.vercel.app/');
 
 module.exports = app;
