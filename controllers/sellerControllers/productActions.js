@@ -280,45 +280,78 @@ exports.getBulkUpload = (req,res,next)=>{
     });
 };
 exports.postBulkAddProduct = async(req,res,next)=>{
-    const productList = req.body;
-    const userId = new ObjectId(erq.user._id);
+    const {medicineIdList,myPrice,quantity} = req.body;
+    const mongoIdListMedicine = [];
+    const userId =req.user._id;
     const transactionSession = await mongoose.startSession(); 
+    transactionSession.startTransaction();
+   
     try{
-        transactionSession.startTransaction();
-        //for each item create an entry
-        productList.forEach(async item => {
-            // check if product already exits or not
-            const productId = new ObjectId(item.productId);
-            const quantity = Number(item.quantity);
-            const price = Number(item.price);
-            const isProductAvailable = findProduct(productId,userId);
-            if(isProductAvailable){
-                //update product
-                isProductAvailable.quantity = quantity;
-                isProductAvailable.price = price;
-                await isProductAvailable.save();
-            }else{
-                //create product
-                const isProductCreated = createProduct(productId,userId,quantity,price,transactionSession);
+        for (let i=0; i< medicineIdList.length; i++) {
+            const isProductGenuine = await centralMedicineDB.findOne({productId:medicineIdList[i]}).select('_id MRP name');
+            if(!isProductGenuine){
+                throw new Error('Medicine Does not exists, cannot add');
             }
-        });
+            if(isProductGenuine[i]<myPrice[i]){
+                throw new Error(`Price cannot be greater than MRP, medicine Name : ${isProductGenuine.name}`);
+            }
+            if(isNaN(myPrice[i]) || isNaN(quantity[i])){
+                throw new Error('Only Number allowed in price and quantity field');
+            }
+            if(quantity[i]<1){
+                throw new Error(`Quantity cannot be less than 1, medicine Name : ${isProductGenuine.name}`);
+            }
+            mongoIdListMedicine.push(isProductGenuine._id);
+    
+        }
+        //for each item create an entry
+        for(let i=0; i<mongoIdListMedicine.length; i++){
+            const productId = mongoIdListMedicine[i];
+            const price = Number(myPrice[i]);
+            const qty  = Number(quantity[i]);
+            const isProductAlreadyListed = await findProduct(productId,userId);
+            if(isProductAlreadyListed){
+                isProductAlreadyListed.price = price;
+                isProductAlreadyListed.quantity += qty;
+                isProductAlreadyListed.save();
+            }else{
+                const createEntry = await createProduct(productId,userId,qty,price,transactionSession);
+                if(!createEntry){
+                    throw new Error('Failed to add product');
+                }
+            }
+        }
         await transactionSession.commitTransaction();
         await transactionSession.endSession();
+        return res.status(200).json({
+            success:true,
+            message:'Added products successfully',
+        });
     }catch(err){
         await transactionSession.abortTransaction();
         transactionSession.endSession();
         console.log('Error while bulk uploading',err.stack);
         return res.json({
             success:false,
-            message:err.messsage,
+            message:err.message,
         });
     }
 }
 
 exports.loadProductDetails = async(req,res,next)=>{
     const {medicineId} = req.body;
+    const userId = req.user._id;
     try{
-        const findProduct = await centralMedicineDB.findOne({productId:medicineId}).select('productImage name manufacturer packagingDetails productForm MRP useOf').lean();
+        const findProduct = await centralMedicineDB.findOne({productId:medicineId}).select('productImage name manufacturer packagingDetails productForm MRP useOf');
+        const isMedicineAlreadyListed = await productDB.findOne({sellerId:userId,productId:findProduct._id});
+        if(isMedicineAlreadyListed){
+            // throw new Error('Medicine Already Listed, cannot list again!');
+            return res.status(200).json({
+                success:true,
+                message:'Medicine Already Listed, will be updated !',
+                data:findProduct,
+            })
+        }
         return res.status(200).json({
             success:true,
             message:'Successfully fetched data',
@@ -328,7 +361,7 @@ exports.loadProductDetails = async(req,res,next)=>{
         console.log('Error while fetching product details',err.stack);
         return res.status(400).json({
             success:false,
-            message: 'Error fetching data',
+            message: err.message,
         });
     }
 
