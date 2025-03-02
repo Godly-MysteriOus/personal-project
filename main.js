@@ -45,11 +45,12 @@ const redis = new Redis({
 
 
 const upload= multer({storage});
+module.exports = {upload,cloudinary,redis};
 
 // body parsers and ejs engines
 app.use(bodyParser.urlencoded({extended:false}));
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname,'views'));
+app.set('views', 'views');
 const store = new MongoDBStore({
     uri: dbURI.DB_Connections.DEV_URI,
     collection: 'sessions'
@@ -128,9 +129,4 @@ app.use((req,res,next)=>{
 })
 
 
-connectionProvider.devDBConnection(app,'https://personal-project-peach.vercel.app/');
-
-module.exports = {upload,cloudinary,redis};
-module.exports = (req,res)=>{
-    return app(req,res);
-}
+connectionProvider.devDBConnection(app,3100);
