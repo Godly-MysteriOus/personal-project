@@ -11,6 +11,6 @@ router.post('/pincode',utilController.getPincodeValidation);
 
 router.post('/searchProduct',utilController.searchBarSellerAddProduct);
 
-router.get('/listedProduct',utilController.searchBarSellerListedProduct);
+router.get('/allListedProducts',utilController.searchBarSellerListedProduct);
 
 module.exports = router;
