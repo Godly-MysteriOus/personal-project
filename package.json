@@ -2,7 +2,7 @@
   "name": "personal-project",
   "version": "1.0.0",
   "description": "This is my project where I am designing an application which is bound to serve the medical sector",
-  "main": "app.js",
+  "main": "main.js",
   "engines": {
     "node": "20.x"
   },
