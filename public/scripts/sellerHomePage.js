@@ -23,7 +23,10 @@ function attachEventListner(){
     gridFunctionality?.addEventListener('click',async(e)=>{
         let checkedCount=0;
         let values = '';
-        const element = e.target.closest('tr').querySelector('td').querySelector('input');
+        const element = e.target.closest('tr')?.querySelector('td')?.querySelector('input');
+        if(!element){
+            return;
+        }
         if(!element.getAttribute('checked')){
             e.target.closest('tr').querySelector('td').querySelector('input').setAttribute('checked',true);
         }else{

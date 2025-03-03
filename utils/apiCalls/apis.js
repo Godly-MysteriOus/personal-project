@@ -95,6 +95,9 @@ exports.searchBarSellerAddProduct = async(req,res,next)=>{
 }
 
 exports.searchBarSellerListedProduct = async(req,res,next)=>{
+    /*
+    * Returns the name and productId of all the listed medicine by the seller 
+    */
     try{
         const userId = new mongoose.Types.ObjectId(req.user?._id);
         const listedProducts = await productDB.find({sellerId:userId}).populate('productId','productId name');

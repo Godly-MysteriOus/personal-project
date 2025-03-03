@@ -17,19 +17,33 @@ function loadSuggestionData(inputData){
         suggestionBox.classList.add('suggestionBox-hidden');
         return;
     }
-    const listedProductList = JSON.parse(localStorage.getItem(keyName));
+    const listedProductList = localStorage.getItem(keyName) ? JSON.parse(localStorage.getItem(keyName)) : [];
+    //suggesstionList stores the data matching the input value in a sorted order
     let suggesstionList  = [];
-    suggesstionList =  listedProductList.filter(item=>String(item.name).toLowerCase().includes(inputData.toLowerCase()));
+    suggesstionList =  listedProductList.filter(item=>String(item.name).toLowerCase().includes(inputData.toLowerCase())).sort((a,b)=>a.name.localeCompare(b.name));
+    // this is implemented to first get data where medicine name starts with input value followed by data in sorted order
+    let sortedSuggestionList = [];
+    suggesstionList.forEach(item => {
+        if(String(item.name).toLowerCase().startsWith(inputData.toLowerCase())){
+            sortedSuggestionList.push(item);
+        }
+    });
+    suggesstionList.forEach(item=>{
+        if(!sortedSuggestionList.find(product=>product.name == item.name)){
+            sortedSuggestionList.push(item);
+        }
+    })
     if(suggesstionList.length==0){
         suggesstionList.push({name:'No Item Present',productId:''});
     }
-    const maxIteration = suggesstionList.length > 10 ? 10 : suggesstionList.length;
+    //defines maximum iteration and creates option
+    const maxIteration = sortedSuggestionList.length > 10 ? 10 : sortedSuggestionList.length;
     suggestionBox.classList.remove('suggestionBox-hidden');
     suggestionBox.innerHTML = '';
     for(let i=0; i<maxIteration; i++){
         const option = document.createElement('option');
-        option.textContent = suggesstionList[i].name;
-        option.value = suggesstionList[i].productId;
+        option.textContent = sortedSuggestionList[i].name;
+        option.value = sortedSuggestionList[i].productId;
         option.classList.add('optionField');
         suggestionBox.appendChild(option);
     }
