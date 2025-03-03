@@ -18,6 +18,7 @@
     z-index: 5;
     height: fit-content;
     background: rgb(246, 246, 246);
+    overflow-x:hidden;
 }
 .suggestionBox-hidden{
     display: none;
