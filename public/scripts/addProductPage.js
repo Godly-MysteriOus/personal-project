@@ -133,7 +133,6 @@ submitBtn.addEventListener('click',async(e)=>{
         message.classList.add('message-hidden');
     },3000);
 });
-
 // suggestions generate handler
 async function loadSuggestionData(val){
     if(val.length<=0){
@@ -141,10 +140,10 @@ async function loadSuggestionData(val){
         return;
     }
     // retreives data from lcoalstorage for key
-    const suggesstionList = JSON.parse(localStorage.getItem(keyName));
+    const suggesstionList = localStorage.getItem(keyName) ? JSON.parse(localStorage.getItem(keyName)) : [];
     //filters data according to searchInput Data
-    let desiredSuggesstionList = suggesstionList?.filter(item=>String(item?.name).toLowerCase().includes(val.toLowerCase())).sort((a,b)=> a.name.localeCompare(b.name));
-    if(!desiredSuggesstionList || desiredSuggesstionList.length<5){
+    let desiredSuggesstionList = suggesstionList?.filter(item=>String(item?.name).toLowerCase().includes(val.toLowerCase()));
+    if(!desiredSuggesstionList || desiredSuggesstionList.length<7){
         // make a api call to fetch and store data in local storage
         const response = await fetch(url+'utils/searchProduct',{
             method:'POST',
@@ -164,7 +163,7 @@ async function loadSuggestionData(val){
         }
         localStorage.setItem(keyName,JSON.stringify(result.data));
         //sorted data
-        desiredSuggesstionList =  result.data.filter(item => String(item.name).toLowerCase().includes(val.toLowerCase())).sort((a,b)=> a.name.localeCompare(b.name));
+        desiredSuggesstionList =  result.data.filter(item => String(item.name).toLowerCase().includes(val.toLowerCase()));
     }
     // show 10 data to the UI
     suggesstions.classList.remove('suggestionBox-hidden');

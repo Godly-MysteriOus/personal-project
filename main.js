@@ -1,3 +1,4 @@
+const fs = require('fs');
 const connectionProvider = require('./utils/Connection');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
@@ -8,44 +9,14 @@ const express = require('express');
 const path = require('path');
 const dbURI = require('./utils/Connection');
 const credential = require('./config');
-const {Redis} = require('@upstash/redis');
 const localStorageKey = require('./LocalStorageKey');
 const app = express();
-// const cors = require('cors');
-const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-
-//file storage middlewares
-cloudinary.config({
-    cloud_name:credential.cloudinaryCloudName,
-    api_key:credential.cloudinaryApiKey,
-    api_secret:credential.cloudinaryApiSecret,
-});
-const storage = new CloudinaryStorage({
-    cloudinary:cloudinary,
-    params: async (req,file)=>{
-        let folderName = 'productImages';
-        if(file.fieldname === 'storeLogo'){
-            folderName = 'seller/storeLogo';
-        }else if(file.fieldname === 'headerLogoForPdf' || file.fieldname === 'footerLogoForPdf'){
-            folderName = 'seller/banner';
-        }
-        return {
-            folder : folderName,
-            allowed_formats: ["jpg", "jpeg", "png"],
-            public_id: `${file.fieldname}-${Date.now()}-${file.originalname.replace(/\s+/g, '_').split('.')[0]}`
-        }
-    } 
-});
-const redis = new Redis({
-    url : credential.upstashRedisUrl,
-    token: credential.upstashRedisToken,
-});
+const cors = require('cors');
 
 
-const upload= multer({storage});
-module.exports = {upload,cloudinary,redis};
+const helmet = require('helmet');
+const compression = require('compression');
+const morgan = require('morgan');
 
 // body parsers and ejs engines
 app.use(bodyParser.urlencoded({extended:false}));
@@ -55,12 +26,15 @@ const store = new MongoDBStore({
     uri: dbURI.DB_Connections.DEV_URI,
     collection: 'sessions'
 });
-// app.use(cors({
-//     origin: 'http://localhost:5500', // Replace with your front-end URL
-//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//     credentials: true // Allow cookies if necessary
-// }));
-
+app.use(cors({
+    origin: '*', // Replace with your front-end URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true // Allow cookies if necessary
+}));
+// app.use(helmet());
+app.use(compression());
+// const accessLogs = fs.createWriteStream(path.join(__dirname,'logs',`${new Date().toISOString().split('T')[0]}`),{flags:'a'});
+// app.use(morgan('combined',{stream:accessLogs}));
 app.use(
     session({
         secret: 'my secret',
@@ -129,4 +103,6 @@ app.use((req,res,next)=>{
 })
 
 
-connectionProvider.devDBConnection(app,3100);
+connectionProvider.devDBConnection(app,process.env.PORT||8080);
+
+// module.exports = require('@vercel/node')(app);
