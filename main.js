@@ -11,7 +11,7 @@ const dbURI = require('./utils/Connection');
 const credential = require('./config');
 const localStorageKey = require('./LocalStorageKey');
 const app = express();
-// const cors = require('cors');
+const cors = require('cors');
 
 
 const helmet = require('helmet');
@@ -26,6 +26,7 @@ const store = new MongoDBStore({
     uri: dbURI.DB_Connections.DEV_URI,
     collection: 'sessions'
 });
+app.use(cors());
 // app.use(cors({
 //     origin: 'http://localhost:5500', // Replace with your front-end URL
 //     methods: ['GET', 'POST', 'PUT', 'DELETE'],
