@@ -2,7 +2,6 @@ const csc = require('country-state-city');
 const mongoose = require('mongoose');
 const productDB = require('../../models/productDB');
 const centralMedicineDB = require('../../models/centralMedicineDB');
-const { name } = require('ejs');
 exports.getAllStatesOfIndia = (req,res,next)=>{
     try{
         const states = csc.State.getStatesOfCountry("IN");
