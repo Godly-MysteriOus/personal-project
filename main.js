@@ -26,12 +26,11 @@ const store = new MongoDBStore({
     uri: dbURI.DB_Connections.DEV_URI,
     collection: 'sessions'
 });
-app.use(cors());
-// app.use(cors({
-//     origin: 'http://localhost:5500', // Replace with your front-end URL
-//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//     credentials: true // Allow cookies if necessary
-// }));
+app.use(cors({
+    origin: '*', // Replace with your front-end URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true // Allow cookies if necessary
+}));
 // app.use(helmet());
 app.use(compression());
 // const accessLogs = fs.createWriteStream(path.join(__dirname,'logs',`${new Date().toISOString().split('T')[0]}`),{flags:'a'});

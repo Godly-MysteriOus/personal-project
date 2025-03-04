@@ -7,7 +7,7 @@ exports.DB_Connections = {
 }
 exports.devDBConnection = (app,PORT_NUMBER)=>{
     mongoose.connect(exports.DB_Connections.DEV_URI)
-    .then(result => app.listen(PORT_NUMBER))
+    .then(result => app.listen(PORT_NUMBER,'0.0.0.0'))
     .then(()=>console.log('connected to the server'))
     .catch(err => {
       console.log(err);
