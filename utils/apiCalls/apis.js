@@ -2,6 +2,7 @@ const csc = require('country-state-city');
 const mongoose = require('mongoose');
 const productDB = require('../../models/productDB');
 const centralMedicineDB = require('../../models/centralMedicineDB');
+const { name } = require('ejs');
 exports.getAllStatesOfIndia = (req,res,next)=>{
     try{
         const states = csc.State.getStatesOfCountry("IN");
@@ -76,7 +77,12 @@ exports.searchBarSellerAddProduct = async(req,res,next)=>{
     const reqData = req.body.medicineName; 
     //fetch data from db
     try{
-        let suggestions = await centralMedicineDB.find({name:{$regex:new RegExp(reqData,'i')}}).select('name productId -_id').limit(30);
+        let suggestions = await centralMedicineDB.find({name:{$regex:new RegExp(`^${reqData}`,'i')}}).select('name productId -_id').limit(15);
+        let suggestions2 = await centralMedicineDB.find({name:{$regex:new RegExp(`${reqData}`,'i')}}).select('name productId -_id').limit(25).sort({name:1});
+        suggestions2.forEach(item=>{
+            suggestions.push(item);
+        });
+        // await centralMedicineDB.find({name:{$regex:new RegExp(reqData,'i')}}).select('name productId -_id').limit(30);
         if(!suggestions){
             throw new Error('Failed to fetch data from Database');
         }
