@@ -41,6 +41,7 @@ app.use(
         resave: false,
         saveUninitialized: false,
         store: store,
+        cookie:{maxAge:60*60*1000},
     })
 );
 app.use((req,res,next)=>{
@@ -48,7 +49,7 @@ app.use((req,res,next)=>{
         return next();
     }else{
         if(req.session.credentials.roleId==1){
-            userDB.
+            // userDB.findOne{}
             userDB.findById(req.session.user._id)
             .then(result=>{
                 req.user = result; 
@@ -77,6 +78,7 @@ const loginLogoutDeleteRoutes = require('./routes/authRoutes/login&logout');
 const featureRoutes = require('./routes/additionalRoutes/featureRoutes');
 const utilRoutes = require('./routes/additionalRoutes/utilRoutes');
 const sellerRoutes = require('./routes/sellerRoutes/sellerRoutes');
+const customerRoutes = require('./routes/customerRoutes/customerRoutes');
 app.use(express.static(path.join(__dirname,'public')));
 
 
@@ -85,7 +87,7 @@ app.use(loginLogoutDeleteRoutes);
 app.use('/utils',utilRoutes);
 app.use(featureRoutes);
 app.use('/seller',sellerRoutes);
-
+app.use('/customer',customerRoutes);
 app.get('/loadGoogleMap',(req,res,next)=>{
     const {latitude,longitude}=req.query;
     return res.render('utils/GoogleMap',{

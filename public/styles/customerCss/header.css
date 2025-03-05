@@ -1,0 +1,20 @@
+.header{
+    width: 100%;
+    padding: 0.5rem 2rem;
+    background: rgb(7, 2, 41);
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logoHolder img{
+    width: 3rem;
+}
+.featureBtnCss img{
+    width: 1.5rem;
+}
+.moreFeatureBtnHolder{
+    display: flex;
+}
+.featureBtnHidden{
+    display: none;
+}
