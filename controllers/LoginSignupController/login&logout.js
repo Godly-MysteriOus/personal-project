@@ -60,16 +60,29 @@ exports.postLogin =async (req,res)=>{
             throw new Error('No user found!!!');
         }
         req.session.isLoggedIn = true,
-        req.session.roleId = 2;
+        req.session.roleId = loginObj.roleId;
         req.session.credentials = loginObj;
         req.session.user = userObj;
         await saveSession(req.session);
         await transactionSession.commitTransaction();
         await transactionSession.endSession();
+        let redirectionUrl = '';
+        switch (loginObj.roleId) {
+            case 1:
+                redirectionUrl = 'customer/homePage';
+                break;
+            case 2: 
+                redirectionUrl = 'seller/listed-products';
+                break;
+            case 3:
+                break;
+            default:
+                break;
+        }
         return res.status(200).json({
             message:'Successfully Logged in',
             success:true,
-            redirectUrl:'seller/listed-products',
+            redirectUrl:redirectionUrl,
         });
     }catch(err){
         transactionSession?.abortTransaction();
