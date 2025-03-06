@@ -1,1 +1,44 @@
+    <style>
+        .footerContainer{
+            width: 100%;
+            height: 10vh;
+            padding: 0.35rem;
+            background: rgb(7, 2, 41);
+            display: flex;
+            justify-content: space-evenly;
+        }
+        .footerItemHolder{
+            display: grid;
+            place-items: center;
+            padding: 0rem 0.5rem;
+            cursor: pointer;
+        }
+        .footerItem-imageHolder img{
+            width: 1.5rem;
+            filter: invert(1);
+        }
+        .footerItem-textHolder{
+            color: white;
+        }
+    </style>
+    <footer>
+        <div class="footerContainer">
+            <div class="footerItemHolder">
+                <div class="footerItem-imageHolder"><img src="/images/home.png" alt="home image"></div>
+                <div class="footerItem-textHolder">Home</div>
+            </div>
+            <div class="footerItemHolder">
+                <div class="footerItem-imageHolder"><img src="/images/shopping-cart.png" alt="cart image"></div>
+                <div class="footerItem-textHolder">Cart</div>
+            </div>
+            <div class="footerItemHolder">
+                <div class="footerItem-imageHolder"><img src="/images/user.png" alt="profile image"></div>
+                <div class="footerItem-textHolder">Profile</div>
+            </div>
+            <div class="footerItemHolder">
+                <div class="footerItem-imageHolder"><img src="/images/active-orders.png" alt=""></div>
+                <div class="footerItem-textHolder">Orders</div>
+            </div>
+        </div>
+    </footer>
 </html>
