@@ -6,12 +6,21 @@
     <link rel="stylesheet" href="/styles/customerCss/customerHomePage.css">
     <div  class="sellerHomePage">
         <div class="homePageContentHolder">
-    
+            <div class="searchBoxHolder">
+                <%- include('../utils/searchBox.ejs',{pageTitle:'',buttonsToRender:'Customer/HomePage'}) %>
+            </div>
         </div>
         <div class="navigationBarContentHolder navdisplay">
     
         </div>
     </div>
     <script src="/scripts/customer/headerScript.js"></script>
+    <script>
+        const keyName = '<%=localStorageKey.suggestions%>';
+        const url = '<%= url %>';
+        const customerCoordinateSaved = '<%= customerCoordinateSaved %>';
+    </script>
 </body>
+<script src="/scripts/utilScripts/allProductLoadData.js"></script>
+<script defer src="/scripts/customer/customerHomePage.js"></script>
 <%- include('./customerUtils/footer.ejs') %>

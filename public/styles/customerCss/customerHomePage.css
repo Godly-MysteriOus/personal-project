@@ -26,3 +26,10 @@
 .hideNavBar{
     animation: hideNavBar 0.5s ease-in-out forwards;
 }
+
+
+.searchBoxHolder{
+    display: grid;
+    place-items: center;
+    border-bottom: 2px solid grey;
+}
