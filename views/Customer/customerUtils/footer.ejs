@@ -21,17 +21,20 @@
             color: white;
         }
     </style>
+    <script>
+        const url = '<%= url %>';
+    </script>
     <footer>
         <div class="footerContainer">
-            <div class="footerItemHolder">
+            <div class="footerItemHolder" onclick=" window.location.href = url+'customer/homePage'">
                 <div class="footerItem-imageHolder"><img src="/images/home.png" alt="home image"></div>
                 <div class="footerItem-textHolder">Home</div>
             </div>
-            <div class="footerItemHolder">
+            <div class="footerItemHolder" onclick="window.location.href = url+'customer/cart'">
                 <div class="footerItem-imageHolder"><img src="/images/shopping-cart.png" alt="cart image"></div>
                 <div class="footerItem-textHolder">Cart</div>
             </div>
-            <div class="footerItemHolder">
+            <div class="footerItemHolder" onclick="window.location.href = url+'customer/profile'">
                 <div class="footerItem-imageHolder"><img src="/images/user.png" alt="profile image"></div>
                 <div class="footerItem-textHolder">Profile</div>
             </div>
