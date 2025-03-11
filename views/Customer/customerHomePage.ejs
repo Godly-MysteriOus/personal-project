@@ -3,11 +3,19 @@
 </head>
 <%- include('./customerUtils/topHeader.ejs') %>
 <body>
+    <%- include('../utils/MessageBox.ejs') %>
+    <script>
+        const message = document.querySelector('.message');
+    </script>
     <link rel="stylesheet" href="/styles/customerCss/customerHomePage.css">
     <div  class="sellerHomePage">
         <div class="homePageContentHolder">
             <div class="searchBoxHolder">
                 <%- include('../utils/searchBox.ejs',{pageTitle:'',buttonsToRender:'Customer/HomePage'}) %>
+            </div>
+            <!-- actual content here -->
+            <div class="contentHolder">
+                
             </div>
         </div>
         <div class="navigationBarContentHolder navdisplay">
