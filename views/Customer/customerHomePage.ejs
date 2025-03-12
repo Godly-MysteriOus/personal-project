@@ -8,27 +8,29 @@
         const message = document.querySelector('.message');
     </script>
     <link rel="stylesheet" href="/styles/customerCss/customerHomePage.css">
-    <div  class="sellerHomePage">
-        <div class="homePageContentHolder">
-            <div class="searchBoxHolder">
-                <%- include('../utils/searchBox.ejs',{pageTitle:'',buttonsToRender:'Customer/HomePage'}) %>
-            </div>
-            <!-- actual content here -->
-            <div class="contentHolder">
-                
+    <div class="homePageContentHolder">
+        <div class="userLocations">
+            <div class="userLocationContainer">
+                Deliver to: <select name="" id="" class="locationDropDown">
+                    <!-- <option value="1" class="option">ABCD</option>
+                    <option value="2" class="option">BCDE</option> -->
+                </select>
             </div>
         </div>
-        <div class="navigationBarContentHolder navdisplay">
-    
+        <div class="searchBoxHolder">
+            <%- include('../utils/searchBox.ejs',{pageTitle:'',buttonsToRender:'Customer/HomePage'}) %>
+        </div>
+        <!-- actual content here -->
+        <div class="contentHolder">
+
         </div>
     </div>
-    <script src="/scripts/customer/headerScript.js"></script>
     <script>
         const keyName = '<%=localStorageKey.suggestions%>';
         const url = '<%= url %>';
-        const customerCoordinateSaved = '<%= customerCoordinateSaved %>';
+        const userId = '<%= userId %>';
     </script>
 </body>
-<script src="/scripts/utilScripts/allProductLoadData.js"></script>
-<script defer src="/scripts/customer/customerHomePage.js"></script>
+<script defer src="/scripts/utilScripts/allProductLoadData.js"></script>
+<script src="/scripts/customer/customerHomePage.js"></script>
 <%- include('./customerUtils/footer.ejs') %>
