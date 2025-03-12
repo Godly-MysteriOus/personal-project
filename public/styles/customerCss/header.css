@@ -4,7 +4,6 @@
     padding: 0.5rem 2rem;
     background: rgb(7, 2, 41);
     display:flex;
-    justify-content: space-between;
     align-items: center;
 }
 .logoHolder{
@@ -20,31 +19,4 @@
 }
 .nameContainer{
     color: white;
-}
-.featureBtnCss img{
-    width: 1.5rem;
-}
-.moreFeatureBtnHolder{
-    display: flex;
-    z-index: 10;
-}
-.featureBtnHidden{
-    display: none;
-}
-
-@keyframes displayNavBar {
-    0%{
-        transform: translateX(100%);
-    }
-    100%{
-        transform: translateX(0%);
-    }
-}
-@keyframes hideNavBar {
-    0%{
-        transform: translateX(0%);
-    }
-    100%{
-        transform: translateX(100%);        
-    }
 }

@@ -1,32 +1,8 @@
-.sellerHomePage{
-    display: flex;
-}
 .homePageContentHolder{
     width: 100%;
     min-height: 75vh;
     /* border: 2px solid red; */
 }
-.navigationBarContentHolder{
-    position: absolute;
-    top: 0;
-    right: 0;
-    min-width: 20vw;
-    height: 100vh;
-    background: #9090904e;
-    backdrop-filter: blur(2px);
-    border-radius: 0.5rem 0rem 0px 0.5rem;
-    z-index: 5;
-}
-.navdisplay{
-    display: none;
-}
-.displayNavBar{
-    animation: displayNavBar 0.5s ease-in-out forwards;
-}
-.hideNavBar{
-    animation: hideNavBar 0.5s ease-in-out forwards;
-}
-
 
 .searchBoxHolder{
     display: grid;
@@ -36,7 +12,6 @@
 }
 
 .contentHolder{
-    border: 1px solid blue;
     height: 65vh;
     padding: 1rem;
     display: flex;
