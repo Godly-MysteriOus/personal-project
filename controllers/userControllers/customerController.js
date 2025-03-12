@@ -25,10 +25,8 @@ exports.searchListedProducts = async(req,res,next)=>{
         //     medicineInfo : isProductGenuine,
         //     sellers: allSellerWhoListedProduct,
         // });
-        console.log(isProductGenuine,allSellerWhoListedProduct,allSellerWhoListedProduct[0].sellerId.storeDetails);
         return res.status(200).render('Customer/customerUtils/customerHomePageProductView.ejs',{medicineInfo : isProductGenuine,sellers: allSellerWhoListedProduct});
     }catch(err){
-        console.log();
         return res.status(400).json({
             success:false,
             message:err.message,
@@ -37,9 +35,10 @@ exports.searchListedProducts = async(req,res,next)=>{
 }
 exports.userLocations = async(req,res,next)=>{
     const {userId} = req.body;
-    let addresses = await userDetailDB.findById(new ObjectId(userId)).select('userAddresses -_id');
-    addresses = addresses.userAddresses;
-    console.log('I am here ',addresses);
+    let userDetails = await userDetailDB.findById(new ObjectId(userId)).select('name emailId mobileNumber userAddresses -_id');
+    console.log(userDetails);
+    const addresses = userDetails.userAddresses;
+    console.log(addresses);
     return res.status(200).json({
         success:true,
         message:'Fetched Location successfully',
@@ -47,8 +46,16 @@ exports.userLocations = async(req,res,next)=>{
     });
 } 
 
-exports.getProfilePage = (req,res,next)=>{
-    return res.status(200).render('Customer/customerProfilePage.ejs');
+exports.getProfilePage = async(req,res,next)=>{
+    let userDetails = await userDetailDB.findById(req.user._id).select('customerName emailId -_id').populate('emailId','emailId mobileNumber -_id');
+    const userInfo ={
+        name:userDetails.customerName,
+        emailId:userDetails.emailId.emailId,
+        mobileNumber : userDetails.emailId.mobileNumber,
+    }
+    return res.status(200).render('Customer/customerProfilePage.ejs',{
+        userInfo : userInfo,
+    });
 }
 exports.getCartPage = (req,res,next)=>{
     return res.status(200).render('Customer/customerCartPage.ejs');

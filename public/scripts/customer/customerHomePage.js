@@ -23,3 +23,4 @@ searchBtn.addEventListener('click',async(e)=>{
         contentHolder.innerHTML = result;
     }
 });
+

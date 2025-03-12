@@ -1,0 +1,75 @@
+.content-wrapper{
+    height: 80vh;
+    display: flex;
+    overflow-y: scroll;
+    justify-content: space-evenly;
+    background-color: rgb(243, 242, 242);
+    padding: 1.5rem 0rem;
+}
+.optionContainer{
+    width: 30vw;
+    min-height: 70vh;
+    overflow-y: scroll;
+}
+.optionContentHolder{
+    width: 60vw;
+    min-height: 70vh;
+    border: 1px solid rgb(124, 124, 124);
+    overflow-y: scroll;
+}
+.sectionNameContainer{
+    background-color: white;
+    height: 8vh;
+    display: grid;
+    place-items: center;
+    font-weight: 600;
+    font-size: 17px;
+    margin-bottom: 0.5rem;
+}
+.userBasicInfoContainer{
+    width: 100%;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    height: 12vh;
+    gap: 1rem;
+    background: white;
+    margin-bottom: 1.5rem;
+}
+.dummyUserLogo{
+    display: grid;
+    place-items: center;
+}
+.dummyUserLogo img{
+    width: 3rem;
+}
+.emailId,.mobileNumber{
+    font-size: 14px;
+}
+.profile-option{
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: white;
+    border-bottom: 1px solid rgba(178, 177, 177, 0.44);
+    cursor: pointer;
+}
+.profileNameLogoHolder{
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.profile-option-logo{
+    display: flex;
+    align-items: center;
+}
+.profile-option-logo img{
+    width: 1.5rem;
+}
+.profile-option-arrow-icon{
+    display: flex;
+    align-items: center;
+}
+.profile-option-arrow-icon img{
+    width: 1rem;
+}
