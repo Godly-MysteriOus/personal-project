@@ -21,4 +21,11 @@ module.exports = {
     //upstash redis key
     upstashRedisUrl : process.env.UPSTASH_REDIS_REST_URL,
     upstashRedisToken : process.env.UPSTASH_REDIS_REST_TOKEN,
+    fast2SMS_apiKey: process.env.FAST2SMS_API_KEY,
+    twilioAuthToken : process.env.TWILIO_AUTH_TOKEN,
+    twilioAccountSID : process.env.TWILIO_ACCOUNT_SID,
+    twilioMobileNumber: process.env.TWILIO_NUMBER,
+    plivoAuthKey: process.envPLIVO_AUTH_KEY,
+    plivoAuthToken : process.env.PLIVO_AUTH_TOKEN,
+    
 }
