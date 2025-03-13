@@ -1,0 +1,82 @@
+.addAddressContainer{
+    width: 100%;
+    z-index: 5;
+    position: absolute;
+    height: 80vh; 
+    display: grid;
+    place-items: center;
+    background: rgba(214, 214, 214, 0.204);
+    backdrop-filter: blur(10px);      
+}
+.newAddressContentHolder{
+    width: 35vw;
+    box-shadow: 1px 1px 4px 1px black;
+    min-height: 50vh;
+}
+.bannerText{
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+.crossBtn,.locationAccessButton{
+    display: flex;
+    align-items: center;
+}
+.crossBtn img{
+    width: 1.25rem;
+}
+.locationAccessButton img{
+    width: 1.5rem;
+    filter: hue-rotate(120deg);
+}
+.locationAccessCSS{
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    color: rgb(1, 87, 41);
+}
+.userLocation{
+    width: 100%;
+    padding: 0.25rem 0rem;
+}
+.orTextHolder{
+    text-align: center;
+}
+
+.userPincodeHolder,.line1Address,.phoneNumber{
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgb(207, 207, 208);
+}
+input{
+    padding: 0.25rem 1rem;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid rgba(19, 19, 19, 0.46);
+}
+.userStateAndCity{
+    display: flex;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgb(207, 207, 208);
+}
+.userStateAndCity div{
+    flex-grow: 1;
+    margin-right: 0.5rem;
+}
+.inputHolder-mobileNumber{
+    display: flex;
+}
+.saveAddressButton{
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: center;
+}
+.saveButton{
+    padding: 0.5rem 1rem;
+    width: 80%;
+    border: 1px solid darkgreen;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    background: rgba(1, 177, 122, 0.65);
+}
+.saveButton:active{
+    background:  rgba(1, 177, 122, 0.5);
+}

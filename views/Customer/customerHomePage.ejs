@@ -1,13 +1,11 @@
 <%- include('./customerUtils/starter.ejs') %>
+<link rel="stylesheet" href="/styles/customerCss/customerHomePage.css">
 
 </head>
 <%- include('./customerUtils/topHeader.ejs') %>
 <body>
     <%- include('../utils/MessageBox.ejs') %>
-    <script>
-        const message = document.querySelector('.message');
-    </script>
-    <link rel="stylesheet" href="/styles/customerCss/customerHomePage.css">
+   <%- include('./customerUtils/customerHomePageAddressAddition.ejs') %>
     <div class="homePageContentHolder">
         <div class="userLocations">
             <div class="userLocationContainer">
@@ -23,9 +21,8 @@
         </div>
     </div>
     <script>
+        const message = document.querySelector('.message');
         const keyName = '<%=localStorageKey.suggestions%>';
-        const url = '<%= url %>';
-        const userId = '<%= userId %>';
     </script>
 </body>
 <script defer src="/scripts/utilScripts/allProductLoadData.js"></script>

@@ -1,0 +1,52 @@
+
+
+<div class="addAddressContainer">
+    <link rel="stylesheet" href="/styles/customerCss/addAddressPage.css">
+    <div class="newAddressContentHolder">
+        <div class="bannerText">
+            <h3 class="banner-text-holder">Add Address</h3>
+            <div class="crossBtn"><img src="/images/close-black.png" alt=""></div>
+        </div>
+        <div class="userLocation">
+            <div class="locationAccessButton locationAccessCSS"><img src="/images/gps.png" alt="">&nbsp;&nbsp;DETECT MY LOCATION</div>
+            <input type="hidden" class="userLatitude">
+            <input type="hidden" class="userLongitude">
+        </div>
+        <h3 class="orTextHolder">OR</h3>
+        <div class="userPincodeHolder">
+            <div class="text">Pincode</div>
+            <div class="inputHolder">
+                <input type="number" class="userPincode">
+            </div>
+        </div>
+        <div class="userStateAndCity">
+            <div class="city">
+                <div class="text">City</div>
+                <div class="inputHolder">
+                    <input type="text" >
+                </div>
+            </div>
+            <div class="state">
+                <div class="text">State</div>
+                <div class="inputHolder">
+                    <input type="text" >
+                </div>
+            </div>
+        </div>
+        <div class="line1Address ">
+            <div class="text">Line 1</span></div>
+            <div class="inputHolder"><input type="text" class="userAddress"></div>
+        </div>
+        <div class="phoneNumber">
+            <div class="text">Phone number</div>
+            <div class="inputHolder-mobileNumber">+91 <input type="number" class="userPhoneNumber"></div>
+        </div>
+        <div class="saveAddressButton">
+            <button class="saveButton">Save Address</button>
+        </div>
+    </div>
+    <script>
+        const googleMapAPI_key = '<%= googleMapKey %>';
+        console.log(googleMapAPI_key);
+    </script>
+</div>

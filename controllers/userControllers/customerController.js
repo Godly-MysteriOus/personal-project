@@ -3,12 +3,8 @@ const userDetailDB = require('../../models/userRegisterationDB');
 const centralMedicineDB = require('../../models/centralMedicineDB');
 const productDB = require('../../models/productDB');
 const{ObjectId}  =require('mongodb');
-exports.getHomePage = (req,res,next)=>{
-    const userId = req.user._id;
-    return res.status(200).render('Customer/customerHomePage',{
-        userId : userId,
-
-    });
+exports.getHomePage = async(req,res,next)=>{
+    return res.status(200).render('Customer/customerHomePage');
 };
 
 exports.searchListedProducts = async(req,res,next)=>{
@@ -59,4 +55,23 @@ exports.getProfilePage = async(req,res,next)=>{
 }
 exports.getCartPage = (req,res,next)=>{
     return res.status(200).render('Customer/customerCartPage.ejs');
+}
+
+exports.getUserAddresses = async(req,res,next)=>{
+    try{
+        let userAddresses = await userDetailDB.findById(req.user._id).select('userAddresses -_id');
+        userAddresses = userAddresses.userAddresses;
+        return res.status(200).json({
+            success:true,
+            message:'fetched addresses successfully',
+            data:userAddresses,
+        });
+    }catch(err){
+        console.log(err.stack);
+        return res.status(400).json({
+            success:false,
+            message:'Failed to fetch user addresses',
+        });
+    }
+
 }
