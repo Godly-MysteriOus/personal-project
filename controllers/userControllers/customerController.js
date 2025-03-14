@@ -3,8 +3,13 @@ const userDetailDB = require('../../models/userRegisterationDB');
 const centralMedicineDB = require('../../models/centralMedicineDB');
 const productDB = require('../../models/productDB');
 const{ObjectId}  =require('mongodb');
+const { isPrimary } = require('../../utils/Reusable Components/AddressInfo');
 exports.getHomePage = async(req,res,next)=>{
-    return res.status(200).render('Customer/customerHomePage');
+    let userInfo = await credentialDB.find({_id:req.user.mobileNumber}).select('emailId mobileNumber -_id');
+    userInfo = userInfo[0]; 
+    return res.status(200).render('Customer/customerHomePage',{
+        userDetails : userInfo,
+    });
 };
 
 exports.searchListedProducts = async(req,res,next)=>{
@@ -32,9 +37,7 @@ exports.searchListedProducts = async(req,res,next)=>{
 exports.userLocations = async(req,res,next)=>{
     const {userId} = req.body;
     let userDetails = await userDetailDB.findById(new ObjectId(userId)).select('name emailId mobileNumber userAddresses -_id');
-    console.log(userDetails);
     const addresses = userDetails.userAddresses;
-    console.log(addresses);
     return res.status(200).json({
         success:true,
         message:'Fetched Location successfully',
@@ -74,4 +77,32 @@ exports.getUserAddresses = async(req,res,next)=>{
         });
     }
 
+}
+exports.saveUserAddress = async(req,res,next)=>{
+    const {mobileNo,latitude,longitude,pincode,state,city,address} = req.body;
+    try{
+        const userAddress = {
+            line1 : address,
+            mobileNumber:mobileNo,
+            isPrimary:1,
+            state:state,
+            city:city,
+            latitude:latitude,
+            longitude:longitude,
+            pincode:pincode,
+        };
+        const addressArr = [...req.user.userAddresses,userAddress];
+        const saveAddress = await userDetailDB.findById(req.user._id);
+        saveAddress.userAddresses = addressArr;
+        saveAddress.save();
+        return res.status(200).json({
+            success:true,
+            message:'Saved Successfully',
+        });
+    }catch(err){
+        return res.status(400).json({
+            success:false,
+            message:'Failed to save user',
+        });
+    }
 }
