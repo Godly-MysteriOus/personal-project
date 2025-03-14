@@ -41,7 +41,7 @@ app.use(
         resave: false,
         saveUninitialized: false,
         store: store,
-        cookie:{maxAge:60*60*1000},
+        cookie:{maxAge:3*60*60*1000},
     })
 );
 app.use((req,res,next)=>{
@@ -70,6 +70,7 @@ app.use((req,res,next)=>{
     res.locals.url = credential.hostURI;
     res.locals.googleMapKey = credential.googleMapAPIKey,
     res.locals.localStorageKey = localStorageKey;
+    // res.locals.userAddress = req.user.userAddresses,
     next();
 })
 app.use(express.json());
@@ -105,6 +106,6 @@ app.use((req,res,next)=>{
 })
 
 
-connectionProvider.devDBConnection(app,process.env.PORT||8080);
+connectionProvider.devDBConnection(app,process.env.PORT||3100);
 
 // module.exports = require('@vercel/node')(app);
