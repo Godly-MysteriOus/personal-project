@@ -95,7 +95,6 @@
                         <!-- google map script -->
                         <script>
                             window.addEventListener("message", function (event) {
-                                console.log("Received message:", event.data.coords); // Debugging
                                 if (event.data.coords) {
                                     document.querySelector(".latitude").value = event.data.coords.latitude;
                                     document.querySelector(".longitude").value = event.data.coords.longitude;

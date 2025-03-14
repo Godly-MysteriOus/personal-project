@@ -87,10 +87,10 @@ function googleMapPopUp(){
     const isLocationAllowed = confirm('Enable location access to prioritize your shop for nearby customers.');
     if(isLocationAllowed){
         navigator.geolocation.getCurrentPosition(async position=>{
-            const url = new URL('<%=url%>loadGoogleMap');
-            url.searchParams.append('latitude',position.coords.latitude);
-            url.searchParams.append('longitude',position.coords.longitude);
-            window.open(url,'_blank');
+            const googleUrl = new URL(url+'loadGoogleMap');
+            googleUrl.searchParams.append('latitude',position.coords.latitude);
+            googleUrl.searchParams.append('longitude',position.coords.longitude);
+            window.open(googleUrl,'_blank');
         })
     }
 }
@@ -190,7 +190,6 @@ sellerEmail.addEventListener('blur',()=>{
 })
 //customer signup API
 const submitBtn = document.querySelector('.submit');
-console.log(submitBtn);
 submitBtn.addEventListener('click',async(e)=>{
     e.preventDefault();
     // throw an alert if required fields are empty
@@ -274,7 +273,6 @@ submitBtn.addEventListener('click',async(e)=>{
         return alert('Shop should be opened atleast on 3 days');
     }
     dayTime.value = openInfo.substring(0,openInfo.length-1);
-    console.log(dayTime.value);
     // validate opening hours and closing hours here
     const formData = new FormData();
     formData.append('sellerName',sellerName.value);
@@ -297,7 +295,7 @@ submitBtn.addEventListener('click',async(e)=>{
     formData.append('locationLatitude',locationLatitude.value);
     formData.append('locationLongitude',locationLongitude.value);
     formData.append('activeTime',dayTime.value);
-    const response = await fetch('<%= url %>signup/seller',{
+    const response = await fetch(url+'signup/seller',{
         method: 'POST',
         body : formData,
     });
