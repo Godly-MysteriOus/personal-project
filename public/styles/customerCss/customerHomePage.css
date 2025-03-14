@@ -1,0 +1,57 @@
+.homePageContentHolder{
+    width: 100%;
+    min-height: 75vh;
+    /* border: 2px solid red; */
+}
+
+.searchBoxHolder{
+    display: grid;
+    place-items: center;
+    border-bottom: 2px solid grey;
+    height: 10vh;
+}
+
+.contentHolder{
+    height: 65vh;
+    padding: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.noProductFound{
+    text-align: center;
+    color: lightgrey;
+}
+.productHolder{
+    width: max(10rem,20vw);
+    height: fit-content;
+    border: 1px solid black;
+    padding: 1rem 0.25rem;
+}
+.imageHolder{
+    display: grid;
+    place-items: center;
+    border: 1px solid red;
+}
+.imageHolder img{
+    width: 10rem;
+}
+.productName{
+    padding: 0.25rem;
+    text-align: center;
+}
+.productManufacturer,.soldBy{
+    padding: 0.15rem;
+    font-size: 13px;
+    text-align: center;
+}
+.useOf,.price{
+    padding: 0.25rem;
+    font-size: 14px;
+    text-align: center;
+}
+.buttonHolder{
+    display: flex;
+    justify-content: space-evenly;
+}

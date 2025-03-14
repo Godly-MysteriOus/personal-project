@@ -1,0 +1,51 @@
+
+
+<div class="addAddressContainer hideAddAddressPopup">
+    <link rel="stylesheet" href="/styles/customerCss/addAddressPage.css">
+    <div class="newAddressContentHolder">
+        <div class="bannerText">
+            <h3 class="banner-text-holder">Add Address</h3>
+            <div class="crossBtn"><img src="/images/close-black.png" alt=""></div>
+        </div>
+        <div class="userLocation">
+            <div class="locationAccessButton locationAccessCSS"><img src="/images/gps.png" alt="">&nbsp;&nbsp;DETECT MY LOCATION</div>
+            <input type="hidden" class="userLatitude">
+            <input type="hidden" class="userLongitude">
+        </div>
+        <div class="userPincodeHolder">
+            <div class="text">Pincode</div>
+            <div class="inputHolder">
+                <input type="number" class="userPincode addressPageInput" disabled>
+            </div>
+        </div>
+        <div class="userStateAndCity">
+            <div class="city">
+                <div class="text">City</div>
+                <div class="inputHolder">
+                    <input type="text" class="userCity addressPageInput" disabled>
+                </div>
+            </div>
+            <div class="state">
+                <div class="text">State</div>
+                <div class="inputHolder">
+                    <input type="text" class="userState addressPageInput" disabled>
+                </div>
+            </div>
+        </div>
+        <div class="line1Address ">
+            <div class="text">Address</span></div>
+            <div class="inputHolder"><input type="text" class="userAddress addressPageInput"></div>
+        </div>
+        <div class="phoneNumber">
+            <div class="text">Phone number</div>
+            <div class="inputHolder-mobileNumber">+91 <input type="number" class="userPhoneNumber addressPageInput" value="<%= userDetails.mobileNumber %>"></div>
+        </div>
+        <div class="saveAddressButton">
+            <button class="saveButton">Save Address</button>
+        </div>
+    </div>
+    <script>
+        const googleMapAPI_key = '<%= googleMapKey %>';
+    </script>
+    <script src="/scripts/customer/addAddressPage.js"></script>
+</div>
