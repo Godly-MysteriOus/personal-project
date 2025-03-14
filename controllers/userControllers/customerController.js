@@ -33,16 +33,6 @@ exports.searchListedProducts = async(req,res,next)=>{
         })
     }
 }
-exports.userLocations = async(req,res,next)=>{
-    const {userId} = req.body;
-    let userDetails = await userDetailDB.findById(new ObjectId(userId)).select('name emailId mobileNumber userAddresses -_id');
-    const addresses = userDetails.userAddresses;
-    return res.status(200).json({
-        success:true,
-        message:'Fetched Location successfully',
-        data:addresses,
-    });
-} 
 
 exports.getProfilePage = async(req,res,next)=>{
     let userDetails = await userDetailDB.findById(req.user._id).select('customerName emailId -_id').populate('emailId','emailId mobileNumber -_id');

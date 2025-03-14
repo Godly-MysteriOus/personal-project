@@ -14,5 +14,5 @@ router.get('/cart',authRoute.customerAuthentication,customerController.getCartPa
 // util routes
 router.get('/user-addresses',authRoute.customerAuthentication,customerController.getUserAddresses);
 router.post('/homePage-search-product',authRoute.customerAuthentication,customerController.searchListedProducts);
-router.post('/user-locations',authRoute.customerAuthentication,customerController.userLocations);
+
 module.exports = router;
