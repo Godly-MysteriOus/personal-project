@@ -1,6 +1,6 @@
 
 
-<div class="addAddressContainer">
+<div class="addAddressContainer hideAddAddressPopup">
     <link rel="stylesheet" href="/styles/customerCss/addAddressPage.css">
     <div class="newAddressContentHolder">
         <div class="bannerText">
@@ -15,30 +15,30 @@
         <div class="userPincodeHolder">
             <div class="text">Pincode</div>
             <div class="inputHolder">
-                <input type="number" class="userPincode" disabled>
+                <input type="number" class="userPincode addressPageInput" disabled>
             </div>
         </div>
         <div class="userStateAndCity">
             <div class="city">
                 <div class="text">City</div>
                 <div class="inputHolder">
-                    <input type="text" class="userCity" disabled>
+                    <input type="text" class="userCity addressPageInput" disabled>
                 </div>
             </div>
             <div class="state">
                 <div class="text">State</div>
                 <div class="inputHolder">
-                    <input type="text" class="userState" disabled>
+                    <input type="text" class="userState addressPageInput" disabled>
                 </div>
             </div>
         </div>
         <div class="line1Address ">
-            <div class="text">Line 1</span></div>
-            <div class="inputHolder"><input type="text" class="userAddress"></div>
+            <div class="text">Address</span></div>
+            <div class="inputHolder"><input type="text" class="userAddress addressPageInput"></div>
         </div>
         <div class="phoneNumber">
             <div class="text">Phone number</div>
-            <div class="inputHolder-mobileNumber">+91 <input type="number" class="userPhoneNumber" value="<%= userDetails.mobileNumber %>"></div>
+            <div class="inputHolder-mobileNumber">+91 <input type="number" class="userPhoneNumber addressPageInput" value="<%= userDetails.mobileNumber %>"></div>
         </div>
         <div class="saveAddressButton">
             <button class="saveButton">Save Address</button>

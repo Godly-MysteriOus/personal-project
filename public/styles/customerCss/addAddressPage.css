@@ -46,7 +46,7 @@
     padding: 0.75rem 1rem;
     border-bottom: 1px solid rgb(207, 207, 208);
 }
-input{
+.addressPageInput{
     padding: 0.25rem 1rem;
     width: 100%;
     border: none;
@@ -79,4 +79,25 @@ input{
 }
 .saveButton:active{
     background:  rgba(1, 177, 122, 0.5);
+}
+
+.hideAddAddressPopup{
+    display: none;
+}
+
+@keyframes showPopup {
+    0%{
+        transform: translateY(100%);
+    }
+    100%{
+        transform: translateY(0%);
+    }
+}
+@keyframes hidePopup {
+    0%{
+        transform: translateY(0%);
+    }
+    100%{
+        transform: translateY(100%);
+    }
 }

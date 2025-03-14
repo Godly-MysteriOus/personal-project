@@ -63,7 +63,7 @@ exports.getCartPage = (req,res,next)=>{
 exports.getUserAddresses = async(req,res,next)=>{
     try{
         let userAddresses = await userDetailDB.findById(req.user._id).select('userAddresses -_id');
-        userAddresses = userAddresses.userAddresses;
+        userAddresses = userAddresses?.userAddresses||[];
         return res.status(200).json({
             success:true,
             message:'fetched addresses successfully',
