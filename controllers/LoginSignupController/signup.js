@@ -10,6 +10,8 @@ const mailSender = require('../../utils/mailService/sendMail');
 const DB_Constants = require('../../DB_Names');
 const devDBURI = require('../../utils/Connection');
 const {MongoClient} = require('mongodb');
+
+const {cloudinary} = require('../../utils/cloudinary');
 // varibales used
 exports.getSignUpPage = (req,res,next)=>{
     return res.render('Login/customerSignup',{
@@ -297,16 +299,17 @@ exports.postCustomerSignup = async (req,res,next)=>{
         if(!result){
             throw new Error('Failed to register user into the database');
         }
-        await sessions.deleteOne({'session.emailId': sellerEmailId});
+        await sessions.deleteOne({'session.emailId': emailId});
         console.log('Deleted sessions');
         await transactionSession.commitTransaction();
         transactionSession.endSession();
         console.log('Successful signup');
         return res.status(200).json({
             success:true,
-            message:'Successful Singup!!',
+            message:'Successful Signup!!',
         })
     }catch(err){
+        console.log(err.stack);
         if(transactionSession){
             await transactionSession?.abortTransaction();
             transactionSession.endSession(); 
@@ -385,11 +388,14 @@ exports.postSellerSignup = async (req,res,next)=>{
         const addressStructure={
             line1:line1Address,
             line2:line2Address,
+            mobileNumber:Number(sellerMobileNo),
+            isPrimary:1,
             state:shopState,
             city:shopCity,
             pincode:Number(shopPincode),
             latitude:Number(locationLatitude),
             longitude:Number(locationLongitude),
+
         };
         const storeAddress = addressStructure;
         // storing operating day and working hours
@@ -434,6 +440,13 @@ exports.postSellerSignup = async (req,res,next)=>{
             redirectUrl:'/',
         })
     }catch(err){
+        //delete images if any error occours
+        const pIds = [req.files.storeLogo[0].filename,req.files.headerLogoForPdf[0].filename,req.files.footerLogoForPdf[0].filename];
+        try{
+            const result = await cloudinary.api.delete_resources(pIds);
+        }catch(err){
+            console.log(err,err.stack);
+        }
         console.log(err.stack);
         await transactionSession?.abortTransaction();
         transactionSession.endSession();

@@ -17,10 +17,8 @@ const obj = {
     locationLongitude :  '', 
 };
 const doesObjExists = JSON.parse(localStorage.getItem("sellerData"));
-console.log(doesObjExists);
 if(doesObjExists ==null){
     localStorage.setItem("sellerData", JSON.stringify(obj));
-    console.log('Ended up in if condition');
 }
 
 
@@ -33,7 +31,6 @@ function fetchData(fieldName){
 function updateData(fieldName,value){
     const sellerObj = JSON.parse(localStorage.getItem('sellerData'));
     sellerObj[fieldName] = value;
-    console.log(sellerObj);
     localStorage.setItem("sellerData",JSON.stringify(sellerObj));
 };
 

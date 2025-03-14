@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../../controllers/LoginSignupController/signup');
-const {check} = require('express-validator');
 const {upload} = require('../../utils/cloudinary');
 const validations = require('../../utils/input validations/checks');
 router.get('/customer',authController.getSignUpPage);
