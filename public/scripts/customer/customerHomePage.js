@@ -23,3 +23,17 @@ searchBtn.addEventListener('click',async(e)=>{
         contentHolder.innerHTML = result;
     }
 });
+
+window.addEventListener('load',async(e)=>{
+    const response = await fetch(url+'customer/user-addresses',{
+        method: 'GET',
+    });
+    const result = await response.json();
+    if(result.data.length==0){
+        setTimeout(()=>{
+            addAddressContainer.classList.remove('hideAddAddressPopup');
+            addAddressContainer.style.animation = 'showPopup 1s ease-in-out';
+        },1000);
+    }
+    // if its length is 0, show the addAddressPopup
+});
