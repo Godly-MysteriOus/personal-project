@@ -3,7 +3,6 @@ const userDetailDB = require('../../models/userRegisterationDB');
 const centralMedicineDB = require('../../models/centralMedicineDB');
 const productDB = require('../../models/productDB');
 const{ObjectId}  =require('mongodb');
-const { isPrimary } = require('../../utils/Reusable Components/AddressInfo');
 exports.getHomePage = async(req,res,next)=>{
     let userInfo = await credentialDB.find({_id:req.user.mobileNumber}).select('emailId mobileNumber -_id');
     userInfo = userInfo[0]; 
