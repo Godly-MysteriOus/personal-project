@@ -2,7 +2,7 @@
 <!-- add stylesheets here -->
 <link rel="stylesheet" href="/styles/header.css">
 <link rel="stylesheet" href="/styles/customerSignup.css">
-<link rel="stylesheet" href="/styles/EmailVerification.css">
+<link rel="stylesheet" href="/styles/emailVerification.css">
 <%- include('../utils/AfterLinkStyles.ejs') %>
 <%- include('../utils/Header.ejs') %>
 <body>
@@ -19,7 +19,7 @@
                 <%- include('../utils/inputField.ejs',{style:'sideWays',textClass:'',textName:'Confirm Password',isTextArea:false,inputType:'password',nameAttribute:'confirmPassword',inputClassName:'confirmPassword',placeHolder:'Re-Enter password',isRequired:true,isFile:false,fileType:'',isDisabled:false}) %>
                 <div class="buttonHolder">
                     <button class="button" type="reset">Reset</button>
-                    <button class="button registerCustomer" type="submit">Submit</button>
+                    <button class="button registerCustomer" type="button">Submit</button>
                 </div>
             </form>
         </div>
@@ -33,7 +33,7 @@
 
         //register customer
         document.querySelector('.registerCustomer').addEventListener('click',async()=>{
-            const response = await fetch('<%=url%>signup/customer',{
+            const response = await fetch('<%= url %>signup/customer',{
                 method:'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body:JSON.stringify({
@@ -43,16 +43,19 @@
                     password:password.value,
                     confirmPassword:confirmPassword.value,
                 }),
-            })
+            });
             const result = await response.json();
             message.textContent = result.message;
             message.classList.remove('message-hidden');
+            if(result.success){
+                setTimeout(()=>{
+                    window.location.href = '<%= url %>login';
+                },3000);
+            }
+           
             setTimeout(async()=>{
                 message.classList.add('message-hidden');
-                if(result.success){
-                    window.location.href = '<%=url%>login';
-                }
-            },3000)
+            },3000);
         })
     </script>
 </body>

@@ -1,0 +1,26 @@
+<%- include('./customerUtils/starter.ejs') %>
+<link rel="stylesheet" href="/styles/customerCss/customerHomePage.css">
+
+</head>
+<%- include('./customerUtils/topHeader.ejs') %>
+<body>
+    <%- include('../utils/MessageBox.ejs') %>
+   <%- include('./customerUtils/customerHomePageAddressAddition.ejs') %>
+    <div class="homePageContentHolder">
+        <!-- location component here -->
+        <div class="searchBoxHolder">
+            <%- include('../utils/searchBox.ejs',{pageTitle:'',buttonsToRender:'Customer/HomePage'}) %>
+        </div>
+        <!-- actual content here -->
+        <div class="contentHolder">
+
+        </div>
+    </div>
+    <script>
+        const message = document.querySelector('.message');
+        const keyName = '<%=localStorageKey.suggestions%>';
+    </script>
+</body>
+<script defer src="/scripts/utilScripts/allProductLoadData.js"></script>
+<script src="/scripts/customer/customerHomePage.js"></script>
+<%- include('./customerUtils/footer.ejs') %>
