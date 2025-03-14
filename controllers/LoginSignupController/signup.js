@@ -297,16 +297,17 @@ exports.postCustomerSignup = async (req,res,next)=>{
         if(!result){
             throw new Error('Failed to register user into the database');
         }
-        await sessions.deleteOne({'session.emailId': sellerEmailId});
+        await sessions.deleteOne({'session.emailId': emailId});
         console.log('Deleted sessions');
         await transactionSession.commitTransaction();
         transactionSession.endSession();
         console.log('Successful signup');
         return res.status(200).json({
             success:true,
-            message:'Successful Singup!!',
+            message:'Successful Signup!!',
         })
     }catch(err){
+        console.log(err.stack);
         if(transactionSession){
             await transactionSession?.abortTransaction();
             transactionSession.endSession(); 

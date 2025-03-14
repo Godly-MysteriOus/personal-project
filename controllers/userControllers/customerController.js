@@ -8,6 +8,7 @@ exports.getHomePage = async(req,res,next)=>{
     userInfo = userInfo[0]; 
     return res.status(200).render('Customer/customerHomePage',{
         userDetails : userInfo,
+        addresses:req.user.userAddresses,
     });
 };
 
