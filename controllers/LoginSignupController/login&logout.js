@@ -87,8 +87,15 @@ exports.postLogin =async (req,res)=>{
     }catch(err){
         transactionSession?.abortTransaction();
         await transactionSession.endSession();
+        let message;
+        if(err.message == 'No user found!!!' || err.message == 'Invalid Role Id' || err.message == 'Invalid Username or Password' || err.message == 'Failed to find login credentials with provided credentials'){
+            message = err.message;
+        }else{
+            console.log(err.message,err.stack);
+            message = 'Error Occoured, Please try again !';
+        }
         return res.status(400).json({
-            message:err.message,
+            message:message,
             success:false,
             redirectUrl:'/login',
         });
@@ -134,10 +141,17 @@ exports.deleteUser = async(req,res)=>{
         (await transactionSession).commitTransaction();
         (await transactionSession).endSession();
         return destroySession(req.session).then(()=>res.redirect(''));
-    } catch (error) {
+    } catch (err) {
+        let message = "";
+        if(err.message == 'Failed to delete user record' ||err.message ==  'Failed to delete seller record' || err.message == 'Failed to delete user\'s login credentials'){
+            message = err.message;
+        }else{
+            console.log(err.message,err.stack);
+            message = 'Error Occoured, Please try again !';
+        }
         (await transactionSession).abortTransaction();
         (await transactionSession).endSession();
-        return res.redirect('',{message:error.message});
+        return res.redirect('',{message:message});
     }
     
 }
