@@ -60,6 +60,13 @@ exports.emailOtpSession = async(req,res)=>{
     const result = await sessions.findOne({'session.emailId':emailId});
     if(result){
         console.log('Session found updating it');
+        console.log(req.session?.credentials);
+        if(req.session?.credentials){
+            delete req.session.credentials;
+            delete req.session.isLoggedIn;
+            delete req.session.roleId;
+            delete req.session.user;
+        }
         const updateSession = {
             'session.emailOTP': OTPGenerator(),
             'session.expiryofEmailOtp': new Date(Date.now() + 15 * 60 * 1000),
