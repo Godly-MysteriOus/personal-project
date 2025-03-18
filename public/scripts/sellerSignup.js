@@ -192,11 +192,16 @@ sellerEmail.addEventListener('blur',()=>{
 const submitBtn = document.querySelector('.submit');
 submitBtn.addEventListener('click',async(e)=>{
     e.preventDefault();
+    submitBtn.setAttribute('disabled',true);
     // throw an alert if required fields are empty
     if(sellerName.value=='' || sellerEmail.value=='' || sellerMobileNo.value=='' || sellerPassword.value==''|| confirmPassword.value == '' || drugLicenseNumber.value==''|| gstRegistrationNumber.value==''|| fssaiLicenseNumber.value==''|| storeName.value=='' || line1Address.value==''|| line2Address.value=='' || pincodeField.value=='' || shopState.value=='' || shopCity.value==''){
         alert('Please fill the mandatory fields');
         return;
     };
+    if(locationLatitude.value=='' || locationLongitude.value==''){
+        alert('Please locate your store to continue');
+        return;
+    }
     const inputValidation = (data,rgx,message,removeSpace)=>{
         let trimmedData = String(data).trim();
         if(removeSpace){
@@ -300,6 +305,7 @@ submitBtn.addEventListener('click',async(e)=>{
         body : formData,
     });
     const result = await response.json();
+    submitBtn.removeAttribute('disabled');
     if(result.success){
         const time = 5;
         message.classList.remove('message-hidden');

@@ -10,9 +10,10 @@ const mailSender = require('../../utils/mailService/sendMail');
 const DB_Constants = require('../../DB_Names');
 const devDBURI = require('../../utils/Connection');
 const {MongoClient} = require('mongodb');
-
 const {cloudinary} = require('../../utils/cloudinary');
 // varibales used
+
+
 exports.getSignUpPage = (req,res,next)=>{
     return res.render('Login/customerSignup',{
         path:'/customer-signup',
@@ -60,6 +61,13 @@ exports.emailOtpSession = async(req,res)=>{
     const result = await sessions.findOne({'session.emailId':emailId});
     if(result){
         console.log('Session found updating it');
+        console.log(req.session?.credentials);
+        if(req.session?.credentials){
+            delete req.session.credentials;
+            delete req.session.isLoggedIn;
+            delete req.session.roleId;
+            delete req.session.user;
+        }
         const updateSession = {
             'session.emailOTP': OTPGenerator(),
             'session.expiryofEmailOtp': new Date(Date.now() + 15 * 60 * 1000),
@@ -75,14 +83,27 @@ exports.emailOtpSession = async(req,res)=>{
                 throw new Error('Failed to update session');
             }
         }).catch((err)=>{
-            console.log(err);
+            let message = "";
+            if(err.message == 'Failed to update session'){
+                message = err.message;
+            }else{
+                console.log(err.message,err.stack);
+                message = 'Error Occoured ! Try Again.';                
+            }
             return res.status(402).json({
                 success:false,
-                message:err.message,
+                message:message,
             });
         })
     }else{
         console.log('session not found, creating it');
+        console.log(req.session?.credentials);
+        if(req.session?.credentials){
+            delete req.session.credentials;
+            delete req.session.isLoggedIn;
+            delete req.session.roleId;
+            delete req.session.user;
+        }
         req.session.emailOTP = OTPGenerator();
         req.session.emailId = emailId;
         req.session.isEmailOtpVerified = false;
@@ -98,10 +119,16 @@ exports.emailOtpSession = async(req,res)=>{
                 throw new Error('Failed to create session');
             }
         }).catch((err)=>{
-            console.log(err);
+            let message = "";
+            if(err.message == 'Failed to update session'){
+                message = err.message;
+            }else{
+                console.log(err.message,err.stack);
+                message = 'Error Occoured ! Try Again.';                
+            }
             return res.status(402).json({
                 success:false,
-                message:err.message,
+                message:message,
             });
         })
     }
@@ -260,8 +287,8 @@ exports.postCustomerSignup = async (req,res,next)=>{
             message:errors.array()[0].msg,
         })
     }
-
-    let transactionSession;
+    let transactionSession = await mongoose.startSession();
+    transactionSession.startTransaction();
     // also validate whether the user already exists or not
     try{
         let isUserAlreadyPresent = await loginDetails.findOne({$or:[{emailId:emailId},{mobileNo:mobileNo}]});
@@ -282,22 +309,23 @@ exports.postCustomerSignup = async (req,res,next)=>{
         }
         //below logic will only be executed if session exists and otp verification are done
         //create the entry 
-        transactionSession = await mongoose.startSession();
-        await transactionSession.startTransaction();
         const hashedPassword = await bcrypt.hash(password,12);
         const loginObj = await loginDetails.create({emailId:emailId,mobileNumber:Number(mobileNo),password:hashedPassword,roleId:1});
         if(!loginObj){
-            throw new Error('Failed to create entry in login_info_db');
+            console.log('Failed to create entry in login_info_db');
+            throw new Error('Failed to create user');
         }
         const userObj = await  UserDetails.create({emailId:new ObjectId(loginObj._id),mobileNumber:new ObjectId(loginObj._id),password:new ObjectId(loginObj._id),customerName:customerName});
         if(!userObj){
-            throw new Error('Failed to create entry in user registration db');
+            console.log('Failed to create entry in user_registration_db');
+            throw new Error('Failed to create user');
         }
         loginObj.entityObject = new ObjectId(userObj._id);
         loginObj.entityModel = DB_Constants.USER_REGISTRATION_STORE_DB;
         const result = await loginObj.save();
         if(!result){
-            throw new Error('Failed to register user into the database');
+            console.log('Failed to register user into the database');
+            throw new Error('Failed to create user');
         }
         await sessions.deleteOne({'session.emailId': emailId});
         console.log('Deleted sessions');
@@ -309,16 +337,19 @@ exports.postCustomerSignup = async (req,res,next)=>{
             message:'Successful Signup!!',
         })
     }catch(err){
-        console.log(err.stack);
-        if(transactionSession){
-            await transactionSession?.abortTransaction();
-            transactionSession.endSession(); 
+        let message = "";
+        if(err.message == 'User Already exists. Please login' ||err.message == 'OTP verification pending' ||err.message == 'Please validate emailId' ||err.message == 'Failed to create user'){
+            message = err.message;
+        }else{
+            console.log(err.message,err.stack);
+            message = 'Error Occoured ! Try Again.'; 
         }
+        await transactionSession?.abortTransaction();
+        transactionSession.endSession(); 
         //redirect him into same page with an error message;
-        
         return res.status(400).json({
             success:false,
-            message:err.message,
+            message:message,
         });
     };
 
@@ -343,12 +374,11 @@ exports.postSellerSignup = async (req,res,next)=>{
     // will only end up here when required fields are not empty, in that case it will throw an error at the time of input validations only
     const hashedPassword = await bcrypt.hash(sellerPassword,12);
     let transactionSession=await mongoose.startSession();;
+    transactionSession.startTransaction();
     try{
         //check whether the user already exists or not on the basis of drugLicense number, fssai number
         // here emailId and mobile number cannot be unique identifier as one customer can have two or more shop which he wants to register with the same emailId
-        transactionSession.startTransaction();
-       
-        const isSellerAlreadyRegistered = await UserDetails.findOne({$or:[{drugLicenseNumber:drugLicenseNumber},{fssaiLicenseNumber:fssaiLicenseNumber}]});
+        const isSellerAlreadyRegistered = await sellerDetails.findOne({$or:[{drugLicenseNumber:drugLicenseNumber},{fssaiLicenseNumber:fssaiLicenseNumber}]});
         if(isSellerAlreadyRegistered){
             throw new Error('User already registered with provided Drug License Number or FSSAI Number');
         }
@@ -383,7 +413,8 @@ exports.postSellerSignup = async (req,res,next)=>{
         let loginObj,userObj;
         loginObj = await loginDetails.create([{emailId:sellerEmailId,mobileNumber:sellerMobileNo,password:hashedPassword,roleId:2}],{session:transactionSession});
         if(!loginObj){
-            throw new Error('Failed to create entry in login_details_db');
+            // console.log('Failed to create entry in login_details_db');
+            throw new Error('Failed to create user');
         }
         const addressStructure={
             line1:line1Address,
@@ -425,11 +456,13 @@ exports.postSellerSignup = async (req,res,next)=>{
         }
         userObj = await sellerDetails.create([{drugLicenseNumber:drugLicenseNumber,gstRegistrationNumber:gstRegistrationNumber,fssaiLicenseNumber:fssaiLicenseNumber,storeAddress:storeAddress,storeDetails:storeDetails,'temporaryCart.items':[],'temporaryCart.totalPrice':0,resetToken:'',resetTokenExpiration:'',products:[]}],{session:transactionSession});
         if(!userObj){
-            throw new Error('Failed to create entry in medicationShopRegistrationDB');
+            // console.log('Failed to create entry in medicationShopRegistrationDB');
+            throw new Error('Failed to create user');
         }
         const isLoginDBupdated = await loginDetails.findOneAndUpdate({$and:[{emailId:sellerEmailId},{mobileNumber:sellerMobileNo},{roleId:2}]},{$set:{entityObject:new ObjectId(userObj._id),entityModel:DB_Constants.MEDICAL_STORE_DB}},{new:true,session:transactionSession});
         if(!isLoginDBupdated){
-            throw new Error('Failed to update Login DB');
+            // console.log('Failed to update Login DB');
+            throw new Error('Failed to create user');
         }
         await sessions.deleteOne({'session.emailId':sellerEmailId});
         await transactionSession.commitTransaction();
@@ -441,18 +474,25 @@ exports.postSellerSignup = async (req,res,next)=>{
         })
     }catch(err){
         //delete images if any error occours
-        const pIds = [req.files.storeLogo[0].filename,req.files.headerLogoForPdf[0].filename,req.files.footerLogoForPdf[0].filename];
+        let message = "";
+        if(err.message == 'User already registered with provided Drug License Number or FSSAI Number' || err.message == 'This password exists for same emailId with different Role, please create different password' || err.message == 'OTP Verification pending' || err.message == 'Please validate Email Address' || err.message == 'Failed to create user'){
+            message = err.message;
+        }else{
+            console.log(err.message,err.stack);
+            message  = 'Error occoured ! Try again';
+        }
         try{
+            const pIds = [req.files.storeLogo[0].filename,req.files.headerLogoForPdf[0].filename,req.files.footerLogoForPdf[0].filename];
             const result = await cloudinary.api.delete_resources(pIds);
         }catch(err){
             console.log(err,err.stack);
+            message+= ('\n'+err.message);        
         }
-        console.log(err.stack);
         await transactionSession?.abortTransaction();
         transactionSession.endSession();
         return res.status(400).json({
             success:false,
-            message: err.message,
+            message:message,
         });
     }
 }
