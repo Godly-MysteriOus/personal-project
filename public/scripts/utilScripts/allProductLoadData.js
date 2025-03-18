@@ -67,7 +67,17 @@ async function loadSuggestionData(val){
         suggesstions.appendChild(option);
     }
 }
+function debounce(func, delay) {
+    let timer;
+    return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => func(...args), delay);
+    };
+}
+const debouncedSearch = debounce((val) => {
+    loadSuggestionData(val);
+}, 400);
 searchInputField.addEventListener('input',async(e)=>{
     const val = String(searchInputField.value);
-    loadSuggestionData(val);
+    debouncedSearch(val);
 });
