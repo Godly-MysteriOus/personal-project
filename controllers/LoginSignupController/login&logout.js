@@ -18,9 +18,11 @@ let saveSession=(session)=> {
         });
     });
 }
-exports.getLogin = (req,res,next)=>{
-    return res.render('Login/login',{
-        path:'/login',
+exports.getLogin = async(req,res,next)=>{
+    sessionActions.destroySession(req.session).then(()=>{
+        return res.render('Login/login',{
+            path:'/login',
+        });
     });
     // res.status(200).json({
     //     redirectUrl:'/login',

@@ -97,6 +97,13 @@ exports.emailOtpSession = async(req,res)=>{
         })
     }else{
         console.log('session not found, creating it');
+        console.log(req.session?.credentials);
+        if(req.session?.credentials){
+            delete req.session.credentials;
+            delete req.session.isLoggedIn;
+            delete req.session.roleId;
+            delete req.session.user;
+        }
         req.session.emailOTP = OTPGenerator();
         req.session.emailId = emailId;
         req.session.isEmailOtpVerified = false;
@@ -371,7 +378,7 @@ exports.postSellerSignup = async (req,res,next)=>{
     try{
         //check whether the user already exists or not on the basis of drugLicense number, fssai number
         // here emailId and mobile number cannot be unique identifier as one customer can have two or more shop which he wants to register with the same emailId
-        const isSellerAlreadyRegistered = await UserDetails.findOne({$or:[{drugLicenseNumber:drugLicenseNumber},{fssaiLicenseNumber:fssaiLicenseNumber}]});
+        const isSellerAlreadyRegistered = await sellerDetails.findOne({$or:[{drugLicenseNumber:drugLicenseNumber},{fssaiLicenseNumber:fssaiLicenseNumber}]});
         if(isSellerAlreadyRegistered){
             throw new Error('User already registered with provided Drug License Number or FSSAI Number');
         }
@@ -406,7 +413,7 @@ exports.postSellerSignup = async (req,res,next)=>{
         let loginObj,userObj;
         loginObj = await loginDetails.create([{emailId:sellerEmailId,mobileNumber:sellerMobileNo,password:hashedPassword,roleId:2}],{session:transactionSession});
         if(!loginObj){
-            console.log('Failed to create entry in login_details_db');
+            // console.log('Failed to create entry in login_details_db');
             throw new Error('Failed to create user');
         }
         const addressStructure={
@@ -449,12 +456,12 @@ exports.postSellerSignup = async (req,res,next)=>{
         }
         userObj = await sellerDetails.create([{drugLicenseNumber:drugLicenseNumber,gstRegistrationNumber:gstRegistrationNumber,fssaiLicenseNumber:fssaiLicenseNumber,storeAddress:storeAddress,storeDetails:storeDetails,'temporaryCart.items':[],'temporaryCart.totalPrice':0,resetToken:'',resetTokenExpiration:'',products:[]}],{session:transactionSession});
         if(!userObj){
-            console.log('Failed to create entry in medicationShopRegistrationDB');
+            // console.log('Failed to create entry in medicationShopRegistrationDB');
             throw new Error('Failed to create user');
         }
         const isLoginDBupdated = await loginDetails.findOneAndUpdate({$and:[{emailId:sellerEmailId},{mobileNumber:sellerMobileNo},{roleId:2}]},{$set:{entityObject:new ObjectId(userObj._id),entityModel:DB_Constants.MEDICAL_STORE_DB}},{new:true,session:transactionSession});
         if(!isLoginDBupdated){
-            console.log('Failed to update Login DB');
+            // console.log('Failed to update Login DB');
             throw new Error('Failed to create user');
         }
         await sessions.deleteOne({'session.emailId':sellerEmailId});
@@ -474,8 +481,8 @@ exports.postSellerSignup = async (req,res,next)=>{
             console.log(err.message,err.stack);
             message  = 'Error occoured ! Try again';
         }
-        const pIds = [req.files.storeLogo[0].filename,req.files.headerLogoForPdf[0].filename,req.files.footerLogoForPdf[0].filename];
         try{
+            const pIds = [req.files.storeLogo[0].filename,req.files.headerLogoForPdf[0].filename,req.files.footerLogoForPdf[0].filename];
             const result = await cloudinary.api.delete_resources(pIds);
         }catch(err){
             console.log(err,err.stack);
