@@ -370,7 +370,7 @@ exports.postSellerSignup = async (req,res,next)=>{
       uploadedFiles[key] = req.files[key].map((file) => file.path);
     }
     // this will only be executed if no validation errors are found.
-    const {sellerName,sellerEmailId,sellerMobileNo,sellerPassword,drugLicenseNumber,gstRegistrationNumber,fssaiLicenseNumber,storeName, line1Address, line2Address, shopPincode, shopState, shopCity, locationLatitude,locationLongitude,activeTime} = req.body;
+    const {sellerName,sellerEmailId,sellerMobileNo,sellerPassword,drugLicenseNumber,gstRegistrationNumber,fssaiLicenseNumber,storeName, address, shopPincode, shopState, shopCity, locationLatitude,locationLongitude,activeTime} = req.body;
     // will only end up here when required fields are not empty, in that case it will throw an error at the time of input validations only
     const hashedPassword = await bcrypt.hash(sellerPassword,12);
     let transactionSession=await mongoose.startSession();;
@@ -417,10 +417,8 @@ exports.postSellerSignup = async (req,res,next)=>{
             throw new Error('Failed to create user');
         }
         const addressStructure={
-            line1:line1Address,
-            line2:line2Address,
+            address:address,
             mobileNumber:Number(sellerMobileNo),
-            isPrimary:1,
             state:shopState,
             city:shopCity,
             pincode:Number(shopPincode),

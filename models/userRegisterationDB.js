@@ -25,6 +25,7 @@ const userDB = new Schema({
         // password must be hash value
     },
     userAddresses:[{type:addressStructure}],
+    activeAddress:{type:addressStructure},
     cart:{
         items:[medicineInfo],
         totalPrice:{type:Number},

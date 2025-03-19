@@ -1,0 +1,95 @@
+.deliveryAddressWrapper{
+    border-bottom: 1px solid black;
+    padding: 0.3rem 1rem;
+    height: 5vh;
+}
+.deliveryAddressContainer{
+    display: flex;
+    justify-content: space-between;
+    width: 30vw;
+    /* border: 1px solid red; */
+}
+.addressContainer{
+    display: flex;
+    border-bottom: 1px solid rgb(138, 138, 138);
+    gap: 0.75rem;
+    padding: 0rem 0.5rem;
+}
+.addressTextHolder{
+    font-size: 14px;
+}
+.arrowDown img{
+    width: 1rem;
+    rotate: 90deg;
+    cursor: pointer;
+}
+.savedAddressWrapper{
+    position: absolute;
+    top: 15vh;
+    left: 10vw;
+    width: 30vw;
+    height: 50vh;
+    border: 1px solid rgb(93, 93, 93);
+    background-color: rgba(244, 245, 245, 0.579);
+    backdrop-filter: blur(5px);
+    padding: 0.75rem 1rem;
+}
+.wrapperHeader{
+    font-size: 1.15rem;
+    border-bottom: 1px solid rgba(93, 93, 93, 0.684);
+}
+.savedLocations{
+    overflow-x: scroll;
+    height: 10rem;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid black;
+    display: flex;
+    gap: 1rem;
+}
+.addressComponent{
+    display: flex;
+    gap: 0.5rem;
+    min-width: 10rem;
+    height: 8rem;
+    font-size: 12.5px;
+    border: 1px solid darkblue;
+    background: rgba(189, 189, 189, 0.284);
+}
+.checkBoxHolder{
+    padding: 0.5rem 0.25rem;
+    display: flex;
+    justify-content: center;
+}
+.addressContentHolder{
+    padding: 0.5rem 0rem;
+}
+.addressDetail{
+    height: 3rem;
+    overflow-y: hidden;
+}
+.addressContentCommonCss{
+    padding: 0.15rem 0rem;
+}
+.stateCity{
+    height: 2.2rem;
+    overflow: hidden;
+}
+.address-wrapper-hidden{
+    display: none;
+}
+.addressButtonHolder{
+    width: 12rem;
+    padding: 0.5rem;
+    border: 1px solid black;
+    display: flex;
+    cursor: pointer;
+}
+.addressButtonHolder:active{
+    background: #f1f1f1;
+}
+.addNewAddressImage img{
+    width: 1rem;
+}
+.buttonText{
+    padding: 0rem 1rem;
+}

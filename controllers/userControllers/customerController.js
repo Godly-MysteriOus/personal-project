@@ -8,7 +8,7 @@ exports.getHomePage = async(req,res,next)=>{
     userInfo = userInfo[0]; 
     return res.status(200).render('Customer/customerHomePage',{
         userDetails : userInfo,
-        addresses:req.user.userAddresses,
+        address:req.user.activeAddress,
     });
 };
 
@@ -72,9 +72,8 @@ exports.saveUserAddress = async(req,res,next)=>{
     const {mobileNo,latitude,longitude,pincode,state,city,address} = req.body;
     try{
         const userAddress = {
-            line1 : address,
+            address : address,
             mobileNumber:mobileNo,
-            isPrimary:1,
             state:state,
             city:city,
             latitude:latitude,
@@ -84,6 +83,7 @@ exports.saveUserAddress = async(req,res,next)=>{
         const addressArr = [...req.user.userAddresses,userAddress];
         const saveAddress = await userDetailDB.findById(req.user._id);
         saveAddress.userAddresses = addressArr;
+        saveAddress.activeAddress = userAddress;
         saveAddress.save();
         return res.status(200).json({
             success:true,
@@ -94,5 +94,36 @@ exports.saveUserAddress = async(req,res,next)=>{
             success:false,
             message:'Failed to save user',
         });
+    }
+}
+exports.getAllAddress = async(req,res,next)=>{
+    let allAddress = req.user.userAddresses;
+    const activeAddress = req.user.activeAddress;
+    
+    allAddress = allAddress.filter(addr=> addr.address!=activeAddress.address);
+    return res.status(200).json({
+        success:'true',
+        currentAddress : activeAddress,
+        allSavedAddress: allAddress,
+    })
+};
+exports.postUpdateActiveAddress = async(req,res,next)=>{
+    const {address} = req.body;
+    const activeAddress = req.user.userAddresses.filter(addr=>addr.address==address);
+    try{
+        const updateAddress = await userDetailDB.findById(req.user._id);
+        updateAddress.activeAddress = activeAddress[0];
+        await updateAddress.save();
+        return res.status(200).json({
+            success:true,
+            message:'Successfully updated active address',
+            activeAddress : activeAddress[0],
+        })
+    }catch(err){
+        console.log(err.message,err.stack);
+        return res.status(400).json({
+            success:false,
+            message:'Error occoured while updating active address',
+        })
     }
 }
