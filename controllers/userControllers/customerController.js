@@ -80,6 +80,12 @@ exports.saveUserAddress = async(req,res,next)=>{
             longitude:longitude,
             pincode:pincode,
         };
+        let isLocationSaved;
+        if(req.user.userAddresses.length!=0)
+            isLocationSaved = req.user.userAddresses?.filter(addr=>addr.latitude==userAddress.latitude && addr.longitude == userAddress.longitude);
+        if(isLocationSaved){
+            throw new Error('Address Already Saved');
+        }
         const addressArr = [...req.user.userAddresses,userAddress];
         const saveAddress = await userDetailDB.findById(req.user._id);
         saveAddress.userAddresses = addressArr;
@@ -90,9 +96,16 @@ exports.saveUserAddress = async(req,res,next)=>{
             message:'Saved Successfully',
         });
     }catch(err){
+        let message;
+        if(err.message=='Address Already Saved'){
+            message = err.message;
+        }else{
+            message = 'Failed to save user';
+            console.log(err.stack,err.message);
+        }
         return res.status(400).json({
             success:false,
-            message:'Failed to save user',
+            message:message,
         });
     }
 }

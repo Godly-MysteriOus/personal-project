@@ -78,7 +78,9 @@
         const img = document.createElement('img');
         img.src = "/images/close-black.png";
         div.appendChild(img);
-        document.querySelector('.bannerText').appendChild(div);
+        if(!document.querySelector('.bannerText').children[1]){
+            document.querySelector('.bannerText').appendChild(div);
+        }
 
         document.querySelector('.addAddressContainer').classList.remove('hideAddAddressPopup');
         savedAddressWrapper.classList.add('address-wrapper-hidden');
