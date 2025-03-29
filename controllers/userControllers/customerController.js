@@ -5,18 +5,25 @@ const productDB = require('../../models/productDB');
 const storeDetailDB = require('../../models/medicalShopRegistrationDB');
 const{ObjectId}  =require('mongodb');
 function isTimeInRange(startTime, endTime) {
-    const now = new Date(); // Current time
-
-    // Convert start and end times to today's date with specified hours/minutes
-    const start = new Date(now);
+    // Get current time in IST
+    const nowUTC = new Date();
+    let nowIST;
+    if(nowUTC.toString().includes('India Standard Time')){
+        console.log(true);
+        nowIST = nowUTC;
+    }else{
+        nowIST = new Date(nowUTC.getTime() + (5.5 * 60 * 60 * 1000)); // Convert to IST
+    }
+    console.log('nowUTC = '+nowUTC+"    nowIST = "+nowIST);
+    // Convert start and end times to IST date with specified hours/minutes
+    const start = new Date(nowIST);
     const [startHour, startMinute] = startTime.split(":").map(Number);
-    start.setHours(startHour, startMinute, 0); // Set start time
-
-    const end = new Date(now);
+    start.setHours(startHour, startMinute, 0, 0); // Set start time in IST
+    const end = new Date(nowIST);
     const [endHour, endMinute] = endTime.split(":").map(Number);
-    end.setHours(endHour, endMinute, 0); // Set end time
+    end.setHours(endHour, endMinute, 0, 0); // Set end time in IST
 
-    return now >= start && now <= end;
+    return nowIST >= start && nowIST <= end;
 }
 exports.getHomePage = async(req,res,next)=>{
     if(req.user){
@@ -80,30 +87,31 @@ exports.searchListedProducts = async(req,res,next)=>{
         });
         if(allAvailableSellersWithinRange.length == 0){
             res.status(200).render('Customer/customerUtils/customerHomePageProductView.ejs',{medicineInfo : isProductGenuine,sellers: []});
+        }else{
+            // fetching list of sellers Ids within 50km
+            const sellerIds = allSellersWithinRange.map(store=>store._id);
+            // fetching list of sellers within 50km Id who has required medicine Listed
+            const sellersWithListedMedicineInRange = await productDB.find({sellerId:{$in:sellerIds},productId:isProductGenuine._id});
+            // returing a single coupled oject for each store
+            const allAvailableSellerWithinRangeWithListedMedicine = allAvailableSellersWithinRange.filter(store=>sellersWithListedMedicineInRange.find(seller=>seller.sellerId.toString()==store._id.toString()));
+            // console.log( allAvailableSellerWithinRangeWithListedMedicine);
+            const desiredList = allAvailableSellerWithinRangeWithListedMedicine.map(store=>{
+                const temp = sellersWithListedMedicineInRange.filter(seller=>seller.sellerId.toString()==store._id.toString());
+                const modifiedProductObj = {
+                    productId : medicineId,
+                    qty : temp[0].quantity,
+                    price : temp[0].price,
+                    buyers: temp[0].buyers,
+                    ratingCount : temp[0].ratingCount,
+                };
+                const finalObj = {
+                    storeDetail : store,
+                    productInfo : modifiedProductObj,
+                }
+                return finalObj;
+            });
+            return res.status(200).render('Customer/customerUtils/customerHomePageProductView.ejs',{medicineInfo : isProductGenuine,sellers: desiredList});
         }
-        // fetching list of sellers Ids within 50km
-        const sellerIds = allSellersWithinRange.map(store=>store._id);
-        // fetching list of sellers within 50km Id who has required medicine Listed
-        const sellersWithListedMedicineInRange = await productDB.find({sellerId:{$in:sellerIds},productId:isProductGenuine._id});
-        // returing a single coupled oject for each store
-        const allAvailableSellerWithinRangeWithListedMedicine = allAvailableSellersWithinRange.filter(store=>sellersWithListedMedicineInRange.find(seller=>seller.sellerId.toString()==store._id.toString()));
-        // console.log( allAvailableSellerWithinRangeWithListedMedicine);
-        const desiredList = allAvailableSellerWithinRangeWithListedMedicine.map(store=>{
-            const temp = sellersWithListedMedicineInRange.filter(seller=>seller.sellerId.toString()==store._id.toString());
-            const modifiedProductObj = {
-                productId : medicineId,
-                qty : temp[0].quantity,
-                price : temp[0].price,
-                buyers: temp[0].buyers,
-                ratingCount : temp[0].ratingCount,
-            };
-            const finalObj = {
-                storeDetail : store,
-                productInfo : modifiedProductObj,
-            }
-            return finalObj;
-        });
-        return res.status(200).render('Customer/customerUtils/customerHomePageProductView.ejs',{medicineInfo : isProductGenuine,sellers: desiredList});
     }catch(err){
         console.log(err,err.stack);
         return res.status(200).render('Customer/customerUtils/customerHomePageProductView.ejs',{medicineInfo : [],sellers: []});
