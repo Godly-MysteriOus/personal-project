@@ -1,4 +1,4 @@
-<div>
+<!-- <div> -->
     <% if (sellers.length==0) { %>
         <h3 class="noProductFound">No Product Found</h3>
     <% }else{%>
@@ -9,16 +9,16 @@
                 </div>
                 <div class="productName"><%= medicineInfo.name %></div>
                 <div class="productManufacturer"><%= medicineInfo.manufacturer %></div>
-                <div class="soldBy">Sold By : <%= sellers[i].sellerId.storeDetails.storeName %></div>
+                <div class="soldBy">Sold By : <%= sellers[i].storeDetail.storeName %></div>
                 <div class="useOf">Use : <%= medicineInfo.useOf %></div>
-                <div class="price">Price : ₹ <%= sellers[i].price %></div>
+                <div class="price">Price : ₹ <%= sellers[i].productInfo.price %></div>
                 <div class="buttonHolder">
                     <div class="detailsButton"><button type="button">Details</button></div>
-                    <input type="text" class="detailsButtonProductId" hidden value="<%= sellers[i].productId %>">
+                    <input type="text" class="detailsButtonProductId" hidden value="<%= sellers[i].productInfo.productId %>">
                     <div class="addToCartButton"><button type="button">Add To Cart</button></div>
-                    <input type="text" class="addToCartProductId" hidden value="<%= sellers[i].productId %> <%= sellers[i]._id %>">
+                    <input type="text" class="addToCartProductId" hidden value="<%= sellers[i].productInfo.productId %> <%= sellers[i]._id %>">
                 </div>
             </div>
         <% } %>
     <%}%>
-</div>
+<!-- </div> -->

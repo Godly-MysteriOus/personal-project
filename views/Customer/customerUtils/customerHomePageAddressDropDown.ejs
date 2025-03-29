@@ -3,7 +3,11 @@
     <div class="deliveryAddressContainer">
         <div class="delivery-text">Active Location </div>
         <div class="addressContainer">
-            <div class="addressTextHolder"><%=address.pincode%>, <%= address.city %>, <%= address.state %></div>
+            <div class="addressTextHolder">
+                <% if (address) { %>
+                    <%=address?.pincode%>, <%= address?.city %>, <%= address?.state %>
+                <% } %>
+            </div>
             <div class="arrowDown"><img src="/images/single-right.png" alt=""></div>
         </div>
     </div>

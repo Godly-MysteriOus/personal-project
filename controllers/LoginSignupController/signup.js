@@ -48,7 +48,7 @@ let saveSession=(session)=> {
 }
 
 function OTPGenerator(){
-    return Math.floor(Math.random()*100000);
+    return Number(Math.floor(Math.random()*100000000).toString().substring(0,5));
 }
 
 //fixed
@@ -310,7 +310,7 @@ exports.postCustomerSignup = async (req,res,next)=>{
         //below logic will only be executed if session exists and otp verification are done
         //create the entry 
         const hashedPassword = await bcrypt.hash(password,12);
-        const loginObj = await loginDetails.create({emailId:emailId,mobileNumber:Number(mobileNo),password:hashedPassword,roleId:1});
+        const loginObj = await loginDetails.create({emailId:emailId,mobileNumber:Number(mobileNo),password:hashedPassword,roleId:1,userAddresses:[],activeAddress:{}});
         if(!loginObj){
             console.log('Failed to create entry in login_info_db');
             throw new Error('Failed to create user');
@@ -328,10 +328,8 @@ exports.postCustomerSignup = async (req,res,next)=>{
             throw new Error('Failed to create user');
         }
         await sessions.deleteOne({'session.emailId': emailId});
-        console.log('Deleted sessions');
         await transactionSession.commitTransaction();
         transactionSession.endSession();
-        console.log('Successful signup');
         return res.status(200).json({
             success:true,
             message:'Successful Signup!!',
@@ -422,9 +420,9 @@ exports.postSellerSignup = async (req,res,next)=>{
             state:shopState,
             city:shopCity,
             pincode:Number(shopPincode),
-            latitude:Number(locationLatitude),
-            longitude:Number(locationLongitude),
-
+            location :{
+                coordinates:[Number(locationLongitude),Number(locationLatitude)],
+            }
         };
         const storeAddress = addressStructure;
         // storing operating day and working hours
