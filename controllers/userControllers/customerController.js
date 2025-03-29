@@ -64,7 +64,7 @@ exports.searchListedProducts = async(req,res,next)=>{
             const date = new Date();
             const startTime = item.openingHour;
             const closingTime = item.closingHour;
-            if(item.workingDay == date.toLocaleDateString('en-US', { weekday: 'long' }) ){
+            if(item.workingDay == date.toLocaleDateString('en-US', { weekday: 'long' }) && isTimeInRange(startTime,closingTime)){
                 return item;
             }
         })).map(seller=>{
