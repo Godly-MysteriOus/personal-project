@@ -13,7 +13,7 @@ router.get('/cart',authRoute.customerAuthentication,customerController.getCartPa
 
 // util routes
 router.get('/user-addresses',authRoute.customerAuthentication,customerController.getUserAddresses);
-router.post('/homePage-search-product',authRoute.customerAuthentication,customerController.searchListedProducts);
+router.post('/search-product',authRoute.customerAuthentication,customerController.searchListedProducts);
 router.get('/get-saved-locations',authRoute.customerAuthentication,customerController.getAllAddress);
 router.post('/update-active-address',authRoute.customerAuthentication,customerController.postUpdateActiveAddress);
 

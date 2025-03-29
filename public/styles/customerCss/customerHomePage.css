@@ -32,7 +32,7 @@
 .imageHolder{
     display: grid;
     place-items: center;
-    border: 1px solid red;
+    border: 1px solid rgb(196, 196, 196);
 }
 .imageHolder img{
     width: 10rem;

@@ -2,14 +2,35 @@ const credentialDB = require('../../models/allEntitiesDB');
 const userDetailDB = require('../../models/userRegisterationDB');
 const centralMedicineDB = require('../../models/centralMedicineDB');
 const productDB = require('../../models/productDB');
+const storeDetailDB = require('../../models/medicalShopRegistrationDB');
 const{ObjectId}  =require('mongodb');
+function isTimeInRange(startTime, endTime) {
+    const now = new Date(); // Current time
+
+    // Convert start and end times to today's date with specified hours/minutes
+    const start = new Date(now);
+    const [startHour, startMinute] = startTime.split(":").map(Number);
+    start.setHours(startHour, startMinute, 0); // Set start time
+
+    const end = new Date(now);
+    const [endHour, endMinute] = endTime.split(":").map(Number);
+    end.setHours(endHour, endMinute, 0); // Set end time
+
+    return now >= start && now <= end;
+}
 exports.getHomePage = async(req,res,next)=>{
-    let userInfo = await credentialDB.find({_id:req.user.mobileNumber}).select('emailId mobileNumber -_id');
-    userInfo = userInfo[0]; 
-    return res.status(200).render('Customer/customerHomePage',{
-        userDetails : userInfo,
-        address:req.user.activeAddress,
-    });
+    if(req.user){
+        let userInfo = await credentialDB.find({_id:req.user.mobileNumber}).select('emailId mobileNumber -_id');
+        userInfo = userInfo[0]; 
+        return res.status(200).render('Customer/customerHomePage',{
+            userDetails : userInfo,
+            address:req.user?.activeAddress,
+        });
+    }else{
+        res.status(200).render('Login/login',{
+            path:'/login',
+        });
+    }
 };
 
 exports.searchListedProducts = async(req,res,next)=>{
@@ -19,19 +40,73 @@ exports.searchListedProducts = async(req,res,next)=>{
         const isProductGenuine = await centralMedicineDB.findOne({productId:medicineId}).select('name manufacturer productImage medicineType packagingDetails productForm useOf ');
         if(!isProductGenuine){
             throw new Error('Invalid medicine name');
+        };
+        //getting all the stores within 50km range
+        let allSellersWithinRange = await storeDetailDB.aggregate([
+            {
+                $geoNear: {
+                    near: {
+                        type: "Point",
+                        coordinates: [
+                            Number(req.user.activeAddress.location.coordinates[0]),
+                            Number(req.user.activeAddress.location.coordinates[1]),
+                        ],
+                    },
+                    distanceField: "distance",
+                    maxDistance: 500000,
+                    spherical: true,
+                    key: "storeAddress.location", // Ensure this field is indexed
+                },
+            },
+        ]).sort({'distance':1});
+        // filtering store on basis of their availability
+        const allAvailableSellersWithinRange =  allSellersWithinRange.filter(seller=>seller.storeDetails.workingDetail.find(item=>{
+            const date = new Date();
+            const startTime = item.openingHour;
+            const closingTime = item.closingHour;
+            if(item.workingDay == date.toLocaleDateString('en-US', { weekday: 'long' }) ){
+                return item;
+            }
+        })).map(seller=>{
+            return{
+                _id : seller._id,
+                storeLocation : seller.storeAddress.address,
+                storeState : seller.storeAddress.state,
+                storeCity : seller.storeAddress.city,
+                storePincode : seller.storeAddress.pincode,
+                storeName : seller.storeDetails.storeName,
+                workingDetails : seller.storeDetails.workingDetail,
+            }
+        });
+        if(allAvailableSellersWithinRange.length == 0){
+            res.status(200).render('Customer/customerUtils/customerHomePageProductView.ejs',{medicineInfo : isProductGenuine,sellers: []});
         }
-        const allSellerWhoListedProduct = await productDB.find({productId:isProductGenuine._id}).populate('sellerId','storeDetails.storeName -_id').limit(5);
-        // return res.status(200).json({
-        //     success:true,
-        //     medicineInfo : isProductGenuine,
-        //     sellers: allSellerWhoListedProduct,
-        // });
-        return res.status(200).render('Customer/customerUtils/customerHomePageProductView.ejs',{medicineInfo : isProductGenuine,sellers: allSellerWhoListedProduct});
+        // fetching list of sellers Ids within 50km
+        const sellerIds = allSellersWithinRange.map(store=>store._id);
+        // fetching list of sellers within 50km Id who has required medicine Listed
+        const sellersWithListedMedicineInRange = await productDB.find({sellerId:{$in:sellerIds},productId:isProductGenuine._id});
+        // returing a single coupled oject for each store
+        const allAvailableSellerWithinRangeWithListedMedicine = allAvailableSellersWithinRange.filter(store=>sellersWithListedMedicineInRange.find(seller=>seller.sellerId.toString()==store._id.toString()));
+        // console.log( allAvailableSellerWithinRangeWithListedMedicine);
+        const desiredList = allAvailableSellerWithinRangeWithListedMedicine.map(store=>{
+            const temp = sellersWithListedMedicineInRange.filter(seller=>seller.sellerId.toString()==store._id.toString());
+            const modifiedProductObj = {
+                productId : medicineId,
+                qty : temp[0].quantity,
+                price : temp[0].price,
+                buyers: temp[0].buyers,
+                ratingCount : temp[0].ratingCount,
+            };
+            const finalObj = {
+                storeDetail : store,
+                productInfo : modifiedProductObj,
+            }
+            return finalObj;
+        });
+        return res.status(200).render('Customer/customerUtils/customerHomePageProductView.ejs',{medicineInfo : isProductGenuine,sellers: desiredList});
     }catch(err){
-        return res.status(400).json({
-            success:false,
-            message:err.message,
-        })
+        console.log(err,err.stack);
+        return res.status(200).render('Customer/customerUtils/customerHomePageProductView.ejs',{medicineInfo : [],sellers: []});
     }
 }
 
@@ -76,23 +151,37 @@ exports.saveUserAddress = async(req,res,next)=>{
             mobileNumber:mobileNo,
             state:state,
             city:city,
-            latitude:latitude,
-            longitude:longitude,
+            location:{
+                coordinates:[Number(longitude),Number(latitude)],
+            },
             pincode:pincode,
         };
+        let isLocationSaved;
+        if(req.user.userAddresses.length!=0)
+            isLocationSaved = req.user.userAddresses?.filter(addr=>addr.location.coordinates[1]==userAddress.location.coordinates[1] && addr.location.coordinates[0] == userAddress.location.coordinates[0]);
+        if(isLocationSaved){
+            throw new Error('Address Already Saved');
+        }
         const addressArr = [...req.user.userAddresses,userAddress];
         const saveAddress = await userDetailDB.findById(req.user._id);
         saveAddress.userAddresses = addressArr;
         saveAddress.activeAddress = userAddress;
-        saveAddress.save();
+        await saveAddress.save();
         return res.status(200).json({
             success:true,
             message:'Saved Successfully',
         });
     }catch(err){
+        let message;
+        if(err.message=='Address Already Saved'){
+            message = err.message;
+        }else{
+            message = 'Failed to save address';
+            console.log(err.stack,err.message);
+        }
         return res.status(400).json({
             success:false,
-            message:'Failed to save user',
+            message:message,
         });
     }
 }

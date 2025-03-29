@@ -37,4 +37,5 @@ const userDB = new Schema({
     resetToken:{type:String},
     resetTokenExpiration:{type:Date},
 });
+userDB.index({ "activeAddress.location": "2dsphere" });
 module.exports = mongoose.model(DB_Constants.USER_REGISTRATION_STORE_DB,userDB,DB_Constants.USER_REGISTRATION_STORE_DB);

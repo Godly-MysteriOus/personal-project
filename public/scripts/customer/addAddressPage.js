@@ -121,6 +121,7 @@ saveButton.addEventListener('click',async(e)=>{
     });
     const response = await request.json();
     if(response.success){
+        document.querySelector('.addressTextHolder').textContent = pincode.value+", "+city.value+" ,"+state.value;
         userPhoneNumber.value='';
         pincode.value='';
         state.value='';

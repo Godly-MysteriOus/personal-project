@@ -89,9 +89,12 @@ exports.postLogin =async (req,res)=>{
     }catch(err){
         transactionSession?.abortTransaction();
         await transactionSession.endSession();
+        console.log(err.message);
         let message;
-        if(err.message == 'No user found!!!' || err.message == 'Invalid Role Id' || err.message == 'Invalid Username or Password' || err.message == 'Failed to find login credentials with provided credentials'){
+        if(err.message == 'Invalid Username or Password'){
             message = err.message;
+        }else if(err.message = "Failed to find login credentials with provided credentials" || err.message == 'No user found!!!'){
+            message = 'Invalid Username or Password';
         }else{
             console.log(err.message,err.stack);
             message = 'Error Occoured, Please try again !';
