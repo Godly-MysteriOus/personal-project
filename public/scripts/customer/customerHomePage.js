@@ -23,7 +23,7 @@ searchBtn.addEventListener('click',async(e)=>{
         contentHolder.innerHTML = result;
     }
 });
-
+detailAndAddToCartScript();
 window.addEventListener('load',async(e)=>{
     const response = await fetch(url+'customer/user-addresses',{
         method: 'GET',

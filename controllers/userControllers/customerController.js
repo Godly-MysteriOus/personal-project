@@ -4,17 +4,26 @@ const centralMedicineDB = require('../../models/centralMedicineDB');
 const productDB = require('../../models/productDB');
 const storeDetailDB = require('../../models/medicalShopRegistrationDB');
 const{ObjectId}  =require('mongodb');
+let saveSession=(session)=> {
+    return new Promise((resolve, reject) => {
+        session.save(err => {
+            if (err) {
+                reject(new Error('Failed to save session'));
+            } else {
+                resolve(true);
+            }
+        });
+    });
+}
 function isTimeInRange(startTime, endTime) {
     // Get current time in IST
     const nowUTC = new Date();
     let nowIST;
     if(nowUTC.toString().includes('India Standard Time')){
-        console.log(true);
         nowIST = nowUTC;
     }else{
         nowIST = new Date(nowUTC.getTime() + (5.5 * 60 * 60 * 1000)); // Convert to IST
     }
-    console.log('nowUTC = '+nowUTC+"    nowIST = "+nowIST);
     // Convert start and end times to IST date with specified hours/minutes
     const start = new Date(nowIST);
     const [startHour, startMinute] = startTime.split(":").map(Number);
@@ -60,7 +69,7 @@ exports.searchListedProducts = async(req,res,next)=>{
                         ],
                     },
                     distanceField: "distance",
-                    maxDistance: 500000,
+                    maxDistance: 50000,
                     spherical: true,
                     key: "storeAddress.location", // Ensure this field is indexed
                 },
@@ -83,6 +92,7 @@ exports.searchListedProducts = async(req,res,next)=>{
                 storePincode : seller.storeAddress.pincode,
                 storeName : seller.storeDetails.storeName,
                 workingDetails : seller.storeDetails.workingDetail,
+                distance : seller.distance,
             }
         });
         if(allAvailableSellersWithinRange.length == 0){
@@ -90,25 +100,25 @@ exports.searchListedProducts = async(req,res,next)=>{
         }else{
             // fetching list of sellers Ids within 50km
             const sellerIds = allSellersWithinRange.map(store=>store._id);
-            // fetching list of sellers within 50km Id who has required medicine Listed
-            const sellersWithListedMedicineInRange = await productDB.find({sellerId:{$in:sellerIds},productId:isProductGenuine._id});
+            // fetching list of sellers within 50km Id who has required medicine Listed  
+            const allAvailableSellersWithListedMedicineInRange = await productDB.find({sellerId:{$in:sellerIds},productId:isProductGenuine._id,quantity:{$gt:1}}).populate('sellerId','storeDetails.storeName');
             // returing a single coupled oject for each store
-            const allAvailableSellerWithinRangeWithListedMedicine = allAvailableSellersWithinRange.filter(store=>sellersWithListedMedicineInRange.find(seller=>seller.sellerId.toString()==store._id.toString()));
-            // console.log( allAvailableSellerWithinRangeWithListedMedicine);
-            const desiredList = allAvailableSellerWithinRangeWithListedMedicine.map(store=>{
-                const temp = sellersWithListedMedicineInRange.filter(seller=>seller.sellerId.toString()==store._id.toString());
+            // const allAvailableSellerWithinRangeWithListedMedicine = allAvailableSellersWithinRange.filter(store=>sellersWithListedMedicineInRange.find(seller=>seller.sellerId.toString()==store._id.toString()));
+            const desiredList =  allAvailableSellersWithListedMedicineInRange.map(store=>{
                 const modifiedProductObj = {
+                    sellerId : store.sellerId._id,
                     productId : medicineId,
-                    qty : temp[0].quantity,
-                    price : temp[0].price,
-                    buyers: temp[0].buyers,
-                    ratingCount : temp[0].ratingCount,
+                    qty : store.quantity,
+                    price : store.price,
+                    buyers: store.buyers,
+                    ratingCount : store.ratingCount,
+                    storeName : store.sellerId.storeDetails.storeName,
                 };
                 const finalObj = {
-                    storeDetail : store,
-                    productInfo : modifiedProductObj,
+                    storeDetail : modifiedProductObj,
+                    productInfo : isProductGenuine,
                 }
-                return finalObj;
+                return  finalObj;
             });
             return res.status(200).render('Customer/customerUtils/customerHomePageProductView.ejs',{medicineInfo : isProductGenuine,sellers: desiredList});
         }
@@ -222,5 +232,52 @@ exports.postUpdateActiveAddress = async(req,res,next)=>{
             success:false,
             message:'Error occoured while updating active address',
         })
+    }
+}
+
+exports.postAddToCart = async(req,res,next)=>{
+    let {productId,sellerId} = req.body; 
+    sellerId = new ObjectId(sellerId);
+    try{
+        const isMedicineValid = await centralMedicineDB.findOne({productId:productId}).select('productId');
+        if(!isMedicineValid){
+            throw new Error('Invalid Medicine Name, cannot Add to Cart');
+        }
+        const validation = await productDB.findOne({productId: isMedicineValid._id, sellerId:sellerId,quantity:{$gt:1}});
+        if(!validation){
+            throw new Error('Product Out of stock, cannot add!');
+        }
+        const user = await userDetailDB.findOne({_id: req.user._id});
+        let currentCart = user.cart.items;
+        const isObjPresent = currentCart.filter(item=>item.productId.toString() == isMedicineValid._id.toString() && item.sellerId.toString() == sellerId.toString());
+        if(isObjPresent.length==0){
+            const obj = {
+                productId : isMedicineValid._id,
+                sellerId : sellerId,
+                qty : 1,
+                price : 1*validation.price,
+            }
+            currentCart.push(obj);
+        }else{
+            const idx = currentCart.findIndex(item=>item.productId.toString() == isMedicineValid._id.toString() && item.sellerId.toString() == sellerId.toString());
+            const newQty = currentCart[idx].qty+1;
+            currentCart[idx].qty = newQty;
+            currentCart[idx].price = newQty*validation.price;
+        }
+        user.cart.items = currentCart;
+        req.session.user = user;
+
+        saveSession(req.session);
+        await user.save();
+        return res.status(201).json({
+            success:true,
+            message: 'Added to cart !',
+        });
+    }catch(err){
+        console.log(err.stack);
+        return res.status(400).json({
+            success:true,
+            message: 'Addition to cart failed!',
+        });
     }
 }
