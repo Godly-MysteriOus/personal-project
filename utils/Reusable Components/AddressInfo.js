@@ -1,9 +1,7 @@
 
 const addressStructure = {
-    line1:{type:String,required:true},
-    line2:{type:String},
     mobileNumber:{type:Number},
-    isPrimary:{type:Boolean,required:true},
+    address:{type:String,required:true},
     state:{
         type:String,  
         required:true
@@ -12,8 +10,10 @@ const addressStructure = {
         type:String,
         required:true
     },
-    latitude:{type:Number,unique:false},
-    longitude:{type:Number,unique:false},
+    location: {
+        type: { type: String, enum:["Point"] ,default: "Point"},
+        coordinates: { type: [Number]} // Geospatial index
+    },
     pincode:{type:Number, required:true}, // you need to connect to public api - India Post Pincode API
 }
 module.exports = addressStructure;

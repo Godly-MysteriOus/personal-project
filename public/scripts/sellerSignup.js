@@ -13,7 +13,6 @@ const storeLogo = document.querySelector('.storeLogo');
 const headerLogo = document.querySelector('.headerLogoForPdf');
 const footerLogo = document.querySelector('.footerLogoForPdf');
 const line1Address = document.querySelector('.address-line1');
-const line2Address = document.querySelector('.address-line2');
 const shopPincode = document.querySelector('.shopPincode');
 const shopState = document.querySelector('.shopState');
 const shopCity = document.querySelector('.shopCity');
@@ -29,7 +28,6 @@ gstRegistrationNumber.value = fetchData('gstRegistrationNumber');
 fssaiLicenseNumber.value = fetchData('fssaiLicenseNumber');
 storeName.value = fetchData('storeName');
 line1Address.value = fetchData('line1Address');
-line2Address.value = fetchData('line2Address');
 shopPincode.value = fetchData('pincode');
 shopState.value = fetchData('shopState');
 shopCity.value = fetchData('shopCity');
@@ -177,13 +175,6 @@ line1Address.addEventListener('blur',(e)=>{
     }
     updateData('line1Address',value);
 });
-line2Address.addEventListener('blur',()=>{
-    const value = String(line2Address.value).trim();
-    if(!addressRegex.test(value)){
-        messageOperation('Only special character allowed is - , / or space');
-    }
-    updateData('line2Address',value);
-});
 //decide some validation for store timing
 sellerEmail.addEventListener('blur',()=>{
     updateData('sellerEmail',sellerEmail.value);
@@ -194,7 +185,7 @@ submitBtn.addEventListener('click',async(e)=>{
     e.preventDefault();
     submitBtn.setAttribute('disabled',true);
     // throw an alert if required fields are empty
-    if(sellerName.value=='' || sellerEmail.value=='' || sellerMobileNo.value=='' || sellerPassword.value==''|| confirmPassword.value == '' || drugLicenseNumber.value==''|| gstRegistrationNumber.value==''|| fssaiLicenseNumber.value==''|| storeName.value=='' || line1Address.value==''|| line2Address.value=='' || pincodeField.value=='' || shopState.value=='' || shopCity.value==''){
+    if(sellerName.value=='' || sellerEmail.value=='' || sellerMobileNo.value=='' || sellerPassword.value==''|| confirmPassword.value == '' || drugLicenseNumber.value==''|| gstRegistrationNumber.value==''|| fssaiLicenseNumber.value==''|| storeName.value=='' || line1Address.value==''|| pincodeField.value=='' || shopState.value=='' || shopCity.value==''){
         alert('Please fill the mandatory fields');
         return;
     };
@@ -253,7 +244,6 @@ submitBtn.addEventListener('click',async(e)=>{
     // fssai code
     inputValidation(fssaiLicenseNumber.value,fssaiLicenseNumberRegex,'Invalid FSSAI Number',true);
     inputValidation(line1Address.value,addressRegex,'Address can only contain, - / special characters',false);
-    inputValidation(line2Address.value,addressRegex,'Address can only contain, - / special characters',false);
     //pincode
     if(String(pincodeField.value).length!=6){
         return alert('Pincode must be Numeric and 6 character long');
@@ -292,8 +282,7 @@ submitBtn.addEventListener('click',async(e)=>{
     formData.append('storeLogo',storeLogo.files[0]),
     formData.append('headerLogoForPdf',headerLogo.files[0]);
     formData.append('footerLogoForPdf',footerLogo.files[0]);
-    formData.append('line1Address',line1Address.value);
-    formData.append('line2Address',line2Address.value);
+    formData.append('address',line1Address.value);
     formData.append('shopPincode', shopPincode.value);
     formData.append('shopState',shopState.value);
     formData.append('shopCity',shopCity.value);

@@ -1,0 +1,128 @@
+<link rel="stylesheet" href="/styles/customerCss/addressDropDown.css">
+<div class="deliveryAddressWrapper">
+    <div class="deliveryAddressContainer">
+        <div class="delivery-text">Active Location </div>
+        <div class="addressContainer">
+            <div class="addressTextHolder">
+                <% if (address) { %>
+                    <%=address?.pincode%>, <%= address?.city %>, <%= address?.state %>
+                <% } %>
+            </div>
+            <div class="arrowDown"><img src="/images/single-right.png" alt=""></div>
+        </div>
+    </div>
+    <div class="savedAddressWrapper address-wrapper-hidden">
+        <div class="wrapperHeader">
+            Select the address you want to use
+        </div>
+        <br>
+        <div class="savedLocations">
+            <!-- use this for each delivery address store -->
+            
+        </div>
+        <br>
+        <!-- add new address button -->
+        <div class="addNewAddressButton">
+           <div class="addressButtonHolder">
+                <div class="addNewAddressImage">
+                    <img src="/images/plus.png" alt="">
+                </div>
+                <div class="buttonText">Add New Address</div>
+           </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const addressContainer = document.querySelector('.addressContainer');
+    const savedLocations = document.querySelector('.savedLocations');
+    const savedAddressWrapper = document.querySelector('.savedAddressWrapper');
+    const addressButtonHolder = document.querySelector('.addressButtonHolder');
+    var allAddress = [];
+    addressContainer.addEventListener('click',async(e)=>{
+        savedAddressWrapper.classList.toggle('address-wrapper-hidden');
+        e.preventDefault();
+        const response = await fetch(url+'customer/get-saved-locations',{
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+        });
+        const result = await response.json();
+        if(result.success){
+            const currentAddress = result.currentAddress;
+            const allSavedAddress = result.allSavedAddress;
+            allAddress = [currentAddress, ...allSavedAddress];
+            savedLocations.innerHTML = '';
+            allAddress.forEach((addr,i)=>{
+                if(addr!=undefined){
+                    const htmlContent = `
+                    <div class="addressComponent">
+                        <div class="checkBoxHolder">
+                            <div>
+                                <input type="checkbox" class="checkbox checkbox-${i}" value="${addr.address}" ${i==0 ? 'checked':''}>
+                            </div>
+                        </div>
+                        <div class="addressContentHolder">
+                            <div class="mobileNumber">+91 &nbsp;${addr?.mobileNumber}</div>
+                            <div class="addressContentCommonCss pincode"> ${addr?.pincode}</div>
+                            <div class="addressContentCommonCss addressDetail"> ${addr?.address} </div>
+                            <div class="addressContentCommonCss stateCity"> ${addr?.city}, ${addr.state} </div>
+                        </div>
+                    </div>
+                    `;
+                    savedLocations.insertAdjacentHTML('beforeend',htmlContent);
+                }
+            });
+        }
+    });
+
+    addressButtonHolder.addEventListener('click',async(e)=>{
+        const div = document.createElement('div');
+        div.className = 'crossBtn';
+        div.onclick = hide;
+        const img = document.createElement('img');
+        img.src = "/images/close-black.png";
+        div.appendChild(img);
+        if(!document.querySelector('.bannerText').children[1]){
+            document.querySelector('.bannerText').appendChild(div);
+        }
+
+        document.querySelector('.addAddressContainer').classList.remove('hideAddAddressPopup');
+        savedAddressWrapper.classList.add('address-wrapper-hidden');
+    });
+    function hide(){
+        document.querySelector('.addAddressContainer').classList.add('hideAddAddressPopup');
+    }
+    function updateCurrentAddress(clickedCheckBox){
+        const checkBoxes = document.querySelectorAll('.checkbox');
+        checkBoxes.forEach(checkbox=>{
+            checkbox.removeAttribute('checked');
+        });
+        document.querySelector(`.${clickedCheckBox}`).closest('input').setAttribute('checked',true);
+    }
+    savedLocations.addEventListener('click',async(e)=>{
+        if(e.target.closest('.checkbox')){
+            const clickedCheckBox = e.target.closest('.checkbox').getAttribute('class').split(' ')[1];
+            const val =  e.target.closest('.checkbox').getAttribute('value');
+            updateCurrentAddress(clickedCheckBox);
+            const response = await fetch(url+'customer/update-active-address',{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({
+                    address:val,
+                }),
+            });
+            const result =  await response.json();
+            if(result.success){
+                savedAddressWrapper.classList.add('address-wrapper-hidden');
+                const {pincode,state,city} = result.activeAddress;
+                document.querySelector('.addressTextHolder').textContent = pincode+", "+city+", "+state;
+            }else{
+                message.textContent = result.message;
+                message.classList.remove('message-hidden');
+                setTimeout(()=>{
+                    message.classList.add('message-hidden');
+                })
+            }
+        }
+    })
+</script>

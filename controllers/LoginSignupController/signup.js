@@ -48,7 +48,7 @@ let saveSession=(session)=> {
 }
 
 function OTPGenerator(){
-    return Math.floor(Math.random()*100000);
+    return Number(Math.floor(Math.random()*100000000).toString().substring(0,5));
 }
 
 //fixed
@@ -310,7 +310,7 @@ exports.postCustomerSignup = async (req,res,next)=>{
         //below logic will only be executed if session exists and otp verification are done
         //create the entry 
         const hashedPassword = await bcrypt.hash(password,12);
-        const loginObj = await loginDetails.create({emailId:emailId,mobileNumber:Number(mobileNo),password:hashedPassword,roleId:1});
+        const loginObj = await loginDetails.create({emailId:emailId,mobileNumber:Number(mobileNo),password:hashedPassword,roleId:1,userAddresses:[],activeAddress:{}});
         if(!loginObj){
             console.log('Failed to create entry in login_info_db');
             throw new Error('Failed to create user');
@@ -328,10 +328,8 @@ exports.postCustomerSignup = async (req,res,next)=>{
             throw new Error('Failed to create user');
         }
         await sessions.deleteOne({'session.emailId': emailId});
-        console.log('Deleted sessions');
         await transactionSession.commitTransaction();
         transactionSession.endSession();
-        console.log('Successful signup');
         return res.status(200).json({
             success:true,
             message:'Successful Signup!!',
@@ -370,7 +368,7 @@ exports.postSellerSignup = async (req,res,next)=>{
       uploadedFiles[key] = req.files[key].map((file) => file.path);
     }
     // this will only be executed if no validation errors are found.
-    const {sellerName,sellerEmailId,sellerMobileNo,sellerPassword,drugLicenseNumber,gstRegistrationNumber,fssaiLicenseNumber,storeName, line1Address, line2Address, shopPincode, shopState, shopCity, locationLatitude,locationLongitude,activeTime} = req.body;
+    const {sellerName,sellerEmailId,sellerMobileNo,sellerPassword,drugLicenseNumber,gstRegistrationNumber,fssaiLicenseNumber,storeName, address, shopPincode, shopState, shopCity, locationLatitude,locationLongitude,activeTime} = req.body;
     // will only end up here when required fields are not empty, in that case it will throw an error at the time of input validations only
     const hashedPassword = await bcrypt.hash(sellerPassword,12);
     let transactionSession=await mongoose.startSession();;
@@ -417,16 +415,14 @@ exports.postSellerSignup = async (req,res,next)=>{
             throw new Error('Failed to create user');
         }
         const addressStructure={
-            line1:line1Address,
-            line2:line2Address,
+            address:address,
             mobileNumber:Number(sellerMobileNo),
-            isPrimary:1,
             state:shopState,
             city:shopCity,
             pincode:Number(shopPincode),
-            latitude:Number(locationLatitude),
-            longitude:Number(locationLongitude),
-
+            location :{
+                coordinates:[Number(locationLongitude),Number(locationLatitude)],
+            }
         };
         const storeAddress = addressStructure;
         // storing operating day and working hours

@@ -1,3 +1,46 @@
 <%- include('./customerUtils/starter.ejs') %>
+<link rel="stylesheet" href="/styles/customerCss/customerProfilePage.css">
+</head>
 <%- include('./customerUtils/topHeader.ejs') %>
+<body>
+    <div class="content-wrapper">
+        <div class="optionContainer">
+            <div class="sectionNameContainer">I am container</div>
+            <div class="userBasicInfoContainer">
+                <div class="dummyUserLogo"><img src="/images/user.png" alt=""></div>
+                <div class="userDetails">
+                    <h2 class="customerName"><%= userInfo.name %></h2>
+                    <i class="emailId"><%= userInfo.emailId %></i>
+                    <p class="mobileNumber"><%= userInfo.mobileNumber %></p>
+                </div>
+            </div>
+            <div class="optionHolder">
+                <% 
+                    const optionNames = ['Account Information','Delivery Addresses','My Prescriptions','Help','Legal Information','Contact Us','Rate Us','Logout'];
+                    const images = ['/images/user.png','/images/delivery.png','/images/active-orders.png','/images/help.png','/images/legalInfo.png','/images/contactUs.png','/images/rate.png','/images/logout.png'];
+                %>
+                <% for( let i = 0; i < optionNames.length; i++ ) { %>
+                    <div class="profile-option option-<%= i %>">
+                        <div class="profileNameLogoHolder">
+                            <div class="profile-option-logo"><img src="<%= images[i] %>" alt=""></div>
+                            <div class="profile-option-text"><%= optionNames[i] %></div>
+                        </div>
+                        <div class="profile-option-arrow-icon"><img src="/images/next.png" alt=""></div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+        <div class="optionContentHolder">
+            <div class="optionContent optionContent-1"></div>
+            <div class="optionContent optionContent-2">
+                <%- include('./customerUtils/customerProfilePage-deliveryAddresses.ejs') %>
+            </div>
+            <div class="optionContent optionContent-3"></div>
+            <div class="optionContent optionContent-4"></div>
+            <div class="optionContent optionContent-5"></div>
+            <div class="optionContent optionContent-6"></div>
+            <div class="optionContent optionContent-7"></div>
+        </div>
+    </div>
+</body>
 <%- include('./customerUtils/footer.ejs') %>
