@@ -40,6 +40,7 @@ const medicalShopDB = new Schema({
     resetToken:{type:String},
     resetTokenExpiration:{type:Date},
 });
+medicalShopDB.index('storeAddress.location','2dsphere');
 module.exports = mongoose.model(DB_CONSTANT.MEDICAL_STORE_DB,medicalShopDB,DB_CONSTANT.MEDICAL_STORE_DB);
 
 //last thing you need to figure it out is the coordinate system

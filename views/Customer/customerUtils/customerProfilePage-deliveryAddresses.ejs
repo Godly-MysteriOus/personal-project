@@ -1,0 +1,91 @@
+<style>
+    .deliveryAddressContainer{
+        min-height: 70vh;
+    }
+    .wrapperName{
+        width: 100%;
+        padding: 1rem 2rem;
+        height: 9vh;
+        color: rgb(162, 162, 162);
+    }
+    .addressWrapper{
+        height: 61vh;
+        width: 100%;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        
+    }
+    .addNewAddressBox{
+        padding: 1rem 2rem;
+        border: 1px solid blue;
+        height: fit-content;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        width: 20rem;
+    }
+    .addNewAddressBox img{
+        width: 1rem;
+    }
+    .savedAddress{
+        width: 15rem;
+        height: fit-content;
+        border: 1px solid rgba(0, 181, 0, 0.53);
+        padding: 1rem;
+    }
+    .nameHolder{
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 18px;
+        font-weight: 500;
+    }
+    .address{
+        font-size: 14px;
+        padding: 0.75rem 0rem;
+    }
+    .buttonHolder{
+        display: flex;
+        justify-content: space-evenly;
+    }
+</style>
+<div class="deliveryAddressContainer">
+    <div class="wrapperName">Delivery Addresses</div>
+    <div class="addressWrapper">
+        <div class="addNewAddressBox">
+            <img src="/images/plus.png" alt=""> Add New Address
+        </div>
+        <% const addresses = [{customerName:'Jayant Singh',line1:'H-1 New swami vivekanand nagar',line2:'Awadhpuri',state:'Madhya Pradesh',city:'Bhopal',pincode:'462022',mobileNumber:7999724878,isActive:0},{customerName:'Jayant Singh',line1:'H-1 New swami vivekanand nagar',line2:'Awadhpuri',state:'Madhya Pradesh',city:'Bhopal',pincode:'462022',mobileNumber:7999724878,isActive:1},{customerName:'Jayant Singh',line1:'H-1 New swami vivekanand nagar',line2:'Awadhpuri',state:'Madhya Pradesh',city:'Bhopal',pincode:'462022',mobileNumber:7999724878,isActive:0},{customerName:'Jayant Singh',line1:'H-1 New swami vivekanand nagar',line2:'Awadhpuri',state:'Madhya Pradesh',city:'Bhopal',pincode:'462022',mobileNumber:7999724878,isActive:0}] %>
+        <% for( let i = 0; i < addresses.length; i++ ) { %>
+                <div class="savedAddress savedAddress-<%= i %>">
+                    <div class="nameHolder">
+                        <input type="checkbox" class="<%=i%>">
+                        <%= addresses[i].customerName %>
+                    </div>
+                    <div class="address">
+                        <div class="line1">
+                            <%= addresses[i].line1+', '+addresses[i].line2 %>
+                            <br>
+                        </div>
+                        <div class="line2">
+                            <%= addresses[i].city+'-'+addresses[i].pincode+'  '+addresses[i].state %>
+                        </div>
+                        <div class="line3">
+                            <br>
+                            <%= +91+'-'+ addresses[i].mobileNumber %>
+                        </div>
+                    </div>
+                    <div class="buttonHolder">
+                        <% if (!addresses[i].isActive) { %>
+                                <div class="deleteButton"><button class="deleteBtn" type="button">DELETE</button></div>
+                        <% } %>
+                        <div class="modifyButton"><button type="button" class="modifyBtn">MODIFY</button></div>
+                    </div>
+                </div>
+
+        <% } %>
+    </div>
+</div>

@@ -9,7 +9,6 @@ const obj = {
     fssaiLicenseNumber : '',
     storeName: '',
     line1Address : '',
-    line2Address : '',
     pincode : '',
     shopState: '',
     shopCity : '',

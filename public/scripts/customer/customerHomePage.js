@@ -2,7 +2,7 @@ const searchBtn = document.querySelector('.searchBtn');
 const contentHolder = document.querySelector('.contentHolder');
 searchBtn.addEventListener('click',async(e)=>{
     e.preventDefault();
-    const response = await fetch(url+'customer/homePage-search-product',{
+    const response = await fetch(url+'customer/search-product',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
@@ -23,7 +23,7 @@ searchBtn.addEventListener('click',async(e)=>{
         contentHolder.innerHTML = result;
     }
 });
-
+detailAndAddToCartScript();
 window.addEventListener('load',async(e)=>{
     const response = await fetch(url+'customer/user-addresses',{
         method: 'GET',
