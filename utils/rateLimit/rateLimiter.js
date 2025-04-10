@@ -2,7 +2,7 @@ const rateLimit = require('express-rate-limit');
 
 const limiter = rateLimit({
     windowMs: 60 * 1000, // 1 minute window
-    max: 30, // Allow only 10 requests per IP
+    max: 300, // Allow only 10 requests per IP
     standardHeaders: true, // Add RateLimit headers in the response
     legacyHeaders: false, // Disable X-RateLimit-* headers
     handler: (req, res) => {
