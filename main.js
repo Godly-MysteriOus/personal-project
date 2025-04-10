@@ -70,6 +70,7 @@ app.use((req,res,next)=>{
     res.locals.url = credential.hostURI;
     res.locals.googleMapKey = credential.googleMapAPIKey,
     res.locals.localStorageKey = localStorageKey;
+    res.locals.defaultRedirect = 'login';
     // res.locals.userAddress = req.user.userAddresses,
     next();
 })
