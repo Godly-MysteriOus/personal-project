@@ -74,12 +74,16 @@ searchButton.addEventListener('click',async()=>{
             message.classList.add('message-hidden');
         },3000);
     }else{
-        const result = await response.text();
-        searchInputField.value='';
-        medicineIdValue.value = '';
-        const bodyWrapper = document.querySelector('.body-wrapper');
-        bodyWrapper.innerHTML = result;
-        attachEventListner();
-        document.querySelector('.paginationHolder').style.display = 'none';
+        if(response.redirected){
+            window.location.href = url + redirect;
+        }else{
+            const result = await response.text();
+            searchInputField.value='';
+            medicineIdValue.value = '';
+            const bodyWrapper = document.querySelector('.body-wrapper');
+            bodyWrapper.innerHTML = result;
+            attachEventListner();
+            document.querySelector('.paginationHolder').style.display = 'none';
+        }
     }
 });

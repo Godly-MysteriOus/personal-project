@@ -13,10 +13,7 @@ const localStorageKey = require('./LocalStorageKey');
 const app = express();
 const cors = require('cors');
 const limiter = require('./utils/rateLimit/rateLimiter');
-
-const helmet = require('helmet');
 const compression = require('compression');
-const morgan = require('morgan');
 
 // body parsers and ejs engines
 app.use(bodyParser.urlencoded({extended:false}));
@@ -43,7 +40,7 @@ app.use(
         resave: false,
         saveUninitialized: false,
         store: store,
-        cookie:{maxAge:20*1000},
+        cookie:{maxAge:3*60*60*1000},
     })
 );
 app.use((req,res,next)=>{
