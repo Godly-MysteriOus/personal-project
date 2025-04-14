@@ -65,6 +65,10 @@ addBtnSearchBox.addEventListener('click',async()=>{
             medicineId: medicineIdValue.value,
         }),
     });
+    if(response.redirected){
+        window.location.href = url+redirect;
+        return;
+    }
     const result = await response.json();
     if(result.success && result.message=='Medicine Already Listed, will be updated !'){
         message.textContent = result.message;
@@ -208,6 +212,10 @@ saveAllButton.addEventListener('click',async(e)=>{
             quantity:quantityList,
         }),
     });
+    if(response.redirected){
+        window.location.href = url+redirect;
+        return;
+    }
     const result = await response.json();
     message.textContent = result.message;
     setTimeout(()=>{

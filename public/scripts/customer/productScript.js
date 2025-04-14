@@ -27,6 +27,11 @@ function detailAndAddToCartScript(){
         }else if(e.target.className == 'detailsBtn'){
             const inputClassName = e.target.closest('.buttonHolder').querySelector('.detailsButtonProductId').className.split(' ')[1];
             console.log(inputClassName);
+        }else{
+            const savedAddressWrapper = document.querySelector('.savedAddressWrapper');
+            if(!savedAddressWrapper.classList.contains('address-wrapper-hidden')){
+                savedAddressWrapper.classList.add('address-wrapper-hidden')
+            }
         }
     });
 }
