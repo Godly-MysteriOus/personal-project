@@ -356,7 +356,6 @@ exports.increaseProductQuantity = async(req,res,next)=>{
     }
 };
 exports.reduceProductQuantity = async(req,res,next)=>{
-    console.log('AM I Here');
     try{
         const {productId,sellerId} = req.body;
         const user = await userDetailDB.findById(req.user._id);
