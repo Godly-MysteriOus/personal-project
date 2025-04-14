@@ -1,3 +1,82 @@
 <%- include('./customerUtils/starter.ejs') %>
+</head>
 <%- include('./customerUtils/topHeader.ejs') %>
+<style>
+    .pageContentWrapper{
+        width: 100%;
+        height: 80vh;
+    }
+    .contentWrapper{
+        width: 100%;
+        padding: 0rem 1rem;
+        display: flex;
+        justify-content: space-evenly;
+    }
+    .buttonHolder{
+        width: 100%;
+        height: 8vh;
+    }
+    .pageHeader{
+        padding: 0.25rem 1rem;
+    }
+</style>
+<%- include('../utils/MessageBox.ejs') %>
+<div class="pageContentWrapper">
+    <h2 class="pageHeader">Your Cart</h2>
+    <br>
+    <div class="contentWrapper"></div>
+</div>
 <%- include('./customerUtils/footer.ejs') %>
+
+<script>
+    const message = document.querySelector('.message');
+    const contentWrapper = document.querySelector('.contentWrapper');
+    async function reloadContent(){
+        const response = await fetch(url+"customer/cart-products",{
+            method:'GET',
+        });
+        const result = await response.text();
+        contentWrapper.innerHTML = result;
+        onCartProductLoad();
+    };
+    function onCartProductLoad(){
+        const allCartItemHolder = document.querySelector('.allCartItemHolder');
+        allCartItemHolder.addEventListener('click',async(e)=>{
+            const element = e.target;
+            if(String(e.target.src).includes('/images/qty-increase.png')){
+                // increase qty
+                const value = e.target.closest('.plus').querySelector('input').value;
+                quantityAlter(value,'quantity-add');
+            }else if(String(e.target.src).includes('/images/qty-minus.png')){
+                // decrease qty
+                const value = e.target.closest('.minus').querySelector('input').value;
+                quantityAlter(value,'quantity-reduce');
+            }else if(String(e.target.src).includes('/images/delete.png')){
+                //delete product
+                const value = e.target.closest('.deleteButtonHolder').querySelector('input').value;
+                quantityAlter(value,'delete-product');
+            }
+        });
+    };
+    async function quantityAlter(value,endPoint){
+        const response = await fetch(url+`customer/${endPoint}`,{
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body : JSON.stringify({
+                productId : value.split(' ')[0],
+                sellerId: value.split(' ')[1],
+            }),
+        });
+        const result = await response.json();
+        message.classList.remove('message-hidden');
+        message.textContent = result.message;
+        setTimeout(()=>{
+            message.classList.add('message-hidden');
+        },3000);
+        if(result.success){
+            onCartProductLoad();
+            reloadContent();
+        }
+    };
+    reloadContent();
+</script>

@@ -18,7 +18,10 @@ searchBtn.addEventListener('click',async(e)=>{
             message.classList.add("message-hidden");
         },3000);
       
+    }else if(response.redirected){
+        window.location.href = url + redirect;
     }else{
+        
         const result = await response.text();
         contentHolder.innerHTML = result;
     }
