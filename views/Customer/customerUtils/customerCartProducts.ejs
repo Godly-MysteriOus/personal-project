@@ -1,0 +1,82 @@
+
+<% if (items.length==0) { %>
+ <h2>Cart Empty</h2>
+<% }else{%>
+    <link rel="stylesheet" href="/styles/customerCss/getCartProduct.css">
+    <div class="allCartItemHolder">
+        <% for( let i = 0; i < items.length; i++ ) { %>
+            <div class="itemHolder">
+                <div class="imageHolder">
+                    <img src="<% if (items[i].productDetail.productImage && items[i].productDetail.productImage!="null" ) { %>
+                     <%= items[i].productDetail.productImage.split('|')[0] %>
+                    <% }else{%>/images/no-image.png<%}%>" alt="">
+                </div>
+                <div class="itemContentHolder">
+                    <div class="itemDetailsHolder">
+                        <div class="itemName"> <h3><%= items[i].productDetail.name %> </h3></div>
+                        <div class="soldBy"> <b>Sold By: &nbsp;</b><%= items[i].sellerDetail.storeDetails.storeName %></div>
+                        <div class="manufacturerName"> <b>Manufacturer: &nbsp;</b><%= items[i].productDetail.manufacturer %> </div>
+                        <div class="packagingDetail"><b>Packaging Details: </b> <%= items[i].productDetail.packagingDetails %></div>
+                    </div>
+                    <div class="buttonHolder">
+                        <div class="price"> <b>Price: ₹ <%= items[i].price %> </b></div>
+                        <br>
+                        <div  class="buttonWrapper">
+                            <div class="quantityButton">
+                                <div class="minus">
+                                    <img src="/images/qty-minus.png" alt="">
+                                    <input type="hidden" value="<%= items[i].productId %> <%= items[i].sellerId %>">
+                                </div>
+                                <div class="qty"><%= items[i].qty %></div>
+                                <div class="plus">
+                                    <img src="/images/qty-increase.png" alt="">
+                                    <input type="hidden" value="<%= items[i].productId %> <%= items[i].sellerId %>">
+                                </div>
+                            </div>
+                            <div class="deleteButtonHolder">
+                                <img src="/images/delete.png" alt="">
+                                <input type="hidden" value="<%= items[i].productId %> <%= items[i].sellerId %>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+    </div>
+    <div class="totalPriceHolder">
+        <div class="priceHolder">
+            <p class="priceDetails">
+                <div class="numberOfItems priceItem">
+                    <div class="priceTextHolder">Items: </div>
+                    <div class="priceDataHolder"><%= items.length %></div>
+                </div>
+                <div class="itemPrice priceItem">
+                    <div class="priceTextHolder">Price: </div>
+                    <div class="priceDataHolder">₹ <%= totalPrice %></div>
+                </div>
+                <div class="delivery priceItem">
+                    <div class="priceTextHolder">Delivery: </div>
+                    <div class="priceDataHolder">₹ <%= deliveryFee %></div>
+                </div>
+                <div class="platformFee priceItem"> 
+                    <div class="priceTextHolder">Platform Fee: </div>
+                    <div class="priceDataHolder">₹ <%= platformFee %></div>
+                </div>
+                <div class="total priceItem"> 
+                    <div class="priceTextHolder">Total: </div>
+                    <div class="priceDataHolder">₹ <%= totalPrice+platformFee+deliveryFee %></div>
+                </div>
+                
+                <div class="freeDelivery priceItem"> 
+                    <div class="priceTextHolder">Free Delivery: </div>
+                    <div class="priceDataHolder">- ₹ <%= freeDelivery %></div>
+                </div>
+                <br><br>
+                <div class="orderTotal"> Order Total : ₹ <%= totalPrice+platformFee %></div>
+            </p>
+            <br>
+            <button class="checkOut" type="button"> Proceed to pay</button>
+        </div>
+    </div>
+
+<%}%>
