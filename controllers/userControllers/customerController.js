@@ -139,8 +139,45 @@ exports.getProfilePage = async(req,res,next)=>{
         userInfo : userInfo,
     });
 }
-exports.getCartPage = (req,res,next)=>{
+exports.getCartPage = async(req,res,next)=>{
     return res.status(200).render('Customer/customerCartPage.ejs');
+}
+
+
+exports.getCartProduct = async(req,res,next)=>{
+    try{
+        const cart = await userDetailDB.findById(req.user._id).select('cart');
+        const cartItems = cart.cart.items;
+        const cartProductDetails = [];
+        for (let item of cartItems) {
+            const productObj = await centralMedicineDB.findById(item.productId).select('name manufacturer packagingDetails package productImage prescriptionRequired -_id');
+            const sellerObj = await storeDetailDB.findById(item.sellerId).select('storeDetails.storeName storeAddress.address storeAddress.state storeAddress.city -_id');
+            const newItem  = {
+                productDetail : productObj,
+                sellerDetail: sellerObj,
+                qty : item.qty,
+                price: item.price,
+                sellerId : item.sellerId,
+                productId : item.productId,
+            }
+            cartProductDetails.push(newItem);
+        }
+        const totalPrice = cart.cart.totalPrice;
+        return res.status(200).render('Customer/customerUtils/customerCartProducts',{
+            items: cartProductDetails || [],
+            totalPrice : totalPrice || 0,
+            deliveryFee : 30,
+            freeDelivery : 30,
+            platformFee : 10,
+        })
+
+    }catch(err){
+        console.log(err.stack);
+        return res.status(400).json({
+            message : 'Error occoured while loading cart page',
+            success:false
+        })
+    }
 }
 
 exports.getUserAddresses = async(req,res,next)=>{
@@ -265,6 +302,11 @@ exports.postAddToCart = async(req,res,next)=>{
             currentCart[idx].price = newQty*validation.price;
         }
         user.cart.items = currentCart;
+        let price = 0;
+        currentCart.forEach(item=>{
+            price+=item.price;
+        });
+        user.cart.totalPrice = price;
         req.session.user = user;
 
         saveSession(req.session);
@@ -278,6 +320,99 @@ exports.postAddToCart = async(req,res,next)=>{
         return res.status(400).json({
             success:true,
             message: 'Addition to cart failed!',
+        });
+    }
+}
+
+exports.increaseProductQuantity = async(req,res,next)=>{
+    try{
+        const {productId,sellerId} = req.body;
+        const user = await userDetailDB.findById(req.user._id);
+        const product = await productDB.findOne({productId: new ObjectId(productId),sellerId: new ObjectId(sellerId)});
+        const cart = user.cart.items;
+        let totalPrice = 0;
+        cart.forEach(item=>{
+            if(item.productId.toString()==productId && item.sellerId.toString()==sellerId){
+                const currentQty = item.qty;
+                item.qty=currentQty+1;
+                item.price = (currentQty+1)*product.price;
+            }
+        });
+        user.cart.items.forEach(item=>{
+            totalPrice+=item.price;
+        });
+        user.cart.items = cart;
+        user.cart.totalPrice = totalPrice;
+        user.save();
+        return res.status(200).json({
+            message: 'Updated Cart Successfully',
+            success:true,
+        });
+    }catch(err){
+        return res.status(400).json({
+            message: 'Error Updating Cart',
+            success:false,
+        });
+    }
+};
+exports.reduceProductQuantity = async(req,res,next)=>{
+    try{
+        const {productId,sellerId} = req.body;
+        const user = await userDetailDB.findById(req.user._id);
+        const productDetail = await productDB.findOne({productId:new ObjectId(productId),sellerId:new ObjectId(sellerId)});
+        const currentCart = user.cart.items;
+        let requiredItemIndex = -1;
+        if(currentCart.length>=1){
+            requiredItemIndex = currentCart.findIndex(item=> (item.productId.toString()==productId && item.sellerId.toString()==sellerId));
+        }
+        currentCart[requiredItemIndex].qty-=1;
+        currentCart[requiredItemIndex].price = currentCart[requiredItemIndex].qty*productDetail.price;
+        let newCart = currentCart.filter(items=>items.qty>0);
+        let totalPrice = 0;
+        newCart.forEach(item=>{
+            totalPrice+=item.price;
+        });
+        user.cart.items = newCart;
+        user.cart.totalPrice = totalPrice;
+        user.save();
+        return res.status(200).json({
+            message: 'Updated Cart Successfully',
+            success:true,
+        });
+    }catch(err){
+        console.log(err);
+        res.status(400).json({
+            message: 'Error Updating Cart',
+            success:false,
+        })
+    }
+}
+exports.deleteProduct = async(req,res,next)=>{
+    try{
+        const {productId,sellerId} = req.body;
+        const user = await userDetailDB.findById(req.user._id);
+        const currentCart = user.cart.items;
+        const newCart = currentCart.filter(item=>{
+            if( !(item.productId.toString()==productId && item.sellerId.toString()==sellerId) ){
+                return item;
+            }
+        });
+        let totalPrice = 0;
+        newCart.forEach(item=>{
+            totalPrice+= (item.qty)*(item.price);
+        });
+        user.cart.items = newCart;
+        user.cart.totalPrice = totalPrice;
+        user.save();
+        return res.status(200).json({
+            message: 'Updated Cart Successfully',
+            success:true,
+        });
+    }catch(err){
+        console.log(err);
+        return res.status(400).json({
+            message: 'Error Updating Cart',
+            success:false,
         });
     }
 }

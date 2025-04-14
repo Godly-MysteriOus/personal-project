@@ -65,6 +65,10 @@ addBtnSearchBox.addEventListener('click',async(e)=>{
             medicineId: medicineIdValue.value,
         }),
     });
+    if(response.redirected){
+        window.location.href = url+redirect;
+        return;
+    }
     const result = await response.json();
     if(result.success){
         const data = result.data;
@@ -114,6 +118,10 @@ submitBtn.addEventListener('click',async(e)=>{
             price : Number(medicinePrice),
         }),
     });
+    if(response.redirected){
+        window.location.href = url+redirect;
+        return;
+    }
     const result = await response.json();
     if(result.success){
         productName.textContent = '';

@@ -86,6 +86,10 @@ function attachEventListner(){
             return;
         }else{
             // it might have returned the html content
+            if(response.redirected){
+                window.location.href = url+redirect;
+                return;
+            }
             const res = await response.text();
             message.textContent = 'Deleted Product Successfully';
             message.classList.remove('message-hidden');
@@ -121,9 +125,14 @@ function attachEventListner(){
                 message.classList.add('message-hidden');
             },3000);
         }else{
-            const result = await response.text();
-            displayField.innerHTML = result;
-            attachEventListner();
+            if(response.redirected){
+                window.location.href = url+redirect;
+                return;
+            }else{
+                const result = await response.text();
+                displayField.innerHTML = result;
+                attachEventListner();
+            }
         }
     }
     singleLeftBtn.addEventListener('click',()=>{

@@ -85,6 +85,10 @@ submitBtn.addEventListener('click',async()=>{
             price : offeredPrice.value,
         }),
     });
+    if(response.redirected){
+        window.location.href = url+redirect;
+        return;
+    }
     const result =  await response.json();
     message.textContent = result.message;
     message.classList.remove('message-hidden');

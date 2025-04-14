@@ -1,0 +1,97 @@
+
+.itemHolder{
+    /* margin: 0 auto; */
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 1rem 0.5rem;
+    border: 1px solid pink;
+}
+.imageHolder{
+    width: 30%;
+}
+.imageHolder img{
+    width: 8rem;
+}
+.itemContentHolder{
+    width: 60%;
+    display: flex;
+    align-items: center;
+}
+.itemDetailsHolder{
+    width: 200%;
+}
+.soldBy{
+    font-size: 13px;
+    /* top right bottom left */
+    padding: 0.5rem 0rem 0.15rem 0rem;
+}
+.manufacturerName,.packagingDetail{
+    font-size: 13.5px;
+}
+.buttonWrapper{
+    display: flex;
+}
+.minus,.plus,.deleteButtonHolder{
+    width: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.minus img, .plus img{
+    width: 0.75rem;
+    cursor: pointer;
+}
+.deleteButtonHolder img{
+    width: 1rem;
+    cursor: pointer;
+}
+.qty{
+    width: 2rem;
+    text-align: center;
+}
+.quantityButton{
+    display: flex;
+    border: 1px solid rgb(179, 179, 179);
+    margin-right: 1.5rem;
+}
+.allCartItemHolder{
+    border: 1px solid pink;
+    width: 65%;
+    overflow-y: scroll;
+    height: 70vh;
+}
+.totalPriceHolder{
+    border: 1px solid rgb(215, 216, 215);
+    width: 25%;
+    height: 55vh;
+    display: grid;
+    place-items: center;
+}
+.priceHolder{
+    display: grid;
+    place-items: center;
+    width: 60%;
+}
+.priceItem{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    border-bottom: 1px solid rgb(222, 222, 222);
+    padding: 0.25rem 0rem;
+    font-size: 14px;
+}
+.priceTextHolder{
+    width: 70%;        
+}
+.priceDataHolder{
+    width: 30%;
+}
+.checkOut{
+    padding: 0.5rem 1rem;
+    background: rgba(255, 217, 0, 0.74);
+    border: none;
+    border-radius: 0.25rem;
+    border: 1px solid black;
+    cursor: pointer;
+}
