@@ -12,7 +12,6 @@ const credential = require('./config');
 const localStorageKey = require('./LocalStorageKey');
 const app = express();
 const cors = require('cors');
-const limiter = require('./utils/rateLimit/rateLimiter');
 const compression = require('compression');
 
 // body parsers and ejs engines
@@ -20,7 +19,6 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
-app.use(limiter);
 const store = new MongoDBStore({
     uri: dbURI.DB_Connections.DEV_URI,
     collection: 'sessions'
